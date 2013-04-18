@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llvMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tvRecType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="recType" 
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvOSorDNorEmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:text="OSorDNorEmp"
+            android:textStyle="bold" />
+        
+        <TextView
+            android:id="@+id/tvInWay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@+id/tvIsredy"
+            android:text="inWay" />
+
+
+
+        <TextView
+            android:id="@+id/tvIsredy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="isredy" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tvAddr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Адрес: " 
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvaAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="aAddress" 
+            android:textColor="#0099CC"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvClnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Клиент: " 
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvClient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="client" 
+            android:textColor="#FF8800"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Доставить" 
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTimeBE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="timeBE" />
+
+    </LinearLayout>
+
+</LinearLayout>

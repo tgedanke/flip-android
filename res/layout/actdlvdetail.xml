@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tvOrderHeadDlv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Накладная"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView2Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Номер доставки "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDorder_numDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDorder_num"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView6Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Адрес доставки "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDaddrDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDaddr"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView7Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Название компании "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDcomp_nameDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDcomp_name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView8Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Контактное лицо "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDcontactDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDcontact"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView9Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Контактный номер "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDcontact_numDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDcontact_num"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView11Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Мест "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDpos_numDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDpos_num"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView12Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вес "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDweightDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDweight"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView13Dlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Объемный вес "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDvol_weightDlv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvDvol_weight"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView14Dlv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Комментарий"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDcommentDlv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tvDcomment"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>
