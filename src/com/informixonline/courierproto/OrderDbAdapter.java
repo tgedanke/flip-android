@@ -71,7 +71,7 @@ public class OrderDbAdapter {
 		", Packs " +
 		", Wt " +
 		", VolWt " +
-		", 'комментарий' as comment " +
+		", Rems " +
 		"from Orders ";
 	
 	private static final String TAG = "OrdersDbAdapter";

@@ -3,10 +3,14 @@ package com.informixonline.courierproto;
 import com.informixonline.courierproto.OrderDbAdapter;
 import com.informixonline.courierproto.R;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -75,9 +79,27 @@ public class CourierMain extends Activity implements OnClickListener {
 		dbHelper.open();
 
 		// Clean all data
-		//dbHelper.deleteAllOrders();
+		//dbHelper.deleteAllOrders()
 		// Add some data
 		//dbHelper.insertTestEntries();
+		Log.d("POST", "--- delete all orders before connect ---");
+		
+        // Выключаем проверку работы с сетью в текущем UI потоке
+        StrictMode.ThreadPolicy policy = new StrictMode.
+        		ThreadPolicy.Builder().permitAll().build();
+        		StrictMode.setThreadPolicy(policy);
+		
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			NetWorker nwork = new NetWorker();
+			Log.d("POST", "--- Network OK ---");
+			//nwork.getData(dbHelper);
+			//dbHelper.insertTestEntries();
+		} else {
+			// display error
+			Log.d("POST", "--- Network Failed ---");
+		}	
 		
 		// Кнопки отладки
 		btnInsertTest = (Button)findViewById(R.id.btnInsertTest);
@@ -170,7 +192,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				tvDpos_num_Packs = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Packs));
 				tvDweight_Wt = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Wt));
 				tvDvol_weight_VolWt = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_VolWt));
-				tvDcomment = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_comment));
+				tvDcomment = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Rems));
 				 
 				//Toast.makeText(getApplicationContext(), ordersClient + " " + ordersId,
 				//		Toast.LENGTH_SHORT).show();
