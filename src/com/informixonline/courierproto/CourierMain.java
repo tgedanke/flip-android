@@ -74,27 +74,27 @@ public class CourierMain extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
-
-		dbHelper = new OrderDbAdapter(this);
-		dbHelper.open();
-
-		// Clean all data
-		//dbHelper.deleteAllOrders()
-		// Add some data
-		//dbHelper.insertTestEntries();
-		Log.d("POST", "--- delete all orders before connect ---");
 		
         // Выключаем проверку работы с сетью в текущем UI потоке
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);
+
+		dbHelper = new OrderDbAdapter(this);
+		dbHelper.open();
+
+		// Clean all data
+		dbHelper.deleteAllOrders();
+		// Add some data
+		//dbHelper.insertTestEntries();
+		Log.d("POST", "--- delete all orders before connect ---");
 		
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
 			NetWorker nwork = new NetWorker();
 			Log.d("POST", "--- Network OK ---");
-			//nwork.getData(dbHelper);
+		    nwork.getData(dbHelper);
 			//dbHelper.insertTestEntries();
 		} else {
 			// display error
@@ -275,9 +275,11 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 		switch (v.getId()) {
 		case R.id.btnAddr:
-			cursor = dbHelper.fetchSortOrders(1);
+			Log.d("CourierMain", "--- In SORT кнопка Адрес ---");
+			//dataAdapter.swapCursor(cursor).close();
+			//cursor = dbHelper.fetchSortOrders(1);
+			dataAdapter.swapCursor(dbHelper.fetchSortOrders(1));
 			dataAdapter.notifyDataSetChanged();
-			Log.d("CourierMain", "--- In switch кнопка Адрес ---");
 			break;
 			
 		case R.id.btnClient:
@@ -316,7 +318,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			
 				intent.putExtra("tvDorder_num", orderDetail_aNO);
 				intent.putExtra("tvDorder_state_ordStatus", tvDorder_state_ordStatus);
-				intent.putExtra("tvDorder_type_ordType", tvDorder_type_ordType);
+				// intent.putExtra("tvDorder_type_ordType", tvDorder_type_ordType); зачеркнуто в ТЗ
 				intent.putExtra("tvDacash", tvDacash);
 				intent.putExtra("tvDaddr_aAddress", tvDaddr_aAddress);
 				intent.putExtra("tvDcomp_name_client", tvDcomp_name_client);

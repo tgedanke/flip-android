@@ -24,8 +24,10 @@ import android.util.Log;
 public class NetWorker {
 	
 	final static String TAG_POST = "POST";
-	final static String LOGIN_URL = "http://178.64.224.130/fp/cr/data/login.php"; //"http://10.96.95.121/fp/cr/data/login.php";
-	final static String GETDATA_URL ="http://178.64.224.130/fp/cr/data/data.php"; //"http://10.96.95.121/fp/cr/data/data.php";
+	//final static String LOGIN_URL = "http://178.64.224.130/fp/cr/data/login.php"; //"http://10.96.95.121/fp/cr/data/login.php";
+	//final static String GETDATA_URL ="http://178.64.224.130/fp/cr/data/data.php"; //"http://10.96.95.121/fp/cr/data/data.php";
+	final static String LOGIN_URL = "http://10.96.95.121/fp/cr/data/login.php";
+	final static String GETDATA_URL = "http://10.96.95.121/fp/cr/data/data.php";
 	final static String USER = "1244";
 	final static String PWD = "7765";
 	final static String DBGET = "getCourAll";
@@ -35,6 +37,11 @@ public class NetWorker {
     
     public void getData(OrderDbAdapter dbhelper) { 
         
+/*        // Выключаем проверку работы с сетью в текущем UI потоке
+        StrictMode.ThreadPolicy policy = new StrictMode.
+        		ThreadPolicy.Builder().permitAll().build();
+        		StrictMode.setThreadPolicy(policy);*/
+    	
         BufferedReader intro=null;
         DefaultHttpClient cliente=new DefaultHttpClient();
         HttpPost post=new HttpPost(LOGIN_URL);
