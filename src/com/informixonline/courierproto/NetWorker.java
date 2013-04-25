@@ -60,7 +60,7 @@ public class NetWorker {
             HttpResponse response = cliente.execute(post);
             if(response.getStatusLine().getStatusCode()==200)//this means that you got the page
             {
-            	Log.d(TAG_POST, "--- got the page ---");
+            	Log.d(TAG_POST, "--- LOGIN return ---");
                 HttpEntity entity=response.getEntity();
                 intro=new BufferedReader(new InputStreamReader(entity.getContent()));
                 String line = "";

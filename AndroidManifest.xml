@@ -26,6 +26,7 @@
         </activity>
         <activity android:name="ActOrderDetail"></activity>
         <activity android:name="ActDlvDetail"></activity>
+        <activity android:name="ActSettings"></activity>
     </application>
 
 </manifest>

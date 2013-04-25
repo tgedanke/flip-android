@@ -71,7 +71,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnInWay, btnOk, btnPod, btnDetail;
+	Button btnAddr, btnClient, btnTime, btnSettings, btnInWay, btnOk, btnPod, btnDetail;
 	Button btnInsertTest;
 
 	@Override
@@ -101,6 +101,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Кнопки отладки
 		btnInsertTest = (Button)findViewById(R.id.btnInsertTest);
 		btnInsertTest.setOnClickListener(this);
+		
 		// Кнопки на главной активити
 		btnAddr = (Button)findViewById(R.id.btnAddr);
 		btnAddr.setOnClickListener(this);
@@ -110,6 +111,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 		btnTime = (Button)findViewById(R.id.btnTime);
 		btnTime.setOnClickListener(this);
+		
+		btnSettings = (Button)findViewById(R.id.btnSaveSet);
+		btnSettings.setOnClickListener(this);
 		
 		btnInWay = (Button)findViewById(R.id.btnInWay);
 		btnInWay.setOnClickListener(this);
@@ -132,7 +136,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			NetWorker nwork = new NetWorker();
 			Log.d("POST", "--- Network OK ---");
 		    nwork.getData(dbHelper, user, pwd);
-			//dbHelper.insertTestEntries();
+			//dbHelper.insertTestEntries(); // DEBUG
 		} else {
 			// display error
 			Log.d("POST", "--- Network Failed ---");
@@ -350,6 +354,12 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("CourierMain", "--- In SORT кнопка Время ---");
 			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(1));
 			dataAdapter.notifyDataSetChanged();
+			break;
+			
+		case R.id.btnSaveSet:
+			Log.d("CourierMain", "--- In SETTINGS кнопка Set ---");
+			Intent intentActSet = new Intent(this, ActSettings.class);
+			startActivity(intentActSet);
 			break;
 			
 		case R.id.btnInWay:
