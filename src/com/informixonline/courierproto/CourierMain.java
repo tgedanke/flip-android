@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -28,6 +31,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -67,13 +71,16 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnInWay, btnOk, btnPod, btnDetail;
+	Button btnAddr, btnClient, btnTime, btnInWay, btnOk, btnPod, btnDetail;
 	Button btnInsertTest;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
+		
+		// Показываем диалог логина и ждем ввода
+		showLogin();
 		
         // Выключаем проверку работы с сетью в текущем UI потоке
         StrictMode.ThreadPolicy policy = new StrictMode.
@@ -89,17 +96,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		//dbHelper.insertTestEntries();
 		Log.d("POST", "--- delete all orders before connect ---");
 		
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (networkInfo != null && networkInfo.isConnected()) {
-			NetWorker nwork = new NetWorker();
-			Log.d("POST", "--- Network OK ---");
-		    nwork.getData(dbHelper);
-			//dbHelper.insertTestEntries();
-		} else {
-			// display error
-			Log.d("POST", "--- Network Failed ---");
-		}	
+
 		
 		// Кнопки отладки
 		btnInsertTest = (Button)findViewById(R.id.btnInsertTest);
@@ -107,6 +104,12 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Кнопки на главной активити
 		btnAddr = (Button)findViewById(R.id.btnAddr);
 		btnAddr.setOnClickListener(this);
+		
+		btnClient = (Button)findViewById(R.id.btnClient);
+		btnClient.setOnClickListener(this);
+		
+		btnTime = (Button)findViewById(R.id.btnTime);
+		btnTime.setOnClickListener(this);
 		
 		btnInWay = (Button)findViewById(R.id.btnInWay);
 		btnInWay.setOnClickListener(this);
@@ -118,8 +121,64 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnDetail.setOnClickListener(this);
 		
 		// Generate ListView from SQLite Database
-		displayListView();
+		// displayListView(); moved to dialog
 		
+	}
+	
+	private void getNetworkData(String user, String pwd) {
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			NetWorker nwork = new NetWorker();
+			Log.d("POST", "--- Network OK ---");
+		    nwork.getData(dbHelper, user, pwd);
+			//dbHelper.insertTestEntries();
+		} else {
+			// display error
+			Log.d("POST", "--- Network Failed ---");
+		}	
+	}
+	
+	String user, pwd;
+
+	private void showLogin() {
+		// TODO Auto-generated method stub
+		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Введите имя и пароль");
+		
+		final LinearLayout ln = new LinearLayout(this);
+		ln.setOrientation(1);
+		ln.setDividerPadding(5);
+		final EditText etUser = new EditText(this);
+		final EditText etPwd = new EditText(this);
+		etPwd.setHint("Password");
+		etUser.setHint("User");
+		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		
+		ln.addView(etUser);
+		ln.addView(etPwd);
+		
+		alert.setView(ln);
+
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				user = etUser.getText().toString().trim();
+				pwd = etPwd.getText().toString().trim();
+/*				Toast.makeText(getApplicationContext(), user,
+						Toast.LENGTH_SHORT).show();*/
+				
+				getNetworkData(user, pwd);
+				displayListView();
+			}
+		});
+
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						dialog.cancel();
+					}
+				});
+		alert.show();
 	}
 
 	@Override
@@ -262,7 +321,6 @@ public class CourierMain extends Activity implements OnClickListener {
 		return super.onContextItemSelected(item);
 	}
 	  
-	  
 	  protected void onDestroy() {
 		    super.onDestroy();
 		    // закрываем подключение при выходе
@@ -283,18 +341,24 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 			
 		case R.id.btnClient:
-			Log.d("CourierMain", "--- In switch кнопка Клиент ---");
+			Log.d("CourierMain", "--- In SORT кнопка Клиент ---");
+			dataAdapter.swapCursor(dbHelper.fetchSortClients(1));
+			dataAdapter.notifyDataSetChanged();
 			break;
 			
 		case R.id.btnTime:
-			Log.d("CourierMain", "--- In switch кнопка Время ---");
+			Log.d("CourierMain", "--- In SORT кнопка Время ---");
+			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(1));
+			dataAdapter.notifyDataSetChanged();
 			break;
 			
 		case R.id.btnInWay:
+			// При нажатии запись помечается но список перематывается (т.е. запись снова надо искать)
 			Log.d("CourierMain", "--- In switch кнопка Еду ---");
 			dbHelper.updOrderCatchIt(ordersId, true);
 			// обновляем курсор
 			cursor.requery();
+			//dataAdapter.swapCursor(dbHelper.fetchModOrders());
 			dataAdapter.notifyDataSetChanged();
 			break;
 			

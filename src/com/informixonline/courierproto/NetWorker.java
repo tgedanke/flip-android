@@ -28,14 +28,14 @@ public class NetWorker {
 	//final static String GETDATA_URL ="http://178.64.224.130/fp/cr/data/data.php"; //"http://10.96.95.121/fp/cr/data/data.php";
 	final static String LOGIN_URL = "http://10.96.95.121/fp/cr/data/login.php";
 	final static String GETDATA_URL = "http://10.96.95.121/fp/cr/data/data.php";
-	final static String USER = "1244";
-	final static String PWD = "7765";
+	//final static String USER = "1244";
+	//final static String PWD = "7765";
 	final static String DBGET = "getCourAll";
 	
     static JSONObject jObj = null;
     static String json = "";
     
-    public void getData(OrderDbAdapter dbhelper) { 
+    public void getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd) { 
         
 /*        // Выключаем проверку работы с сетью в текущем UI потоке
         StrictMode.ThreadPolicy policy = new StrictMode.
@@ -49,8 +49,8 @@ public class NetWorker {
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
         List<NameValuePair> nvps_getdata = new ArrayList <NameValuePair>();
         
-        nvps.add(new BasicNameValuePair("user",USER));
-        nvps.add(new BasicNameValuePair("password",PWD));
+        nvps.add(new BasicNameValuePair("user",dlgloginUser));
+        nvps.add(new BasicNameValuePair("password",dlgloginpwd));
         nvps_getdata.add(new BasicNameValuePair("dbAct", DBGET));
         
         // Регистрация на сервере
