@@ -16,8 +16,8 @@ import android.widget.EditText;
 public class ActSettings extends Activity implements OnClickListener {
 	
 	// Save setting to SharedPref
-	final String APPCFG_LOGIN_URL = "LOGIN_URL";
-	final String APPCFG_GETDATA_URL = "GETDATA_URL";
+	//final String APPCFG_LOGIN_URL = "LOGIN_URL";
+	//final String APPCFG_GETDATA_URL = "GETDATA_URL";
 	SharedPreferences sharedAppConfig;
 	
 	EditText edtLOGIN_URL, edtGETDATA_URL;
@@ -33,11 +33,12 @@ public class ActSettings extends Activity implements OnClickListener {
 		edtGETDATA_URL = (EditText)findViewById(R.id.edtGETDATA_URL);
 		btnSaveSet = (Button)findViewById(R.id.btnSaveSet);
 		
-		sharedAppConfig = getPreferences(MODE_PRIVATE);
+		//sharedAppConfig = getPreferences(MODE_PRIVATE);
+		sharedAppConfig = getSharedPreferences(CourierMain.SHAREDPREF, MODE_PRIVATE);
 		
 		// Read prev settings
-		edtLOGIN_URL.setText(sharedAppConfig.getString(APPCFG_LOGIN_URL, ""));
-		edtGETDATA_URL.setText(sharedAppConfig.getString(APPCFG_GETDATA_URL, ""));
+		edtLOGIN_URL.setText(sharedAppConfig.getString(CourierMain.APPCFG_LOGIN_URL, ""));
+		edtGETDATA_URL.setText(sharedAppConfig.getString(CourierMain.APPCFG_GETDATA_URL, ""));
 		
 		btnSaveSet.setOnClickListener(this);
 	}
@@ -48,8 +49,8 @@ public class ActSettings extends Activity implements OnClickListener {
 		case R.id.btnSaveSet:
 			
 			Editor ed = sharedAppConfig.edit();
-			ed.putString(APPCFG_LOGIN_URL, edtLOGIN_URL.getText().toString());
-			ed.putString(APPCFG_GETDATA_URL, edtGETDATA_URL.getText().toString());
+			ed.putString(CourierMain.APPCFG_LOGIN_URL, edtLOGIN_URL.getText().toString());
+			ed.putString(CourierMain.APPCFG_GETDATA_URL, edtGETDATA_URL.getText().toString());
 			ed.commit();
 			break;
 

@@ -18,6 +18,7 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -26,8 +27,8 @@ public class NetWorker {
 	final static String TAG_POST = "POST";
 	//final static String LOGIN_URL = "http://178.64.224.130/fp/cr/data/login.php"; //"http://10.96.95.121/fp/cr/data/login.php";
 	//final static String GETDATA_URL ="http://178.64.224.130/fp/cr/data/data.php"; //"http://10.96.95.121/fp/cr/data/data.php";
-	final static String LOGIN_URL = "http://10.96.95.121/fp/cr/data/login.php";
-	final static String GETDATA_URL = "http://10.96.95.121/fp/cr/data/data.php";
+	//final static String LOGIN_URL = "http://10.96.95.121/fp/cr/data/login.php";
+	//final static String GETDATA_URL = "http://10.96.95.121/fp/cr/data/data.php";
 	//final static String USER = "1244";
 	//final static String PWD = "7765";
 	final static String DBGET = "getCourAll";
@@ -35,16 +36,18 @@ public class NetWorker {
     static JSONObject jObj = null;
     static String json = "";
     
-    public void getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd) { 
+    
+    
+    public void getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String getdataURL) { 
         
-/*        // Выключаем проверку работы с сетью в текущем UI потоке
+/*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
     	
         BufferedReader intro=null;
         DefaultHttpClient cliente=new DefaultHttpClient();
-        HttpPost post=new HttpPost(LOGIN_URL);
+        HttpPost post=new HttpPost(loginURL);
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
         List<NameValuePair> nvps_getdata = new ArrayList <NameValuePair>();
@@ -74,7 +77,7 @@ public class NetWorker {
             
             // Получение данных
             //DefaultHttpClient cliente=new DefaultHttpClient();
-            HttpPost post_data=new HttpPost(GETDATA_URL);
+            HttpPost post_data=new HttpPost(getdataURL);
             
             post_data.setEntity(new UrlEncodedFormEntity(nvps_getdata, HTTP.UTF_8)); //HTTP.UTF_8
             Log.d(TAG_POST, "--- BEFORE POST GET DATA ---");

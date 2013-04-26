@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.text.Editable;
@@ -41,6 +42,11 @@ import android.widget.AdapterView.OnItemClickListener;
 public class CourierMain extends Activity implements OnClickListener {
 	
 	static long ordersId; // ID заказа выбранного в списке для подсветки через CustomAdapter
+
+	// Ключи сетевых настроек (используется в ActSettings и NetWorker) для доступа к хранению настроек
+	final static String SHAREDPREF = "sharedstore";
+	final static String APPCFG_LOGIN_URL = "LOGIN_URL";
+	final static String APPCFG_GETDATA_URL = "GETDATA_URL";
 	
 	Cursor cursor;
 	ListView listView;
@@ -61,7 +67,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	static String tvDvol_weight_VolWt;
 	static String tvDcomment;
 
-	// Идентификаторы контекстного меню списка
+	// Идентификаторы контекстного меню списка (при длительном нажатии на элемент списка)
 	private static final int CM_CATCH_ORDER = 0;
 	private static final int CM_RET_ORDER = 1;
 	private static final int CM_BACK_ORDER = 2;
@@ -130,23 +136,34 @@ public class CourierMain extends Activity implements OnClickListener {
 	}
 	
 	private void getNetworkData(String user, String pwd) {
+		
+		// Проверяем сетевые разрешения
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
 			NetWorker nwork = new NetWorker();
-			Log.d("POST", "--- Network OK ---");
-		    nwork.getData(dbHelper, user, pwd);
+			Log.d("CourierMain.getNetworkData", "--- Network OK ---");
+			
+	    	// Получаем сохраненные сетевые настройки
+	    	SharedPreferences sharedAppConfig;
+	    	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+	    	String login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
+	    	String getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
+			Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
+	    	
+		    nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
+		    
 			//dbHelper.insertTestEntries(); // DEBUG
 		} else {
 			// display error
-			Log.d("POST", "--- Network Failed ---");
+			Log.d("CourierMain.getNetworkData", "--- Network Failed ---");
 		}	
 	}
 	
 	String user, pwd;
 
 	private void showLogin() {
-		// TODO Auto-generated method stub
+
 		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Введите имя и пароль");
 		
