@@ -244,7 +244,7 @@ public class OrderDbAdapter {
 	public Cursor fetchSortOrders(int sort) {
 		Cursor mCursor = null;
 		switch (sort) {
-		case 1:
+		case 0:
 			Log.d("OrderDbAdapter", "--- In switch ---");
 			mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_aAddress + " desc", null);
 			break;
@@ -264,12 +264,14 @@ public class OrderDbAdapter {
 	public Cursor fetchSortClients(int sort) {
 		Cursor mCursor = null;
 		switch (sort) {
-		case 1:
+		case 0:
 			Log.d("OrderDbAdapter", "--- In SORT ---");
 			mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_client + " desc", null);
 			break;
 
 		default:
+			Log.d("OrderDbAdapter", "--- In SORT ---");
+			mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_client + " asc", null);
 			break;
 		}
 		
@@ -283,12 +285,14 @@ public class OrderDbAdapter {
 	public Cursor fetchSortTimeB(int sort) {
 		Cursor mCursor = null;
 		switch (sort) {
-		case 1:
+		case 0:
 			Log.d("OrderDbAdapter", "--- In SORT ---");
 			mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_timeB + " desc", null);
 			break;
 
 		default:
+			Log.d("OrderDbAdapter", "--- In SORT ---");
+			mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_timeB + " asc", null);
 			break;
 		}
 		

@@ -42,6 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class CourierMain extends Activity implements OnClickListener {
 	
 	static long ordersId; // ID заказа выбранного в списке для подсветки через CustomAdapter
+	private byte SQLSORTORDER = 0; // флаг признака сортировки: 0 desc 1 asc для запоминания (после каждого нажатия кнопки меняется) 
 
 	// Ключи сетевых настроек (используется в ActSettings и NetWorker) для доступа к хранению настроек
 	final static String SHAREDPREF = "sharedstore";
@@ -197,6 +198,8 @@ public class CourierMain extends Activity implements OnClickListener {
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						dialog.cancel();
+						Toast.makeText(getApplicationContext(), "Вход отменен",
+								Toast.LENGTH_LONG).show();
 					}
 				});
 		alert.show();
@@ -357,19 +360,22 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("CourierMain", "--- In SORT кнопка Адрес ---");
 			//dataAdapter.swapCursor(cursor).close();
 			//cursor = dbHelper.fetchSortOrders(1);
-			dataAdapter.swapCursor(dbHelper.fetchSortOrders(1));
+			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
+			dataAdapter.swapCursor(dbHelper.fetchSortOrders(SQLSORTORDER));
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
 		case R.id.btnClient:
 			Log.d("CourierMain", "--- In SORT кнопка Клиент ---");
-			dataAdapter.swapCursor(dbHelper.fetchSortClients(1));
+			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
+			dataAdapter.swapCursor(dbHelper.fetchSortClients(SQLSORTORDER));
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
 		case R.id.btnTime:
 			Log.d("CourierMain", "--- In SORT кнопка Время ---");
-			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(1));
+			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
+			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(SQLSORTORDER));
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
@@ -385,7 +391,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			dbHelper.updOrderCatchIt(ordersId, true);
 			// обновляем курсор
 			cursor.requery();
-			//dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			dataAdapter.swapCursor(dbHelper.fetchModOrders());
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
