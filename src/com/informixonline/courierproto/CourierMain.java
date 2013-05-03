@@ -51,6 +51,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	Cursor cursor;
 	ListView listView;
+	NetWorker nwork = new NetWorker();
 	
 	// Список переменных для передачи в детальную форму 
 	static String recType_forDetail = "N"; // 0 - заказ, 1 - накладная, 2 - счет
@@ -79,7 +80,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	// Кнопки главной активити
 	Button btnAddr, btnClient, btnTime, btnSettings, btnInWay, btnOk, btnPod, btnDetail;
-	Button btnInsertTest;
+	Button btnInsertTest; // Отладочная кнопка
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,13 +137,13 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 	}
 	
-	private void getNetworkData(String user, String pwd) {
+	private void getNetworkData(NetWorker nwork, String user, String pwd) {
 		
 		// Проверяем сетевые разрешения
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
-			NetWorker nwork = new NetWorker();
+			
 			Log.d("CourierMain.getNetworkData", "--- Network OK ---");
 			
 	    	// Получаем сохраненные сетевые настройки
@@ -189,7 +190,7 @@ public class CourierMain extends Activity implements OnClickListener {
 /*				Toast.makeText(getApplicationContext(), user,
 						Toast.LENGTH_SHORT).show();*/
 				
-				getNetworkData(user, pwd);
+				getNetworkData(nwork, user, pwd);
 				displayListView();
 			}
 		});
