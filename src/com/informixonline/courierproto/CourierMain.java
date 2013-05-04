@@ -79,7 +79,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnSettings, btnInWay, btnOk, btnPod, btnDetail;
+	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail;
 	Button btnInsertTest; // Отладочная кнопка
 
 	@Override
@@ -102,7 +102,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		dbHelper.deleteAllOrders();
 		// Add some data
 		//dbHelper.insertTestEntries();
-		Log.d("POST", "--- delete all orders before connect ---");
+		Log.d("POST", "--- DELETE ALL orders before connect ---");
 		
 
 		
@@ -122,6 +122,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 		btnSettings = (Button)findViewById(R.id.btnSaveSet);
 		btnSettings.setOnClickListener(this);
+		
+		btnExit = (Button)findViewById(R.id.btnExit);
+		btnExit.setOnClickListener(this);
 		
 		btnInWay = (Button)findViewById(R.id.btnInWay);
 		btnInWay.setOnClickListener(this);
@@ -453,6 +456,10 @@ public class CourierMain extends Activity implements OnClickListener {
 			
 		case R.id.btnInsertTest:
 			dbHelper.insertTestEntries();
+			break;
+			
+		case R.id.btnExit:
+				finish(); // Выходим из приложения
 			break;
 		default:
 			break;
