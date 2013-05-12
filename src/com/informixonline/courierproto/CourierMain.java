@@ -49,6 +49,9 @@ public class CourierMain extends Activity implements OnClickListener {
 	final static String APPCFG_LOGIN_URL = "LOGIN_URL";
 	final static String APPCFG_GETDATA_URL = "GETDATA_URL";
 	
+	// Коды активити для получения результата Activity Return Code - ARC
+	final int ARC_NUMITEMS = 1; // Активити Кол-во отправлений 
+	
 	Cursor cursor;
 	ListView listView;
 	NetWorker nwork = new NetWorker();
@@ -68,6 +71,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	static String tvDweight_Wt;
 	static String tvDvol_weight_VolWt;
 	static String tvDcomment;
+	static String tvLocNumItems;
 
 	// Идентификаторы контекстного меню списка (при длительном нажатии на элемент списка)
 	private static final int CM_CATCH_ORDER = 0;
@@ -79,7 +83,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail;
+	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems;
 	Button btnInsertTest; // Отладочная кнопка
 
 	@Override
@@ -134,10 +138,34 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnPod.setOnClickListener(this);
 		btnDetail = (Button)findViewById(R.id.btnDetail);
 		btnDetail.setOnClickListener(this);
+		btnNumItems = (Button)findViewById(R.id.btnNumItems);
+		btnNumItems.setOnClickListener(this);
 		
 		// Generate ListView from SQLite Database
 		// displayListView(); moved to dialog
 		
+	}
+	
+	// Получение результатов от опр.активити в главной активити
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case ARC_NUMITEMS:
+			// Активити Кол-во отправлений - обновляем если нажато Ок
+			if (resultCode == RESULT_OK) {
+				String numItems = data.getStringExtra("numitems");
+				long rowid = data.getLongExtra("ordersid", 0);
+				Log.d("CourierMain.onActivityResult", "numItems = " + numItems
+						+ " rowid = " + rowid);
+				dbHelper.updLocNumItems(rowid, numItems);
+			} else {
+				Log.d("CourierMain.onActivityResult", "Result cancel");
+			}
+			break;
+
+		default:
+			break;
+		}
 	}
 	
 	private void getNetworkData(NetWorker nwork, String user, String pwd) {
@@ -167,6 +195,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	String user, pwd;
 
+	// Показываем окно ввода имени и пароля
 	private void showLogin() {
 
 		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -261,11 +290,12 @@ public class CourierMain extends Activity implements OnClickListener {
 				// Получаем значение поля этой записи из таблицы
 				// String ordersClient = cursor.getString(cursor
 				//		.getColumnIndexOrThrow("client"));	
-				// Получаем ID записи
+				
+				// Получаем ID выбранной в списке записи
 				ordersId = cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID));
 				Log.d("LISTITEMCLICK", Long.toString(ordersId) + " выбран идентификатор");
 				
-				// Запоминаем значение выбранной записи
+				// Запоминаем значение выбранной в списке записи
 				recType_forDetail = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_recType_forDetail));
 				orderDetail_aNO = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_aNo));
 				tvDorder_state_ordStatus = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ordStatus));
@@ -280,6 +310,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				tvDweight_Wt = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Wt));
 				tvDvol_weight_VolWt = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_VolWt));
 				tvDcomment = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Rems));
+				tvLocNumItems = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_locnumitems));
 				 
 				//Toast.makeText(getApplicationContext(), ordersClient + " " + ordersId,
 				//		Toast.LENGTH_SHORT).show();
@@ -452,6 +483,17 @@ public class CourierMain extends Activity implements OnClickListener {
 			}
 			
 			Log.d("DETAIL_KEY", "--- tvDorder_num = " + orderDetail_aNO);
+			break;
+			
+		case R.id.btnNumItems:
+				// Кол-во отправлений
+			if (ordersId != 0) {
+				Intent intent = new Intent(this, ActNumItems.class);
+				
+				intent.putExtra("tvLocNumItems", tvLocNumItems);
+				intent.putExtra("ordersid", ordersId);
+				startActivityForResult(intent, ARC_NUMITEMS);
+			}
 			break;
 			
 		case R.id.btnInsertTest:

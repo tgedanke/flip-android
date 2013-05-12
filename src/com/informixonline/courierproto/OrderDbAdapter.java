@@ -39,6 +39,9 @@ public class OrderDbAdapter {
 	public static final String KEY_OSorDNorEMP = "OSorDNorEMP";
 	public static final String KEY_timeBE = "timeBE";
 	
+	// Поле для локального хранения кол-ва посылок
+	public static final String KEY_locnumitems = "locnumitems";
+	
 	static final String SQL_CASE = "select _id, " +
 			"case " + 
 			"when recType = '0' then 'Заказ' " +
@@ -72,6 +75,7 @@ public class OrderDbAdapter {
 		", Wt " +
 		", VolWt " +
 		", Rems " +
+		", locnumitems " + 
 		"from Orders ";
 	
 	private static final String TAG = "OrdersDbAdapter";
@@ -80,7 +84,7 @@ public class OrderDbAdapter {
 
 	private static final String DATABASE_NAME = "Courier.db";
 	private static final String SQLITE_TABLE = "Orders";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	private final Context mCtx;
 
@@ -93,7 +97,7 @@ public class OrderDbAdapter {
 			+ "," + KEY_Cont + "," + KEY_ContPhone + "," + KEY_Packs + ","
 			+ KEY_Wt + "," + KEY_VolWt + "," + KEY_Rems + "," + KEY_ordStatus
 			+ "," + KEY_ordType + "," + KEY_recType + "," + KEY_isready + ","
-			+ KEY_inway + "," + KEY_isview + "," + KEY_rcpn + ");";
+			+ KEY_inway + "," + KEY_isview + "," + KEY_rcpn + "," + KEY_locnumitems + " default 0 " + ");";
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -222,7 +226,8 @@ public class OrderDbAdapter {
 				KEY_isready,
 				KEY_inway,
 				KEY_isview,
-				KEY_rcpn }, 
+				KEY_rcpn,
+				KEY_locnumitems}, 
 				null, null,	null, null, null);
 
 		if (mCursor != null) {
@@ -323,6 +328,14 @@ public class OrderDbAdapter {
 	int updOrderIsRedy(long rowid) {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_isready, "1");
+		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
+		return rowsUpd;
+	}
+	
+	int updLocNumItems (long rowid, String numItems) {
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_locnumitems, numItems);
+		
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 		return rowsUpd;
 	}
