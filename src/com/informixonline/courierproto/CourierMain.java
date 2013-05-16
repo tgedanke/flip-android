@@ -181,6 +181,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				Log.d("CourierMain.onActivityResult", "wb_no = " + wb_no
 						+ " p_d_in = " + p_d_in + " tdd = " + tdd + " rcpn = "
 						+ rcpn);
+				
 				nwork.sendData(this.dbHelper, this.user, this.pwd,
 				this.login_URL, this.getdata_URL, snddata);
 			} else {
@@ -478,8 +479,10 @@ public class CourierMain extends Activity implements OnClickListener {
 		case R.id.btnDetail:
 			Log.d("CourierMain", "--- In switch кнопка ПОДРОБНО --- тип " + recType_forDetail);
 			// обновляем поле isredy
-			dbHelper.updOrderIsRedy(ordersId);
+			// dbHelper.updOrderIsRedy(ordersId);
+			dbHelper.updOrderIsView(ordersId);
 			cursor.requery();
+			dataAdapter.swapCursor(dbHelper.fetchModOrders());
 			dataAdapter.notifyDataSetChanged();
 			if (recType_forDetail.equals("0")) {
 				// Детали заказа
@@ -518,7 +521,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				intent.putExtra("tvDcomment", tvDcomment);
 				startActivity(intent);
 			}
-			
+
 			Log.d("DETAIL_KEY", "--- tvDorder_num = " + orderDetail_aNO);
 			break;
 			
@@ -546,12 +549,12 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 	} // End onClick
 	
-	
+	// Автообновление данных с сервера
 	TimerTask mTimerTask;
 	final Handler handler = new Handler();
 	Timer t = new Timer();
-	final int TIMER_START = 30000;
-	final int TIMER_PERIOD = 120000;
+	final int TIMER_START = 30000; // задержка перед запуском мсек
+	final int TIMER_PERIOD = 180000; // период повтора мсек
 	
 	public void doTimerTask() {
 		

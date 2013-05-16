@@ -52,12 +52,12 @@ public class NetWorker {
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
         List<NameValuePair> nvps_getdata = new ArrayList <NameValuePair>();
-        List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
+        //List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
         
         nvps.add(new BasicNameValuePair("user",dlgloginUser));
         nvps.add(new BasicNameValuePair("password",dlgloginpwd));
         nvps_getdata.add(new BasicNameValuePair("dbAct", DBGET));
-        nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
+        //nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
         
         // Регистрация на сервере
         try
@@ -154,6 +154,7 @@ public class NetWorker {
         }
     }
     
+    // Передача данных POD
     public void sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) { 
         
 /*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
@@ -166,12 +167,10 @@ public class NetWorker {
         HttpPost post=new HttpPost(loginURL);
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
-        //List<NameValuePair> nvps_getdata = new ArrayList <NameValuePair>();
         List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
         
         nvps.add(new BasicNameValuePair("user",dlgloginUser));
         nvps.add(new BasicNameValuePair("password",dlgloginpwd));
-        //nvps_getdata.add(new BasicNameValuePair("dbAct", DBGET));
         nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
         nvps_snddata.add(new BasicNameValuePair("wb_no", snddata[0]));
         nvps_snddata.add(new BasicNameValuePair("p_d_in", snddata[1]));
@@ -198,7 +197,6 @@ public class NetWorker {
             }
             
             // Отправка данных
-            //DefaultHttpClient cliente=new DefaultHttpClient();
             HttpPost post_data=new HttpPost(senddataURL);
             
             post_data.setEntity(new UrlEncodedFormEntity(nvps_snddata, HTTP.UTF_8)); //HTTP.UTF_8

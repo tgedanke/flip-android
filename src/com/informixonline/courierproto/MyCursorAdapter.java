@@ -38,18 +38,25 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		
 		TextView inWay = (TextView)view.findViewById(R.id.tvInWay);		
 		if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)).equals("Еду")) {
-			llvMain.setBackgroundColor(Color.rgb(255,228,181));
+			// llvMain.setBackgroundColor(Color.rgb(255,228,181));
 			inWay.setTextColor(Color.BLUE);
 			inWay.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)));
 		} else {
-			llvMain.setBackgroundColor(Color.WHITE);
+			// llvMain.setBackgroundColor(Color.WHITE);
 			inWay.setTextColor(Color.GRAY);
 			inWay.setText("Еду");			
 		}
 		//inWay.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)));
 		
+		// Подсветка текущей записи и остальных
 		if (CourierMain.ordersId == cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID))) {
-			llvMain.setBackgroundColor(Color.RED);
+			llvMain.setBackgroundColor(Color.rgb(255,228,225));
+		} else if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isview)).equals("1")) {
+			// просмотренные записи
+			llvMain.setBackgroundColor(Color.WHITE);
+		} else {
+			// остальные голубым
+			llvMain.setBackgroundColor(Color.rgb(135,206,250));
 		}
 		
 		TextView tvIsredy = (TextView)view.findViewById(R.id.tvIsredy);
@@ -71,6 +78,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		
 		TextView tvTimeBE = (TextView)view.findViewById(R.id.tvTimeBE);
 		tvTimeBE.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_timeBE)));
+		
 	}
 	@Override
 	public View newView(Context arg0, Cursor arg1, ViewGroup parent) {

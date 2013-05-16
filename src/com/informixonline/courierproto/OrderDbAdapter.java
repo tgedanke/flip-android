@@ -76,6 +76,7 @@ public class OrderDbAdapter {
 		", VolWt " +
 		", Rems " +
 		", locnumitems " + 
+		", isview " +
 		"from Orders ";
 	
 	private static final String TAG = "OrdersDbAdapter";
@@ -238,7 +239,7 @@ public class OrderDbAdapter {
 	
 	public Cursor fetchModOrders() {
 		
-		Cursor mCursor = mDb.rawQuery(SQL_CASE, null);
+		Cursor mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_isview + " asc", null); // 15.05 order by isview для вывода новых записей первыми
 		
 		if (mCursor != null) {
 			mCursor.moveToFirst();
@@ -324,7 +325,7 @@ public class OrderDbAdapter {
 		return rowsUpd; 
 	}
 	
-	// Обновление флага что заказ просмотрен (Поле Ок)
+	// Обновление флага что заказ просмотрен (не просмотрен а готов) (Поле Ок)
 	int updOrderIsRedy(long rowid) {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_isready, "1");
@@ -336,6 +337,14 @@ public class OrderDbAdapter {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_locnumitems, numItems);
 		
+		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
+		return rowsUpd;
+	}
+	
+	// Обновление поля заказ просмотрен (при нажатии на кнопку Подробно)
+	int updOrderIsView(long rowid) {
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_isview, "1");
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 		return rowsUpd;
 	}
