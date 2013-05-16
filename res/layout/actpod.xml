@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TextView
+        android:id="@+id/tvNakladnaya"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="44dp"
+        android:layout_marginTop="24dp"
+        android:text="Накладная № "
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tvPodOrdNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tvNakladnaya"
+        android:layout_toRightOf="@+id/tvNakladnaya"
+        android:text="tvPodOrdNum"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/edtPodTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvNakladnaya"
+        android:layout_marginTop="22dp"
+        android:layout_toRightOf="@+id/tvNakladnaya"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/edtPodDest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edtPodTime"
+        android:layout_below="@+id/edtPodTime"
+        android:layout_marginTop="24dp"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/tvPodTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtPodTime"
+        android:layout_toLeftOf="@+id/edtPodTime"
+        android:text="Время"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tvPodDest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtPodDest"
+        android:layout_toLeftOf="@+id/edtPodDest"
+        android:text="Получатель"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/btnPodCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnPodOk"
+        android:layout_alignBottom="@+id/btnPodOk"
+        android:layout_alignRight="@+id/edtPodDest"
+        android:text="Отмена" />
+
+    <Button
+        android:id="@+id/btnPodOk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edtPodDest"
+        android:layout_below="@+id/edtPodDest"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="28dp"
+        android:text="Ок" />
+
+</RelativeLayout>

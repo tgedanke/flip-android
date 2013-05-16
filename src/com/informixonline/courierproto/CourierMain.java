@@ -51,6 +51,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	// Коды активити для получения результата Activity Return Code - ARC
 	final int ARC_NUMITEMS = 1; // Активити Кол-во отправлений 
+	final int ARC_POD = 2; // Активити ПОД
 	
 	Cursor cursor;
 	ListView listView;
@@ -161,6 +162,10 @@ public class CourierMain extends Activity implements OnClickListener {
 			} else {
 				Log.d("CourierMain.onActivityResult", "Result cancel");
 			}
+			break;
+			
+		case ARC_POD:
+			Log.d("CourierMain.onActivityResult", "Result from POD Activity");
 			break;
 
 		default:
@@ -436,6 +441,10 @@ public class CourierMain extends Activity implements OnClickListener {
 			
 		case R.id.btnPod:
 			Log.d("CourierMain", "--- In switch кнопка ПОД ---");
+			Intent intentPOD = new Intent(this, ActPod.class);
+			
+			intentPOD.putExtra("tvDorder_num", orderDetail_aNO);
+			startActivityForResult(intentPOD, ARC_POD);
 			break;
 			
 		case R.id.btnDetail:

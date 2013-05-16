@@ -30,8 +30,8 @@ public final class R {
         public static final int selector_item=0x7f020001;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f09003d;
-        public static final int action_settings=0x7f09004c;
+        public static final int LinearLayout1=0x7f090045;
+        public static final int action_settings=0x7f090054;
         public static final int btnAddr=0x7f090013;
         public static final int btnCancNumItems=0x7f090023;
         public static final int btnClient=0x7f090014;
@@ -43,13 +43,17 @@ public final class R {
         public static final int btnOk=0x7f09001b;
         public static final int btnOkNumItems=0x7f090022;
         public static final int btnPod=0x7f09001c;
+        public static final int btnPodCancel=0x7f090043;
+        public static final int btnPodOk=0x7f090044;
         public static final int btnSaveSet=0x7f090017;
         public static final int btnTime=0x7f090015;
-        public static final int edtGETDATA_URL=0x7f090040;
-        public static final int edtLOGIN_URL=0x7f09003f;
+        public static final int edtGETDATA_URL=0x7f090048;
+        public static final int edtLOGIN_URL=0x7f090047;
         public static final int edtNumItems=0x7f090020;
+        public static final int edtPodDest=0x7f090040;
+        public static final int edtPodTime=0x7f09003f;
         public static final int listView1=0x7f090019;
-        public static final int llvMain=0x7f090041;
+        public static final int llvMain=0x7f090049;
         public static final int rlNumItems=0x7f09001f;
         public static final int textView10=0x7f090033;
         public static final int textView11=0x7f090035;
@@ -71,9 +75,9 @@ public final class R {
         public static final int textView8Dlv=0x7f090007;
         public static final int textView9=0x7f090031;
         public static final int textView9Dlv=0x7f090009;
-        public static final int tvAddr=0x7f090046;
-        public static final int tvClient=0x7f090049;
-        public static final int tvClnt=0x7f090048;
+        public static final int tvAddr=0x7f09004e;
+        public static final int tvClient=0x7f090051;
+        public static final int tvClnt=0x7f090050;
         public static final int tvDacash=0x7f09002a;
         public static final int tvDaddr=0x7f09002c;
         public static final int tvDaddrDlv=0x7f090004;
@@ -96,25 +100,30 @@ public final class R {
         public static final int tvDweight=0x7f090038;
         public static final int tvDweightDlv=0x7f09000e;
         public static final int tvGETDATA_URL=0x7f090025;
-        public static final int tvInWay=0x7f090044;
-        public static final int tvIsredy=0x7f090045;
-        public static final int tvLOGIN_URL=0x7f09003e;
+        public static final int tvInWay=0x7f09004c;
+        public static final int tvIsredy=0x7f09004d;
+        public static final int tvLOGIN_URL=0x7f090046;
+        public static final int tvNakladnaya=0x7f09003d;
         public static final int tvNumItems=0x7f090021;
-        public static final int tvOSorDNorEmp=0x7f090043;
+        public static final int tvOSorDNorEmp=0x7f09004b;
         public static final int tvOrderHead=0x7f090024;
         public static final int tvOrderHeadDlv=0x7f090000;
-        public static final int tvRecType=0x7f090042;
-        public static final int tvTime=0x7f09004a;
-        public static final int tvTimeBE=0x7f09004b;
-        public static final int tvaAddress=0x7f090047;
+        public static final int tvPodDest=0x7f090042;
+        public static final int tvPodOrdNum=0x7f09003e;
+        public static final int tvPodTime=0x7f090041;
+        public static final int tvRecType=0x7f09004a;
+        public static final int tvTime=0x7f090052;
+        public static final int tvTimeBE=0x7f090053;
+        public static final int tvaAddress=0x7f09004f;
     }
     public static final class layout {
         public static final int actdlvdetail=0x7f030000;
         public static final int activity_courier_main=0x7f030001;
         public static final int actnumitem=0x7f030002;
         public static final int actorderdetail=0x7f030003;
-        public static final int actsettings=0x7f030004;
-        public static final int orders_info=0x7f030005;
+        public static final int actpod=0x7f030004;
+        public static final int actsettings=0x7f030005;
+        public static final int orders_info=0x7f030006;
     }
     public static final class menu {
         public static final int courier_main=0x7f080000;

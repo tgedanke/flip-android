@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlNumItems"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/edtNumItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tvNumItems"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnOkNumItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edtNumItems"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop="17dp"
+        android:text="Ok" />
+
+    <Button
+        android:id="@+id/btnCancNumItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnOkNumItems"
+        android:layout_alignBottom="@+id/btnOkNumItems"
+        android:layout_marginLeft="24dp"
+        android:layout_toRightOf="@+id/btnOkNumItems"
+        android:text="Отмена" />
+
+    <TextView
+        android:id="@+id/tvNumItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/edtNumItems"
+        android:layout_alignBottom="@+id/edtNumItems"
+        android:layout_alignParentLeft="true"
+        android:text="Количество"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>
