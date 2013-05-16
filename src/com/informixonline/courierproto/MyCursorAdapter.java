@@ -48,11 +48,12 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		}
 		//inWay.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)));
 		
-		// Подсветка текущей записи и остальных
+		// Подсветка выбранной записи и остальных
 		if (CourierMain.ordersId == cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID))) {
-			llvMain.setBackgroundColor(Color.rgb(255,228,225));
+			// выбранная запись - зеленым
+			llvMain.setBackgroundColor(Color.rgb(0,255,127));
 		} else if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isview)).equals("1")) {
-			// просмотренные записи
+			// просмотренные записи - белым
 			llvMain.setBackgroundColor(Color.WHITE);
 		} else {
 			// остальные голубым

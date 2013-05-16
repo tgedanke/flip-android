@@ -348,6 +348,32 @@ public class OrderDbAdapter {
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 		return rowsUpd;
 	}
+	
+	// Необходимо для определения есть ли такой заказ aNo локально или это новая запись которую надо сохранить локально
+	boolean isNewOrder(String aNo) {
+		boolean res = true; // запись новая локально нет
+		String SQL = "select aNo from orders where aNo = ?";
+		Cursor mCursor = mDb.rawQuery(SQL, new String[] {aNo});
+
+		if (mCursor.moveToFirst()) {
+			res = false; // такая запись есть локально
+		}
+		Log.d("ORDERDBADAPTER", "isNewOrder record present is " + res);
+		return res;
+	}
+	
+	// Удаление несуществующих на сервере записей
+	boolean deleteNotExistOrd(String aNoListOnServer) {
+		boolean cntDel = false;
+		String SQLDEL = "delete from orders where aNo not in (" + aNoListOnServer + ")";
+		Cursor mCursor = mDb.rawQuery(SQLDEL, null);
+		if (mCursor.moveToFirst()) {
+			cntDel = true; 
+			Log.d("ORDERDBADAPTER", "record deleted");
+		}
+		Log.d("ORDERDBADAPTER", "record deleted " + mCursor.getCount());
+		return cntDel;
+	}
 
 	// Тестовые данные
 	public void insertTestEntries () {

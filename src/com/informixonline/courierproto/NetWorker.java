@@ -33,6 +33,7 @@ public class NetWorker {
 	//final static String PWD = "7765";
 	final static String DBGET = "getCourAll";
 	final static String DBSND = "SetPOD";
+	final static String DBLOGPOD = "courLog";
 	
     static JSONObject jObj = null;
     static String json = "";
@@ -78,7 +79,8 @@ public class NetWorker {
                 intro.close();
             }
             
-            // Получение данных
+            // Получение отсутствующих данных и удаление несуществующих на сервере
+            String aNoListOnServer = ""; // Список заказов принятых с сервера (нужен для удаления локальных записей которые удалены на сервере)
             //DefaultHttpClient cliente=new DefaultHttpClient();
             HttpPost post_data=new HttpPost(getdataURL);
             
@@ -111,30 +113,40 @@ public class NetWorker {
 						Log.d(TAG_POST,"number " + i + " client " + ord.getString("client")
 								+ " rcpn " + ord.getString("rcpn"));
 						
-					dbhelper.createOrder(ord.getString("ano"),
-									ord.getString("displayno"),
-									ord.getString("acash"),
-									ord.getString("aaddress"),
-									ord.getString("client"),
-									ord.getString("timeb"),
-									ord.getString("timee"),
-									ord.getString("tdd"),
-									ord.getString("cont"),
-									ord.getString("contphone"),
-									ord.getString("packs"),
-									ord.getString("wt"),
-									ord.getString("volwt"),
-									ord.getString("rems"),
-									ord.getString("ordstatus"),
-									ord.getString("ordtype"),
-									ord.getString("rectype"),
-									ord.getString("isredy"),									
-									ord.getString("inway"),
-									ord.getString("isview"),
-									ord.getString("rcpn")
-						);
+						aNoListOnServer = "'" + ord.getString("ano") + "' , " + aNoListOnServer;
+						if (dbhelper.isNewOrder(ord.getString("ano"))) {
+							Log.d("NETWORKER", "dbhelper.createOrder " + ord.getString("ano"));
+							
+							dbhelper.createOrder(ord.getString("ano"),
+											ord.getString("displayno"),
+											ord.getString("acash"),
+											ord.getString("aaddress"),
+											ord.getString("client"),
+											ord.getString("timeb"),
+											ord.getString("timee"),
+											ord.getString("tdd"),
+											ord.getString("cont"),
+											ord.getString("contphone"),
+											ord.getString("packs"),
+											ord.getString("wt"),
+											ord.getString("volwt"),
+											ord.getString("rems"),
+											ord.getString("ordstatus"),
+											ord.getString("ordtype"),
+											ord.getString("rectype"),
+											ord.getString("isredy"),									
+											ord.getString("inway"),
+											ord.getString("isview"),
+											ord.getString("rcpn")
+								);
+						}
 						
 					}
+					
+					aNoListOnServer = aNoListOnServer + " 'test'";
+					Log.d("NETWORKER", aNoListOnServer);
+					// Удаляем несуществующие на сервере записи
+					dbhelper.deleteNotExistOrd(aNoListOnServer);
 					
 				} catch (Exception e) {
 					Log.e("JSON Parser", "Error parsing data " + e.toString());
@@ -156,6 +168,7 @@ public class NetWorker {
     
     // Передача данных POD
     public void sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) { 
+    	// Исключительно для накладнах. Данные пересылаются сначала для  dbAct = SetPOD затем dbAct - courLog (event=pod)
         
 /*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
@@ -168,14 +181,24 @@ public class NetWorker {
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
         List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
+        List<NameValuePair> nvps_logpoddata = new ArrayList <NameValuePair>();
         
         nvps.add(new BasicNameValuePair("user",dlgloginUser));
         nvps.add(new BasicNameValuePair("password",dlgloginpwd));
+        // Данные POD
         nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
         nvps_snddata.add(new BasicNameValuePair("wb_no", snddata[0]));
         nvps_snddata.add(new BasicNameValuePair("p_d_in", snddata[1]));
         nvps_snddata.add(new BasicNameValuePair("tdd", snddata[2]));
         nvps_snddata.add(new BasicNameValuePair("rcpn", snddata[3]));
+        // Данные действий для event=POD
+        nvps_logpoddata.add(new BasicNameValuePair("dbAct", DBLOGPOD));
+        nvps_logpoddata.add(new BasicNameValuePair("ano", snddata[0]));
+        nvps_logpoddata.add(new BasicNameValuePair("event", "pod"));
+        nvps_logpoddata.add(new BasicNameValuePair("eventtime", snddata[1] + " " + snddata[2]));
+        nvps_logpoddata.add(new BasicNameValuePair("rem", ""));
+        
+        
         
         // Регистрация на сервере
         try
@@ -220,6 +243,29 @@ public class NetWorker {
                 intro.close();
                 
             } 
+            
+            // пересылка данных courLog для POD
+            post_data.setEntity(new UrlEncodedFormEntity(nvps_logpoddata, HTTP.UTF_8)); //HTTP.UTF_8
+            Log.d(TAG_POST, "--- BEFORE POST SEND DATA ---");
+            response_data = cliente.execute(post_data);
+            Log.d(TAG_POST, "--- AFTER POST SEND DATA ---");
+            if(response_data.getStatusLine().getStatusCode()==200)//this means that you got the page
+            {
+            	Log.d(TAG_POST, "--- got the page DATA ---");
+                HttpEntity entity=response_data.getEntity();
+                intro=new BufferedReader(new InputStreamReader(entity.getContent()));
+                String line = "";
+                StringBuilder sbResult =  new StringBuilder();
+                while ((line = intro.readLine()) != null ) {
+                	//System.out.println(line);
+                	sbResult.append(line);
+                	Log.d(TAG_POST, line);
+                }
+                Log.d(TAG_POST, "--- Out SEND buffer: ---" + sbResult.toString());
+                	                
+                intro.close();
+                
+            }  
             
         }
         catch (UnsupportedEncodingException ex)

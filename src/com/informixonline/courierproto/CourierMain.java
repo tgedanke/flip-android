@@ -108,7 +108,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		dbHelper.open();
 
 		// Clean all data
-		dbHelper.deleteAllOrders();
+		// dbHelper.deleteAllOrders(); // закомментировал дл€ проверки добавлени€
 		// Add some data
 		//dbHelper.insertTestEntries();
 		Log.d("POST", "--- DELETE ALL orders before connect ---");
@@ -553,7 +553,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	TimerTask mTimerTask;
 	final Handler handler = new Handler();
 	Timer t = new Timer();
-	final int TIMER_START = 30000; // задержка перед запуском мсек
+	final int TIMER_START = 60000; // задержка перед запуском мсек
 	final int TIMER_PERIOD = 180000; // период повтора мсек
 	
 	public void doTimerTask() {
@@ -569,7 +569,7 @@ public class CourierMain extends Activity implements OnClickListener {
 						// «десь код обновлени€ по таймеру
 						Log.d("TIMER", "TimerTask run");
 						
-						dbHelper.deleteAllOrders();
+						// dbHelper.deleteAllOrders(); теперь не удал€ю поскольку идет проверка перед созданием записи в NetWorker
 						nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 						
 						cursor.requery();
