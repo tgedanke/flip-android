@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class ActPod extends Activity implements OnClickListener {
 	
 	TextView tvPodOrdNum;
-	EditText edtPodTime;
+	EditText edtPodTime, edtPodDest;
 	Button btnOk, btnCancel;
 	Date c = Calendar.getInstance().getTime();
 	
@@ -37,7 +37,9 @@ public class ActPod extends Activity implements OnClickListener {
 		tvPodOrdNum.setText(aNo);
 		
 		edtPodTime = (EditText)findViewById(R.id.edtPodTime);
-		edtPodTime.setText(new SimpleDateFormat("HHmmss").format(c));
+		edtPodTime.setText(new SimpleDateFormat("HH:mm").format(c)); //"HHmmss"
+		
+		edtPodDest = (EditText)findViewById(R.id.edtPodDest);
 		
 	}
 
@@ -49,9 +51,10 @@ public class ActPod extends Activity implements OnClickListener {
 			intentOk.putExtra("wb_no", tvPodOrdNum.getText().toString());
 			String date = new SimpleDateFormat("yyyyMMdd").format(c);
 			intentOk.putExtra("p_d_in", date);
-			String time = new SimpleDateFormat("HHmmss").format(c);
+			String time = new SimpleDateFormat("HH:mm").format(c);
 			intentOk.putExtra("tdd", time);
-			intentOk.putExtra("rcpn", "rcpn Not implemented yet");
+			intentOk.putExtra("rcpn", edtPodDest.getText().toString());
+			
 			setResult(RESULT_OK, intentOk);
 			finish();
 			break;

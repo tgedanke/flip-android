@@ -202,9 +202,9 @@ public class NetWorker {
             HttpPost post_data=new HttpPost(senddataURL);
             
             post_data.setEntity(new UrlEncodedFormEntity(nvps_snddata, HTTP.UTF_8)); //HTTP.UTF_8
-            Log.d(TAG_POST, "--- BEFORE POST GET DATA ---");
+            Log.d(TAG_POST, "--- BEFORE POST SEND DATA ---");
             HttpResponse response_data = cliente.execute(post_data);
-            Log.d(TAG_POST, "--- AFTER POST GET DATA ---");
+            Log.d(TAG_POST, "--- AFTER POST SEND DATA ---");
             if(response_data.getStatusLine().getStatusCode()==200)//this means that you got the page
             {
             	Log.d(TAG_POST, "--- got the page DATA ---");
@@ -217,7 +217,7 @@ public class NetWorker {
                 	sbResult.append(line);
                 	Log.d(TAG_POST, line);
                 }
-                Log.d(TAG_POST, "--- Out buffer: ---" + sbResult.toString());
+                Log.d(TAG_POST, "--- Out SEND buffer: ---" + sbResult.toString());
                 	                
                 intro.close();
                 

@@ -1,5 +1,8 @@
 package com.informixonline.courierproto;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.informixonline.courierproto.OrderDbAdapter;
 import com.informixonline.courierproto.R;
 
@@ -7,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -147,7 +151,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 	}
 	
-	// Получение результатов от опр.активити в главной активити
+	// Получение результатов от опр.активити в главной активити (опр.по коду requestCode)
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
@@ -177,14 +181,15 @@ public class CourierMain extends Activity implements OnClickListener {
 				Log.d("CourierMain.onActivityResult", "wb_no = " + wb_no
 						+ " p_d_in = " + p_d_in + " tdd = " + tdd + " rcpn = "
 						+ rcpn);
-				// nwork.sendData(this.dbHelper, this.user, this.pwd,
-				// this.login_URL, this.getdata_URL, snddata);
+				nwork.sendData(this.dbHelper, this.user, this.pwd,
+				this.login_URL, this.getdata_URL, snddata);
 			} else {
 				Log.d("CourierMain.onActivityResult", "POD Result cancel");
 			}
 			break;
 
 		default:
+			Log.d("CourierMain.onActivityResult", "WARNING: undefined activity requestCode!");
 			break;
 		}
 	}
@@ -246,6 +251,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				
 				getNetworkData(nwork, user, pwd);
 				displayListView();
+				doTimerTask();
 			}
 		});
 
@@ -405,6 +411,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	  protected void onDestroy() {
 		    super.onDestroy();
 		    // закрываем подключение при выходе
+		    stopTask();
 		    dbHelper.close();
 		  }
 
@@ -537,5 +544,52 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 		}
 		
+	} // End onClick
+	
+	
+	TimerTask mTimerTask;
+	final Handler handler = new Handler();
+	Timer t = new Timer();
+	final int TIMER_START = 30000;
+	final int TIMER_PERIOD = 120000;
+	
+	public void doTimerTask() {
+		
+		mTimerTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// Здесь код обновления по таймеру
+						Log.d("TIMER", "TimerTask run");
+						
+						dbHelper.deleteAllOrders();
+						nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
+						
+						cursor.requery();
+						dataAdapter.swapCursor(dbHelper.fetchModOrders());
+						dataAdapter.notifyDataSetChanged();
+						
+					}
+					
+				});
+				
+			}
+		};
+		
+		t.schedule(mTimerTask, TIMER_START, TIMER_PERIOD);
+		
 	}
+	
+	public void stopTask() {
+		if (mTimerTask != null) {
+			Log.d("TIMER", "TimerTask canceled");
+			mTimerTask.cancel();
+		}
+	}
+	
 }
+
