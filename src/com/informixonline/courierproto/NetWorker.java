@@ -32,6 +32,7 @@ public class NetWorker {
 	//final static String USER = "1244";
 	//final static String PWD = "7765";
 	final static String DBGET = "getCourAll";
+	final static String DBSND = "SetPOD";
 	
     static JSONObject jObj = null;
     static String json = "";
@@ -51,10 +52,12 @@ public class NetWorker {
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
         List<NameValuePair> nvps_getdata = new ArrayList <NameValuePair>();
+        List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
         
         nvps.add(new BasicNameValuePair("user",dlgloginUser));
         nvps.add(new BasicNameValuePair("password",dlgloginpwd));
         nvps_getdata.add(new BasicNameValuePair("dbAct", DBGET));
+        nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
         
         // Регистрация на сервере
         try
@@ -139,6 +142,87 @@ public class NetWorker {
                 
 
             } 
+            
+        }
+        catch (UnsupportedEncodingException ex)
+        {
+        	Log.d(TAG_POST, ex.getMessage());
+        }
+        catch(IOException e)
+        {
+        	Log.d(TAG_POST, e.getMessage());
+        }
+    }
+    
+    public void sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) { 
+        
+/*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
+        StrictMode.ThreadPolicy policy = new StrictMode.
+        		ThreadPolicy.Builder().permitAll().build();
+        		StrictMode.setThreadPolicy(policy);*/
+    	
+        BufferedReader intro=null;
+        DefaultHttpClient cliente=new DefaultHttpClient();
+        HttpPost post=new HttpPost(loginURL);
+        
+        List<NameValuePair> nvps = new ArrayList <NameValuePair>();
+        //List<NameValuePair> nvps_getdata = new ArrayList <NameValuePair>();
+        List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
+        
+        nvps.add(new BasicNameValuePair("user",dlgloginUser));
+        nvps.add(new BasicNameValuePair("password",dlgloginpwd));
+        //nvps_getdata.add(new BasicNameValuePair("dbAct", DBGET));
+        nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
+        nvps_snddata.add(new BasicNameValuePair("wb_no", snddata[0]));
+        nvps_snddata.add(new BasicNameValuePair("p_d_in", snddata[1]));
+        nvps_snddata.add(new BasicNameValuePair("tdd", snddata[2]));
+        nvps_snddata.add(new BasicNameValuePair("rcpn", snddata[3]));
+        
+        // Регистрация на сервере
+        try
+        {
+            post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8)); //HTTP.UTF_8
+            HttpResponse response = cliente.execute(post);
+            if(response.getStatusLine().getStatusCode()==200)//this means that you got the page
+            {
+            	Log.d(TAG_POST, "--- LOGIN return ---");
+                HttpEntity entity=response.getEntity();
+                intro=new BufferedReader(new InputStreamReader(entity.getContent()));
+                String line = "";
+                while ((line = intro.readLine()) != null ) {
+                	//System.out.println(line);
+                	Log.d(TAG_POST, line);
+                }
+                	                
+                intro.close();
+            }
+            
+            // Отправка данных
+            //DefaultHttpClient cliente=new DefaultHttpClient();
+            HttpPost post_data=new HttpPost(senddataURL);
+            
+            post_data.setEntity(new UrlEncodedFormEntity(nvps_snddata, HTTP.UTF_8)); //HTTP.UTF_8
+            Log.d(TAG_POST, "--- BEFORE POST GET DATA ---");
+            HttpResponse response_data = cliente.execute(post_data);
+            Log.d(TAG_POST, "--- AFTER POST GET DATA ---");
+            if(response_data.getStatusLine().getStatusCode()==200)//this means that you got the page
+            {
+            	Log.d(TAG_POST, "--- got the page DATA ---");
+                HttpEntity entity=response_data.getEntity();
+                intro=new BufferedReader(new InputStreamReader(entity.getContent()));
+                String line = "";
+                StringBuilder sbResult =  new StringBuilder();
+                while ((line = intro.readLine()) != null ) {
+                	//System.out.println(line);
+                	sbResult.append(line);
+                	Log.d(TAG_POST, line);
+                }
+                Log.d(TAG_POST, "--- Out buffer: ---" + sbResult.toString());
+                	                
+                intro.close();
+                
+            } 
+            
         }
         catch (UnsupportedEncodingException ex)
         {

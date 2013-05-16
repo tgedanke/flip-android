@@ -160,12 +160,28 @@ public class CourierMain extends Activity implements OnClickListener {
 						+ " rowid = " + rowid);
 				dbHelper.updLocNumItems(rowid, numItems);
 			} else {
-				Log.d("CourierMain.onActivityResult", "Result cancel");
+				Log.d("CourierMain.onActivityResult", "Numitems Result cancel");
 			}
 			break;
 			
 		case ARC_POD:
-			Log.d("CourierMain.onActivityResult", "Result from POD Activity");
+			if (resultCode == RESULT_OK) {
+				// Активити ПОД (исключительно для накладных)
+				Log.d("CourierMain.onActivityResult",
+						"Result from POD Activity");
+				String wb_no = data.getStringExtra("wb_no");
+				String p_d_in = data.getStringExtra("p_d_in");
+				String tdd = data.getStringExtra("tdd");
+				String rcpn = data.getStringExtra("rcpn");
+				String[] snddata = { wb_no, p_d_in, tdd, rcpn };
+				Log.d("CourierMain.onActivityResult", "wb_no = " + wb_no
+						+ " p_d_in = " + p_d_in + " tdd = " + tdd + " rcpn = "
+						+ rcpn);
+				// nwork.sendData(this.dbHelper, this.user, this.pwd,
+				// this.login_URL, this.getdata_URL, snddata);
+			} else {
+				Log.d("CourierMain.onActivityResult", "POD Result cancel");
+			}
 			break;
 
 		default:
@@ -185,8 +201,8 @@ public class CourierMain extends Activity implements OnClickListener {
 	    	// Получаем сохраненные сетевые настройки
 	    	SharedPreferences sharedAppConfig;
 	    	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
-	    	String login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
-	    	String getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
+	    	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
+	    	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
 			Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
 	    	
 		    nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
@@ -199,6 +215,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	}
 	
 	String user, pwd;
+	String login_URL, getdata_URL;
 
 	// Показываем окно ввода имени и пароля
 	private void showLogin() {
@@ -440,11 +457,15 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 			
 		case R.id.btnPod:
+			// работает только для Накладных, recType_forDetail.equals("1")
 			Log.d("CourierMain", "--- In switch кнопка ПОД ---");
-			Intent intentPOD = new Intent(this, ActPod.class);
-			
-			intentPOD.putExtra("tvDorder_num", orderDetail_aNO);
-			startActivityForResult(intentPOD, ARC_POD);
+			if (recType_forDetail.equals("1")) {
+				Intent intentPOD = new Intent(this, ActPod.class);
+
+				intentPOD.putExtra("tvDorder_num", orderDetail_aNO);
+				startActivityForResult(intentPOD, ARC_POD);
+				// Возвращаемое значение обрабатывается в onActivityResult
+			}
 			break;
 			
 		case R.id.btnDetail:

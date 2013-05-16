@@ -48,9 +48,9 @@ public class ActPod extends Activity implements OnClickListener {
 			Intent intentOk = new Intent();
 			intentOk.putExtra("wb_no", tvPodOrdNum.getText().toString());
 			String date = new SimpleDateFormat("yyyyMMdd").format(c);
-			intentOk.putExtra("date", date);
+			intentOk.putExtra("p_d_in", date);
 			String time = new SimpleDateFormat("HHmmss").format(c);
-			intentOk.putExtra("time", time);
+			intentOk.putExtra("tdd", time);
 			intentOk.putExtra("rcpn", "rcpn Not implemented yet");
 			setResult(RESULT_OK, intentOk);
 			finish();
