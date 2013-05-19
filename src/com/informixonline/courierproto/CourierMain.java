@@ -77,6 +77,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	static String tvDvol_weight_VolWt;
 	static String tvDcomment;
 	static String tvLocNumItems;
+	static String tvDIsredy;
 
 	// Идентификаторы контекстного меню списка (при длительном нажатии на элемент списка)
 	private static final int CM_CATCH_ORDER = 0;
@@ -340,6 +341,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				tvDvol_weight_VolWt = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_VolWt));
 				tvDcomment = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Rems));
 				tvLocNumItems = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_locnumitems));
+				tvDIsredy = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_isready));
 				 
 				//Toast.makeText(getApplicationContext(), ordersClient + " " + ordersId,
 				//		Toast.LENGTH_SHORT).show();
@@ -392,7 +394,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				.getMenuInfo();
 		if (item.getItemId() == CM_CATCH_ORDER) {
 			// извлекаем id записи и обновляем соответствующую запись в БД
-			dbHelper.updOrderCatchIt(order_acmi.id, true);
+			dbHelper.updOrderCatchIt(order_acmi.id, orderDetail_aNO);
 			// обновляем курсор
 			cursor.requery();
 			dataAdapter.notifyDataSetChanged();
@@ -400,7 +402,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		}
 		else if (item.getItemId() == CM_RET_ORDER) {
 			// извлекаем id записи и обновляем соответствующую запись в БД
-			dbHelper.updOrderCatchIt(order_acmi.id, false);
+			dbHelper.updOrderCatchIt(order_acmi.id, orderDetail_aNO);
 			// обновляем курсор
 			cursor.requery();
 			dataAdapter.notifyDataSetChanged();
@@ -453,11 +455,24 @@ public class CourierMain extends Activity implements OnClickListener {
 		case R.id.btnInWay:
 			// При нажатии запись помечается но список перематывается (т.е. запись снова надо искать)
 			Log.d("CourierMain", "--- In switch кнопка Еду ---");
-			dbHelper.updOrderCatchIt(ordersId, true);
-			// обновляем курсор
-			cursor.requery();
-			dataAdapter.swapCursor(dbHelper.fetchModOrders());
-			dataAdapter.notifyDataSetChanged();
+			if (! tvDIsredy.equals("1")) { // Можно делать статус Еду только у неготового заказа и только у одного
+				int catchres = dbHelper.updOrderCatchIt(ordersId, orderDetail_aNO);
+				if (catchres == 1) {
+					Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС ЕДУ",
+							Toast.LENGTH_LONG).show();
+				} else if (catchres == 0) {
+					Toast.makeText(getApplicationContext(), "СТАТУС ЕДУ СБРОШЕН",
+							Toast.LENGTH_LONG).show();
+				}
+				// обновляем курсор
+				cursor.requery();
+				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.notifyDataSetChanged();
+			} else {
+				Log.d("CourierMain", "--- ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ ГОТОВОГО ЗАКАЗА ---");
+				Toast.makeText(getApplicationContext(), "ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ СТАТУСА Ок",
+						Toast.LENGTH_LONG).show();
+			}
 			break;
 			
 		case R.id.btnOk:

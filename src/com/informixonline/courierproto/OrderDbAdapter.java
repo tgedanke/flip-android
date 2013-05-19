@@ -310,19 +310,40 @@ public class OrderDbAdapter {
 	}
 	
 	// Взятие/возврат выбранного заказа в работу
-	int updOrderCatchIt (long rowid, boolean isCatch) {
+	int updOrderCatchIt (long rowid, String aNo) // long rowid, boolean isCatch
+	{
 		ContentValues cv = new ContentValues();
-		if (isCatch) {
+		int CATCH_OK = 1; // заказ взят
+		int CATCH_RES = 0; // заказ сброшен
+		int res = 2;
+/*		if (isCatch) {
 			cv.put(KEY_inway, "1");
-			Log.d(TAG, "Заказ взят");
+			Log.d(TAG, "Заказ будет взят");
 		} else {
 			cv.put(KEY_inway, "0");
-			Log.d(TAG, "Заказ сброшен");
+			Log.d(TAG, "Заказ будет сброшен");
+		}*/
+		Cursor mCursor = mDb.rawQuery("select aNo from orders where inway = ?", new String[] {"1"});
+		if (mCursor != null) {
+			if (! mCursor.moveToFirst()) { // не найдены другие записи у которых ЕДУ = 1
+				cv.put(KEY_inway, "1");
+				Log.d(TAG, "Заказ будет взят");
+				res = CATCH_OK;
+				mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
+				Log.d(TAG, "Updated record rowid = " + rowid + " and res = " + res);
+			} else { // найдена запись у которой ЕДУ = 1
+				String selaNo = mCursor.getString(mCursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_aNo));
+				
+				if (selaNo.equals(aNo)) { // если она текущая сбрасываем ЕДУ = 0 или ничего не делаем если не текущая
+					cv.put(KEY_inway, "0");
+					Log.d(TAG, "Заказ будет сброшен");
+					res = CATCH_RES;
+					mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
+					Log.d(TAG, "Updated record rowid = " + rowid + " and res = " + res);
+				}
+			}
 		}
-			
-		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
-		Log.d(TAG, "Updated record rowid = " + rowid + " and count = " + rowsUpd);
-		return rowsUpd; 
+		return res;
 	}
 	
 	// Обновление флага что заказ просмотрен (не просмотрен а готов) (Поле Ок)
