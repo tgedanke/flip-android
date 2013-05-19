@@ -77,6 +77,18 @@ public class NetWorker {
                 }
                 	                
                 intro.close();
+                
+                // Получение имени пользователя
+                try {
+                	JSONObject jObjlogin = new JSONObject(line);
+					//JSONArray orders = jObj.getJSONArray("");
+					//for (int i = 0; i < orders.length(); i++) {
+						//JSONObject ord = orders.getJSONObject(1);
+						Log.d("NETWORKUSER","USERNAME = "+ (String)jObjlogin.get("username"));
+						Log.d("NETWORKUSER","USERNAME = "+ jObjlogin.getString("username"));
+				} catch (Exception e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
+				}
             }
             
             // Получение отсутствующих данных и удаление несуществующих на сервере
@@ -243,6 +255,97 @@ public class NetWorker {
                 intro.close();
                 
             } 
+            
+            // пересылка данных courLog для POD
+            post_data.setEntity(new UrlEncodedFormEntity(nvps_logpoddata, HTTP.UTF_8)); //HTTP.UTF_8
+            Log.d(TAG_POST, "--- BEFORE POST SEND DATA ---");
+            response_data = cliente.execute(post_data);
+            Log.d(TAG_POST, "--- AFTER POST SEND DATA ---");
+            if(response_data.getStatusLine().getStatusCode()==200)//this means that you got the page
+            {
+            	Log.d(TAG_POST, "--- got the page DATA ---");
+                HttpEntity entity=response_data.getEntity();
+                intro=new BufferedReader(new InputStreamReader(entity.getContent()));
+                String line = "";
+                StringBuilder sbResult =  new StringBuilder();
+                while ((line = intro.readLine()) != null ) {
+                	//System.out.println(line);
+                	sbResult.append(line);
+                	Log.d(TAG_POST, line);
+                }
+                Log.d(TAG_POST, "--- Out SEND buffer: ---" + sbResult.toString());
+                	                
+                intro.close();
+                
+            }  
+            
+        }
+        catch (UnsupportedEncodingException ex)
+        {
+        	Log.d(TAG_POST, ex.getMessage());
+        }
+        catch(IOException e)
+        {
+        	Log.d(TAG_POST, e.getMessage());
+        }
+    }
+    
+    // Передача данных go (inway), ready(isready), view(isview)
+    public void sendDataGRV(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String[] snddata) { 
+    	// String[] snddata = { orderDetail_aNO, event, tdd, "" }
+    	// Исключительно для event = go (inway), ready(isready), view(isview) dbAct - courLog 
+        
+/*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
+        StrictMode.ThreadPolicy policy = new StrictMode.
+        		ThreadPolicy.Builder().permitAll().build();
+        		StrictMode.setThreadPolicy(policy);*/
+    	
+        BufferedReader intro=null;
+        DefaultHttpClient cliente=new DefaultHttpClient();
+        HttpPost post=new HttpPost(loginURL);
+        
+        List<NameValuePair> nvps = new ArrayList <NameValuePair>();
+        //List<NameValuePair> nvps_snddata = new ArrayList <NameValuePair>();
+        List<NameValuePair> nvps_logpoddata = new ArrayList <NameValuePair>();
+        
+        nvps.add(new BasicNameValuePair("user",dlgloginUser));
+        nvps.add(new BasicNameValuePair("password",dlgloginpwd));
+        // Данные действий для event=courLog
+        nvps_logpoddata.add(new BasicNameValuePair("dbAct", DBLOGPOD));
+        nvps_logpoddata.add(new BasicNameValuePair("ano", snddata[0]));
+        nvps_logpoddata.add(new BasicNameValuePair("event", snddata[1]));
+        nvps_logpoddata.add(new BasicNameValuePair("eventtime", snddata[2]));
+        nvps_logpoddata.add(new BasicNameValuePair("rem", snddata[3]));
+        
+        
+        
+        // Регистрация на сервере
+        try
+        {
+            post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8)); //HTTP.UTF_8
+            HttpResponse response = cliente.execute(post);
+            if(response.getStatusLine().getStatusCode()==200)//this means that you got the page
+            {
+            	Log.d(TAG_POST, "--- LOGIN return ---");
+                HttpEntity entity=response.getEntity();
+                intro=new BufferedReader(new InputStreamReader(entity.getContent()));
+                String line = "";
+                while ((line = intro.readLine()) != null ) {
+                	//System.out.println(line);
+                	Log.d(TAG_POST, line);
+                }
+                	                
+                intro.close();
+            }
+            
+            // Отправка данных
+            HttpPost post_data=new HttpPost(senddataURL);
+            
+            //post_data.setEntity(new UrlEncodedFormEntity(nvps_snddata, HTTP.UTF_8)); //HTTP.UTF_8
+            //Log.d(TAG_POST, "--- BEFORE POST SEND DATA ---");
+            HttpResponse response_data;// = cliente.execute(post_data);
+            //Log.d(TAG_POST, "--- AFTER POST SEND DATA ---");
+
             
             // пересылка данных courLog для POD
             post_data.setEntity(new UrlEncodedFormEntity(nvps_logpoddata, HTTP.UTF_8)); //HTTP.UTF_8

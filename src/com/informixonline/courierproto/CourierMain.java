@@ -1,5 +1,9 @@
 package com.informixonline.courierproto;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -112,7 +116,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// dbHelper.deleteAllOrders(); // закомментировал для проверки добавления
 		// Add some data
 		//dbHelper.insertTestEntries();
-		Log.d("POST", "--- DELETE ALL orders before connect ---");
+		//Log.d("POST", "--- DELETE ALL orders before connect ---");
 		
 
 		
@@ -463,11 +467,26 @@ public class CourierMain extends Activity implements OnClickListener {
 				} else if (catchres == 0) {
 					Toast.makeText(getApplicationContext(), "СТАТУС ЕДУ СБРОШЕН",
 							Toast.LENGTH_LONG).show();
+				} else if (catchres == 2) {
+					Toast.makeText(getApplicationContext(), "СТАТУС ЕДУ НЕ МОЖЕТ БЫТЬ УСТАНОВЛЕН БОЛЬШЕ ЧЕМ У ОДНОЙ ЗАПИСИ",
+							Toast.LENGTH_LONG).show();
 				}
 				// обновляем курсор
 				cursor.requery();
 				dataAdapter.swapCursor(dbHelper.fetchModOrders());
 				dataAdapter.notifyDataSetChanged();
+				
+				// Передача данных на сервер
+				Log.d("THREAD", Thread.currentThread().getName());
+				Thread tInWaySender = new Thread(new Runnable() {
+					public void run() {
+						String[] snddata = { orderDetail_aNO, "go", getDateTimeEvent (), "" };
+						nwork.sendDataGRV(dbHelper, user, pwd,
+								login_URL, getdata_URL, snddata);
+						Log.d("THREAD", Thread.currentThread().getName());
+					}
+				});
+				tInWaySender.start();
 			} else {
 				Log.d("CourierMain", "--- ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ ГОТОВОГО ЗАКАЗА ---");
 				Toast.makeText(getApplicationContext(), "ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ СТАТУСА Ок",
@@ -477,6 +496,31 @@ public class CourierMain extends Activity implements OnClickListener {
 			
 		case R.id.btnOk:
 			Log.d("CourierMain", "--- In switch кнопка Ок ---");
+			if (! tvDIsredy.equals("1")) { // Если статус текущей записи не Ок 
+				dbHelper.updOrderIsRedy(ordersId, true);
+				Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС Ок",
+						Toast.LENGTH_LONG).show();
+			} else {
+				dbHelper.updOrderIsRedy(ordersId, false);
+				Toast.makeText(getApplicationContext(), "СТАТУС Ок СБРОШЕН",
+						Toast.LENGTH_LONG).show();
+			}
+			// обновляем курсор
+			cursor.requery();
+			dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			dataAdapter.notifyDataSetChanged();
+			
+			// Передача данных на сервер				
+			Log.d("THREAD", Thread.currentThread().getName());
+			Thread tInOkSender = new Thread(new Runnable() {
+				public void run() {
+					String[] snddata = { orderDetail_aNO, "ready", getDateTimeEvent (), "" };
+					nwork.sendDataGRV(dbHelper, user, pwd,
+							login_URL, getdata_URL, snddata);
+					Log.d("THREAD", Thread.currentThread().getName());
+				}
+			});
+			tInOkSender.start();
 			break;
 			
 		case R.id.btnPod:
@@ -536,7 +580,18 @@ public class CourierMain extends Activity implements OnClickListener {
 				intent.putExtra("tvDcomment", tvDcomment);
 				startActivity(intent);
 			}
-
+			
+			// Передача данных на сервер				
+			Log.d("THREAD", Thread.currentThread().getName());
+			Thread tDetailSender = new Thread(new Runnable() {
+				public void run() {
+					String[] snddata = { orderDetail_aNO, "vieword", getDateTimeEvent (), "" };
+					nwork.sendDataGRV(dbHelper, user, pwd,
+							login_URL, getdata_URL, snddata);
+					Log.d("THREAD", Thread.currentThread().getName());
+				}
+			});
+			tDetailSender.start();
 			Log.d("DETAIL_KEY", "--- tvDorder_num = " + orderDetail_aNO);
 			break;
 			
@@ -571,6 +626,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	final int TIMER_START = 60000; // задержка перед запуском мсек
 	final int TIMER_PERIOD = 180000; // период повтора мсек
 	
+	// Используем отдельный поток
 	public void doTimerTask() {
 		
 		mTimerTask = new TimerTask() {
@@ -609,5 +665,16 @@ public class CourierMain extends Activity implements OnClickListener {
 		}
 	}
 	
+	String getDateTimeEvent () {
+		// Возвращает дату и время в формате
+		final String DTFORMAT = "yyyyMMdd HH:mm";
+		Date c = Calendar.getInstance().getTime(); // TimeZone.getTimeZone("Europe/Moscow")
+		TimeZone tz = TimeZone.getTimeZone("Europe/Moscow");
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				DTFORMAT);
+		dateFormat.setTimeZone(tz);
+		return dateFormat.format(c);
+	}
 }
 

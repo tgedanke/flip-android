@@ -315,7 +315,8 @@ public class OrderDbAdapter {
 		ContentValues cv = new ContentValues();
 		int CATCH_OK = 1; // заказ взят
 		int CATCH_RES = 0; // заказ сброшен
-		int res = 2;
+		int CATCHED_OTHER = 2; // другая запись со статусом взята
+		int res = 3;
 /*		if (isCatch) {
 			cv.put(KEY_inway, "1");
 			Log.d(TAG, "Заказ будет взят");
@@ -334,12 +335,14 @@ public class OrderDbAdapter {
 			} else { // найдена запись у которой ЕДУ = 1
 				String selaNo = mCursor.getString(mCursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_aNo));
 				
-				if (selaNo.equals(aNo)) { // если она текущая сбрасываем ЕДУ = 0 или ничего не делаем если не текущая
+				if (selaNo.equals(aNo)) { // если она текущая сбрасываем ЕДУ = 0 или возвращаем CATCHED_OTHER если не текущая
 					cv.put(KEY_inway, "0");
 					Log.d(TAG, "Заказ будет сброшен");
 					res = CATCH_RES;
 					mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 					Log.d(TAG, "Updated record rowid = " + rowid + " and res = " + res);
+				} else {
+					res = CATCHED_OTHER;
 				}
 			}
 		}
@@ -347,9 +350,15 @@ public class OrderDbAdapter {
 	}
 	
 	// Обновление флага что заказ просмотрен (не просмотрен а готов) (Поле Ок)
-	int updOrderIsRedy(long rowid) {
+	int updOrderIsRedy(long rowid, boolean isready) {
 		ContentValues cv = new ContentValues();
-		cv.put(KEY_isready, "1");
+		if (isready) {
+			cv.put(KEY_isready, "1"); 
+			Log.d("ORDERDBADAPTER", "Статус ОК будет установлен");
+		} else {
+			cv.put(KEY_isready, "0");
+			Log.d("ORDERDBADAPTER", "Статус ОК будет сброшен");
+		}
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 		return rowsUpd;
 	}
