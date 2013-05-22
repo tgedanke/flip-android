@@ -404,6 +404,13 @@ public class OrderDbAdapter {
 		Log.d("ORDERDBADAPTER", "record deleted " + mCursor.getCount());
 		return cntDel;
 	}
+	
+	int getCountOrd () {
+		String SQLCNT = "select _id from orders";
+		Cursor mCursor = mDb.rawQuery(SQLCNT, null);
+		
+		return mCursor.getCount();
+	}
 
 	// Тестовые данные
 	public void insertTestEntries () {

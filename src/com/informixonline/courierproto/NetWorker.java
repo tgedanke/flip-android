@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,21 +39,33 @@ public class NetWorker {
 	final static String DBSND = "SetPOD";
 	final static String DBLOGPOD = "courLog";
 	
+	final int TIMEOUT_CONNECTION = 3000;
+	final int TIMEOUT_SOCKET = 5000;
+	
     static JSONObject jObj = null;
     static String json = "";
     
     String username = null;
     
     
-    public void getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String getdataURL) { 
+    public int getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String getdataURL) { 
         
 /*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
+    	int cntNewOrders = 0; // кол-во новых записей
+    	
+    	// Параметры таймаута подключений
+    	HttpParams httpParameters = new BasicHttpParams();
+    	// final int TIMEOUT_CONNECTION = 3000;
+    	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
+    	// final int TIMEOUT_SOCKET = 5000;
+    	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
     	
         BufferedReader intro=null;
         DefaultHttpClient cliente=new DefaultHttpClient();
+        cliente.setParams(httpParameters);
         HttpPost post=new HttpPost(loginURL);
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
@@ -95,10 +111,14 @@ public class NetWorker {
                 intro.close();
                 
 
+            } else {
+            	// Реагируем на ошибки доступа к серверу
+            	return -1;
             }
             
             // Получение отсутствующих данных и удаление несуществующих на сервере
             String aNoListOnServer = ""; // Список заказов принятых с сервера (нужен для удаления локальных записей которые удалены на сервере)
+            
             //DefaultHttpClient cliente=new DefaultHttpClient();
             HttpPost post_data=new HttpPost(getdataURL);
             
@@ -132,8 +152,10 @@ public class NetWorker {
 								+ " rcpn " + ord.getString("rcpn"));
 						
 						aNoListOnServer = "'" + ord.getString("ano") + "' , " + aNoListOnServer;
+						
 						if (dbhelper.isNewOrder(ord.getString("ano"))) {
 							Log.d("NETWORKER", "dbhelper.createOrder " + ord.getString("ano"));
+							cntNewOrders = cntNewOrders + 1;
 							
 							dbhelper.createOrder(ord.getString("ano"),
 											ord.getString("displayno"),
@@ -165,24 +187,35 @@ public class NetWorker {
 					Log.d("NETWORKER", aNoListOnServer);
 					// Удаляем несуществующие на сервере записи
 					dbhelper.deleteNotExistOrd(aNoListOnServer);
-					
+					// Если не удалось соединится с сервером или на сервере нет данных то локальные записи не удаляются
 				} catch (Exception e) {
 					Log.e("JSON Parser", "Error parsing data " + e.toString());
+					// Здесь можно выставить индикатор нет данных 
+					
 				}
                 
 
-            } 
+            } else {
+            	// Реагируем на ошибки доступа к серверу
+            	return -1;
+            }
             
+        }
+        catch (SocketTimeoutException ste) {
+        	Log.d(TAG_POST, "SocketTimeoutException " + ste.getMessage());
+        	cntNewOrders = -1;
         }
         catch (UnsupportedEncodingException ex)
         {
-        	Log.d(TAG_POST, ex.getMessage());
+        	Log.d(TAG_POST, "UnsupportedEncodingException " + ex.getMessage());
         }
         catch(IOException e)
         {
-        	Log.d(TAG_POST, e.getMessage());
+        	Log.d(TAG_POST, "IOException " + e.getMessage());
+        	cntNewOrders = -1;
         }
-    }
+        return cntNewOrders;
+    } // End getData
     
     // Передача данных POD
     public void sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) { 
@@ -294,7 +327,7 @@ public class NetWorker {
         {
         	Log.d(TAG_POST, e.getMessage());
         }
-    }
+    } // End sendData    POD
     
     // Передача данных go (inway), ready(isready), view(isview)
     public void sendDataGRV(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String[] snddata) { 
@@ -385,6 +418,6 @@ public class NetWorker {
         {
         	Log.d(TAG_POST, e.getMessage());
         }
-    }
+    } // End sendDataGRV
 
 }

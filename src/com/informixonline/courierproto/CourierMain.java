@@ -40,6 +40,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -98,6 +99,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	Button btnInsertTest; // Отладочная кнопка
 	
 	TextView tvCourName, tvRefrTime, tvNewAllRecs; // статусная строка
+	ImageView imgvSrvOff, imgvSrvOn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +110,11 @@ public class CourierMain extends Activity implements OnClickListener {
 		tvCourName = (TextView)findViewById(R.id.tvCourName);
 		tvRefrTime = (TextView)findViewById(R.id.tvRefrTime);
 		tvNewAllRecs = (TextView)findViewById(R.id.tvNewAllRecs);
-		
+		tvNewAllRecs.setText("");
+		imgvSrvOn = (ImageView)findViewById(R.id.imgvSrvOn);
+		imgvSrvOff = (ImageView)findViewById(R.id.imgvSrvOff);
+		imgvSrvOff.setVisibility(View.INVISIBLE);
+
 		// Показываем диалог логина и ждем ввода
 		showLogin();
 		
@@ -228,6 +234,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		    
 		    this.tvCourName.setText(nwork.username);
 		    this.tvRefrTime.setText(this.getDateTimeEvent(1));
+		    int cntrecsall = dbHelper.getCountOrd();
+		    this.tvNewAllRecs.setText("0/" + Integer.toString(cntrecsall)); 
 			//dbHelper.insertTestEntries(); // DEBUG
 		} else {
 			// display error
@@ -293,7 +301,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private void displayListView() {
 
 		cursor = dbHelper.fetchModOrders();
-
+		
 		// The desired columns to be bound
 		String[] columns = new String[] {
 				OrderDbAdapter.KEY_recType,
@@ -362,7 +370,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				//		Toast.LENGTH_SHORT).show();
 				// Обновляем
 				// dbHelper.updOrderCatchIt(ordersId, true);
-				//tvNewAllRecs.setText(cursor.getCount());
+				tvNewAllRecs.setText(cursor.getCount());
 				
 			}
 		});
@@ -636,7 +644,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	final Handler handler = new Handler();
 	Timer t = new Timer();
 	final int TIMER_START = 60000; // задержка перед запуском мсек
-	final int TIMER_PERIOD = 180000; // период повтора мсек
+	final int TIMER_PERIOD = 120000; // период повтора мсек
 	
 	// Используем отдельный поток
 	public void doTimerTask() {
@@ -653,14 +661,25 @@ public class CourierMain extends Activity implements OnClickListener {
 						Log.d("TIMER", "TimerTask run");
 						
 						// dbHelper.deleteAllOrders(); теперь не удаляю поскольку идет проверка перед созданием записи в NetWorker
-						nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
+						int cntnewrecs = nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 						
-						cursor.requery();
-						tvNewAllRecs.setText("cursor.getCount()");
-						//Log.d("TIMER", "Count records from cursor " + cursor.getCount());
-						dataAdapter.swapCursor(dbHelper.fetchModOrders());
-						dataAdapter.notifyDataSetChanged();
-						
+						if (cntnewrecs >= 0) { // Связь с сервером ОК
+							imgvSrvOff.setVisibility(View.INVISIBLE);
+							imgvSrvOn.setVisibility(View.VISIBLE);
+							
+							cursor.requery();
+							int cntallrecs = cursor.getCount();
+							tvNewAllRecs.setText(Integer.toString(cntnewrecs) + "/" + Integer.toString(cntallrecs));
+							tvRefrTime.setText(getDateTimeEvent(1));
+							Log.d("TIMER", "Count records from cursor new/all " + cntnewrecs + "/" + cntallrecs);
+							dataAdapter.swapCursor(dbHelper.fetchModOrders());
+							dataAdapter.notifyDataSetChanged();
+						} else { // Проблемы связи с сервером
+							imgvSrvOff.setVisibility(View.VISIBLE);
+							imgvSrvOn.setVisibility(View.INVISIBLE);
+							tvNewAllRecs.setText("");
+							tvRefrTime.setText(getDateTimeEvent(1));
+						}
 					}
 					
 				});

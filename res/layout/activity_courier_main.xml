@@ -55,6 +55,18 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="12sp" />
 
+        <ImageView
+            android:id="@+id/imgvSrvOff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/presence_busy" />
+
+        <ImageView
+            android:id="@+id/imgvSrvOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/presence_online" />
+
     </LinearLayout>
 
     <LinearLayout
