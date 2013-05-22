@@ -4,7 +4,7 @@
     <string name="app_name">CourierProto</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="orders_head">Список заказов</string>
+    <string name="orders_head">Курьер: </string>
     <string name="find_hint">Начинайте набирать для поиска</string>
 
 </resources>

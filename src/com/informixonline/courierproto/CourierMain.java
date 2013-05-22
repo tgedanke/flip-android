@@ -43,6 +43,7 @@ import android.widget.FilterQueryProvider;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -95,11 +96,18 @@ public class CourierMain extends Activity implements OnClickListener {
 	// Кнопки главной активити
 	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems;
 	Button btnInsertTest; // Отладочная кнопка
+	
+	TextView tvCourName, tvRefrTime, tvNewAllRecs; // статусная строка
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
+		
+		// Строка статуса
+		tvCourName = (TextView)findViewById(R.id.tvCourName);
+		tvRefrTime = (TextView)findViewById(R.id.tvRefrTime);
+		tvNewAllRecs = (TextView)findViewById(R.id.tvNewAllRecs);
 		
 		// Показываем диалог логина и ждем ввода
 		showLogin();
@@ -218,6 +226,8 @@ public class CourierMain extends Activity implements OnClickListener {
 	    	
 		    nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 		    
+		    this.tvCourName.setText(nwork.username);
+		    this.tvRefrTime.setText(this.getDateTimeEvent(1));
 			//dbHelper.insertTestEntries(); // DEBUG
 		} else {
 			// display error
@@ -225,7 +235,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		}	
 	}
 	
-	String user, pwd;
+	String user, pwd, username;
 	String login_URL, getdata_URL;
 
 	// Показываем окно ввода имени и пароля
@@ -241,7 +251,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		final EditText etPwd = new EditText(this);
 		etPwd.setHint("Password");
 		etUser.setHint("User");
-		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ввод пароля скрыт
 		
 		ln.addView(etUser);
 		ln.addView(etPwd);
@@ -303,6 +313,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// as well as the layout information
 		dataAdapter = new MyCursorAdapter(this, R.layout.orders_info,
 				cursor, columns, to, 0);
+		
 
 		listView = (ListView) findViewById(R.id.listView1);
 		// Assign adapter to ListView
@@ -351,6 +362,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				//		Toast.LENGTH_SHORT).show();
 				// Обновляем
 				// dbHelper.updOrderCatchIt(ordersId, true);
+				//tvNewAllRecs.setText(cursor.getCount());
 				
 			}
 		});
@@ -480,7 +492,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				Log.d("THREAD", Thread.currentThread().getName());
 				Thread tInWaySender = new Thread(new Runnable() {
 					public void run() {
-						String[] snddata = { orderDetail_aNO, "go", getDateTimeEvent (), "" };
+						String[] snddata = { orderDetail_aNO, "go", getDateTimeEvent (0), "" };
 						nwork.sendDataGRV(dbHelper, user, pwd,
 								login_URL, getdata_URL, snddata);
 						Log.d("THREAD", Thread.currentThread().getName());
@@ -514,7 +526,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("THREAD", Thread.currentThread().getName());
 			Thread tInOkSender = new Thread(new Runnable() {
 				public void run() {
-					String[] snddata = { orderDetail_aNO, "ready", getDateTimeEvent (), "" };
+					String[] snddata = { orderDetail_aNO, "ready", getDateTimeEvent (0), "" };
 					nwork.sendDataGRV(dbHelper, user, pwd,
 							login_URL, getdata_URL, snddata);
 					Log.d("THREAD", Thread.currentThread().getName());
@@ -585,7 +597,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("THREAD", Thread.currentThread().getName());
 			Thread tDetailSender = new Thread(new Runnable() {
 				public void run() {
-					String[] snddata = { orderDetail_aNO, "vieword", getDateTimeEvent (), "" };
+					String[] snddata = { orderDetail_aNO, "vieword", getDateTimeEvent (0), "" };
 					nwork.sendDataGRV(dbHelper, user, pwd,
 							login_URL, getdata_URL, snddata);
 					Log.d("THREAD", Thread.currentThread().getName());
@@ -644,6 +656,8 @@ public class CourierMain extends Activity implements OnClickListener {
 						nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 						
 						cursor.requery();
+						tvNewAllRecs.setText("cursor.getCount()");
+						//Log.d("TIMER", "Count records from cursor " + cursor.getCount());
 						dataAdapter.swapCursor(dbHelper.fetchModOrders());
 						dataAdapter.notifyDataSetChanged();
 						
@@ -665,9 +679,21 @@ public class CourierMain extends Activity implements OnClickListener {
 		}
 	}
 	
-	String getDateTimeEvent () {
+	String getDateTimeEvent (int retFormat) {
 		// Возвращает дату и время в формате
-		final String DTFORMAT = "yyyyMMdd HH:mm";
+		final String DTFORMAT; // = "yyyyMMdd HH:mm";
+		switch (retFormat) {
+		case 0:
+			DTFORMAT = "yyyyMMdd HH:mm";
+			break;
+		case 1:
+			DTFORMAT = "HH:mm";
+			break;
+
+		default:
+			DTFORMAT = "HH:mm";
+			break;
+		}
 		Date c = Calendar.getInstance().getTime(); // TimeZone.getTimeZone("Europe/Moscow")
 		TimeZone tz = TimeZone.getTimeZone("Europe/Moscow");
 

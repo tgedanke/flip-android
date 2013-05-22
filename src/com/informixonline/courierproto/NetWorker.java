@@ -38,6 +38,7 @@ public class NetWorker {
     static JSONObject jObj = null;
     static String json = "";
     
+    String username = null;
     
     
     public void getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String getdataURL) { 
@@ -70,25 +71,30 @@ public class NetWorker {
             	Log.d(TAG_POST, "--- LOGIN return ---");
                 HttpEntity entity=response.getEntity();
                 intro=new BufferedReader(new InputStreamReader(entity.getContent()));
-                String line = "";
+                String line; //= "";
                 while ((line = intro.readLine()) != null ) {
                 	//System.out.println(line);
                 	Log.d(TAG_POST, line);
+                	
+                    // ѕолучение имени пользовател€
+                	if (this.username == null) {
+	                    try {
+	                    	JSONObject jObjlogin = new JSONObject(line);
+	    					//Log.d("NETWORKUSER","USERNAME = "+ (String)jObjlogin.get("username"));
+	                    	this.username = jObjlogin.getString("username");
+	    					Log.d("NETWORKUSER","USERNAME = " + username);
+	    						
+	    				} catch (Exception e) {
+	    					Log.e("JSON Parser", "Error parsing data " + e.toString());
+	    					Log.e("JSON Parser", "Source JSON data: " + line);
+	    					this.username = "";
+	    				}
+                	}
                 }
                 	                
                 intro.close();
                 
-                // ѕолучение имени пользовател€
-                try {
-                	JSONObject jObjlogin = new JSONObject(line);
-					//JSONArray orders = jObj.getJSONArray("");
-					//for (int i = 0; i < orders.length(); i++) {
-						//JSONObject ord = orders.getJSONObject(1);
-						Log.d("NETWORKUSER","USERNAME = "+ (String)jObjlogin.get("username"));
-						Log.d("NETWORKUSER","USERNAME = "+ jObjlogin.getString("username"));
-				} catch (Exception e) {
-					Log.e("JSON Parser", "Error parsing data " + e.toString());
-				}
+
             }
             
             // ѕолучение отсутствующих данных и удаление несуществующих на сервере
