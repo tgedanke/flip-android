@@ -31,7 +31,7 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f09004c;
-        public static final int action_settings=0x7f09005b;
+        public static final int action_settings=0x7f09005d;
         public static final int btnAddr=0x7f09001a;
         public static final int btnCancNumItems=0x7f09002a;
         public static final int btnClient=0x7f09001b;
@@ -109,7 +109,9 @@ public final class R {
         public static final int tvNakladnaya=0x7f090044;
         public static final int tvNewAll=0x7f090016;
         public static final int tvNewAllRecs=0x7f090017;
+        public static final int tvNum=0x7f09005c;
         public static final int tvNumItems=0x7f090028;
+        public static final int tvNumt=0x7f09005b;
         public static final int tvOSorDNorEmp=0x7f090052;
         public static final int tvOrderHead=0x7f09002b;
         public static final int tvOrderHeadDlv=0x7f090000;

@@ -28,7 +28,7 @@ import android.util.Log;
 
 public class NetWorker {
 	
-	final static String TAG_POST = "POST";
+	final static String TAG_POST = "NETWORKER";
 	//final static String LOGIN_URL = "http://178.64.224.130/fp/cr/data/login.php"; //"http://10.96.95.121/fp/cr/data/login.php";
 	//final static String GETDATA_URL ="http://178.64.224.130/fp/cr/data/data.php"; //"http://10.96.95.121/fp/cr/data/data.php";
 	//final static String LOGIN_URL = "http://10.96.95.121/fp/cr/data/login.php";
@@ -58,9 +58,7 @@ public class NetWorker {
     	
     	// Параметры таймаута подключений
     	HttpParams httpParameters = new BasicHttpParams();
-    	// final int TIMEOUT_CONNECTION = 3000;
     	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
-    	// final int TIMEOUT_SOCKET = 5000;
     	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
     	
         BufferedReader intro=null;
@@ -93,7 +91,7 @@ public class NetWorker {
                 	Log.d(TAG_POST, line);
                 	
                     // Получение имени пользователя
-                	if (this.username == null) {
+                	//if (this.username == null) {
 	                    try {
 	                    	JSONObject jObjlogin = new JSONObject(line);
 	    					//Log.d("NETWORKUSER","USERNAME = "+ (String)jObjlogin.get("username"));
@@ -105,7 +103,7 @@ public class NetWorker {
 	    					Log.e("JSON Parser", "Source JSON data: " + line);
 	    					this.username = "";
 	    				}
-                	}
+                	//}
                 }
                 	                
                 intro.close();
@@ -226,8 +224,14 @@ public class NetWorker {
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
     	
+    	// Параметры таймаута подключений
+    	HttpParams httpParameters = new BasicHttpParams();
+    	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
+    	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
+    	
         BufferedReader intro=null;
         DefaultHttpClient cliente=new DefaultHttpClient();
+        cliente.setParams(httpParameters);
         HttpPost post=new HttpPost(loginURL);
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
@@ -319,6 +323,9 @@ public class NetWorker {
             }  
             
         }
+        catch (SocketTimeoutException ste) {
+        	Log.d(TAG_POST, "SocketTimeoutException " + ste.getMessage());
+        }
         catch (UnsupportedEncodingException ex)
         {
         	Log.d(TAG_POST, ex.getMessage());
@@ -339,8 +346,14 @@ public class NetWorker {
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
     	
+    	// Параметры таймаута подключений
+    	HttpParams httpParameters = new BasicHttpParams();
+    	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
+    	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
+    	
         BufferedReader intro=null;
         DefaultHttpClient cliente=new DefaultHttpClient();
+        cliente.setParams(httpParameters);
         HttpPost post=new HttpPost(loginURL);
         
         List<NameValuePair> nvps = new ArrayList <NameValuePair>();
@@ -409,6 +422,9 @@ public class NetWorker {
                 
             }  
             
+        }
+        catch (SocketTimeoutException ste) {
+        	Log.d(TAG_POST, "SocketTimeoutException " + ste.getMessage());
         }
         catch (UnsupportedEncodingException ex)
         {

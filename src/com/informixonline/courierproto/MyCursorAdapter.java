@@ -34,7 +34,12 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		tvRecType.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType)));
 		
 		TextView tvOSorDNorEmp = (TextView)view.findViewById(R.id.tvOSorDNorEmp);
-		tvOSorDNorEmp.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_OSorDNorEMP)));
+		String strOSorDNorEmp = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_OSorDNorEMP));
+		if (! strOSorDNorEmp.equals("null")) {
+			tvOSorDNorEmp.setText(strOSorDNorEmp);
+		} else {
+			tvOSorDNorEmp.setText("");
+		}
 		
 		TextView inWay = (TextView)view.findViewById(R.id.tvInWay);		
 		if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)).equals("Еду")) {
@@ -79,6 +84,17 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		
 		TextView tvTimeBE = (TextView)view.findViewById(R.id.tvTimeBE);
 		tvTimeBE.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_timeBE)));
+		
+		TextView tvNumt = (TextView)view.findViewById(R.id.tvNumt);
+		TextView tvNum = (TextView)view.findViewById(R.id.tvNum);
+		if ((cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail)).equals("0"))) {
+			// Только для заказов
+			tvNumt.setText(" Кол-во:");
+			tvNum.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
+		} else {
+			tvNumt.setText("");
+			tvNum.setText("");
+		}
 		
 	}
 	@Override

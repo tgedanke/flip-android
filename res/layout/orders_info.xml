@@ -110,6 +110,18 @@
             android:layout_height="wrap_content"
             android:text="timeBE" />
 
+        <TextView
+            android:id="@+id/tvNumt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Кол-во:" />
+
+        <TextView
+            android:id="@+id/tvNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvNum" />
+
     </LinearLayout>
 
 </LinearLayout>

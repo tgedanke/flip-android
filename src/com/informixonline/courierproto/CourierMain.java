@@ -182,6 +182,10 @@ public class CourierMain extends Activity implements OnClickListener {
 				Log.d("CourierMain.onActivityResult", "numItems = " + numItems
 						+ " rowid = " + rowid);
 				dbHelper.updLocNumItems(rowid, numItems);
+				// обновляем курсор
+				cursor.requery();
+				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.notifyDataSetChanged();
 			} else {
 				Log.d("CourierMain.onActivityResult", "Numitems Result cancel");
 			}
@@ -370,7 +374,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				//		Toast.LENGTH_SHORT).show();
 				// Обновляем
 				// dbHelper.updOrderCatchIt(ordersId, true);
-				tvNewAllRecs.setText(cursor.getCount());
+				//tvNewAllRecs.setText(cursor.getCount());
 				
 			}
 		});
@@ -515,32 +519,41 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 			
 		case R.id.btnOk:
-			Log.d("CourierMain", "--- In switch кнопка Ок ---");
-			if (! tvDIsredy.equals("1")) { // Если статус текущей записи не Ок 
-				dbHelper.updOrderIsRedy(ordersId, true);
-				Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС Ок",
-						Toast.LENGTH_LONG).show();
+			Log.d("CourierMain", "--- In switch кнопка Ок ordersId = " + ordersId);
+			// После проверки надо изменить значение переменной tvDIsredy (чтобы не перещелкивать текущую запись для повтороного изменения) 
+			if (! recType_forDetail.equals("1")) { // на накладных кнопка Ок ничего не делает
+				if (! tvDIsredy.equals("1")) { // Если статус текущей записи не Ок 
+					dbHelper.updOrderIsRedy(ordersId, true);
+					Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС Ок",
+							Toast.LENGTH_LONG).show();
+					tvDIsredy = "1";
+				} else {
+					dbHelper.updOrderIsRedy(ordersId, false);
+					Toast.makeText(getApplicationContext(), "СТАТУС Ок СБРОШЕН",
+							Toast.LENGTH_LONG).show();
+					tvDIsredy = "0";
+				} 
+	
+				// обновляем курсор
+				cursor.requery();
+				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.notifyDataSetChanged();
+				
+				// Передача данных на сервер				
+				Log.d("THREAD", Thread.currentThread().getName());
+				Thread tInOkSender = new Thread(new Runnable() {
+					public void run() {
+						String[] snddata = { orderDetail_aNO, "ready", getDateTimeEvent (0), "" };
+						nwork.sendDataGRV(dbHelper, user, pwd,
+								login_URL, getdata_URL, snddata);
+						Log.d("THREAD", Thread.currentThread().getName());
+					}
+				});
+				tInOkSender.start();
 			} else {
-				dbHelper.updOrderIsRedy(ordersId, false);
-				Toast.makeText(getApplicationContext(), "СТАТУС Ок СБРОШЕН",
+				Toast.makeText(getApplicationContext(), "Для НАКЛАДНЫХ не применимо",
 						Toast.LENGTH_LONG).show();
 			}
-			// обновляем курсор
-			cursor.requery();
-			dataAdapter.swapCursor(dbHelper.fetchModOrders());
-			dataAdapter.notifyDataSetChanged();
-			
-			// Передача данных на сервер				
-			Log.d("THREAD", Thread.currentThread().getName());
-			Thread tInOkSender = new Thread(new Runnable() {
-				public void run() {
-					String[] snddata = { orderDetail_aNO, "ready", getDateTimeEvent (0), "" };
-					nwork.sendDataGRV(dbHelper, user, pwd,
-							login_URL, getdata_URL, snddata);
-					Log.d("THREAD", Thread.currentThread().getName());
-				}
-			});
-			tInOkSender.start();
 			break;
 			
 		case R.id.btnPod:
@@ -552,6 +565,9 @@ public class CourierMain extends Activity implements OnClickListener {
 				intentPOD.putExtra("tvDorder_num", orderDetail_aNO);
 				startActivityForResult(intentPOD, ARC_POD);
 				// Возвращаемое значение обрабатывается в onActivityResult
+			} else {
+				Toast.makeText(getApplicationContext(), "Для ЗАКАЗОВ и СЧЕТОВ не применимо",
+						Toast.LENGTH_LONG).show();
 			}
 			break;
 			
@@ -644,7 +660,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	final Handler handler = new Handler();
 	Timer t = new Timer();
 	final int TIMER_START = 60000; // задержка перед запуском мсек
-	final int TIMER_PERIOD = 120000; // период повтора мсек
+	final int TIMER_PERIOD = 180000; // период повтора мсек
 	
 	// Используем отдельный поток
 	public void doTimerTask() {
