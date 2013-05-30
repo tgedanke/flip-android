@@ -95,13 +95,6 @@
             android:text="Время" />
 
         <Button
-            android:id="@+id/btnInsertTest"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="InsTst" />
-
-        <Button
             android:id="@+id/btnSaveSet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

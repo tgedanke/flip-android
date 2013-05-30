@@ -98,7 +98,6 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	// Кнопки главной активити
 	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems;
-	Button btnInsertTest; // Отладочная кнопка
 	
 	TextView tvCourName, tvRefrTime, tvNewAllRecs; // статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
@@ -146,11 +145,6 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 		// Отправляем данные накопившиеся в оффлайн если они есть только после успешного логина
 		// sendOfflineData();
-
-		
-		// Кнопки отладки
-		btnInsertTest = (Button)findViewById(R.id.btnInsertTest);
-		btnInsertTest.setOnClickListener(this);
 		
 		// Кнопки на главной активити
 		btnAddr = (Button)findViewById(R.id.btnAddr);
@@ -699,10 +693,6 @@ public class CourierMain extends Activity implements OnClickListener {
 				intent.putExtra("ordersid", ordersId);
 				startActivityForResult(intent, ARC_NUMITEMS);
 			}
-			break;
-			
-		case R.id.btnInsertTest:
-			dbHelper.insertTestEntries();
 			break;
 			
 		case R.id.btnExit:
