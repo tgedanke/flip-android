@@ -86,6 +86,7 @@ public class NetWorker {
                 HttpEntity entity=response.getEntity();
                 intro=new BufferedReader(new InputStreamReader(entity.getContent()));
                 String line; //= "";
+                String loginRes = "false";
                 while ((line = intro.readLine()) != null ) {
                 	//System.out.println(line);
                 	Log.d(TAG_POST, line);
@@ -97,6 +98,7 @@ public class NetWorker {
 	    					//Log.d("NETWORKUSER","USERNAME = "+ (String)jObjlogin.get("username"));
 	                    	this.username = jObjlogin.getString("username");
 	    					Log.d("NETWORKUSER","USERNAME = " + username);
+	    					loginRes = jObjlogin.getString("success");
 	    						
 	    				} catch (Exception e) {
 	    					Log.e("JSON Parser", "Error parsing data " + e.toString());
@@ -105,7 +107,10 @@ public class NetWorker {
 	    				}
                 	//}
                 }
-                	                
+                	   
+                if (! loginRes.equals("true")) {
+                	return -2; // Неверное имя пользователя или пароль
+                }
                 intro.close();
                 
 

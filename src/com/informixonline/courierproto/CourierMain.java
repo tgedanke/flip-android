@@ -56,6 +56,7 @@ public class CourierMain extends Activity implements OnClickListener {
 
 	// Ключи сетевых настроек (используется в ActSettings и NetWorker) для доступа к хранению настроек
 	final static String SHAREDPREF = "sharedstore";
+	//final static String APPCFG_LOGIN = "LOGIN";
 	final static String APPCFG_LOGIN_URL = "LOGIN_URL";
 	final static String APPCFG_GETDATA_URL = "GETDATA_URL";
 	
@@ -116,6 +117,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		imgvSrvOff.setVisibility(View.INVISIBLE);
 
 		// Показываем диалог логина и ждем ввода
+		//boolean res = false;
 		showLogin();
 		
         // Выключаем проверку работы с сетью в текущем UI потоке
@@ -218,8 +220,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		}
 	}
 	
-	private void getNetworkData(NetWorker nwork, String user, String pwd) {
-		
+	private int getNetworkData(NetWorker nwork, String user, String pwd) {
+		int res = 0;
 		// Проверяем сетевые разрешения
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -234,7 +236,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	    	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
 			Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
 	    	
-		    nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
+		    res = nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 		    
 		    this.tvCourName.setText(nwork.username);
 		    this.tvRefrTime.setText(this.getDateTimeEvent(1));
@@ -245,6 +247,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			// display error
 			Log.d("CourierMain.getNetworkData", "--- Network Failed ---");
 		}	
+		return res;
 	}
 	
 	String user, pwd, username;
@@ -276,10 +279,20 @@ public class CourierMain extends Activity implements OnClickListener {
 				pwd = etPwd.getText().toString().trim();
 /*				Toast.makeText(getApplicationContext(), user,
 						Toast.LENGTH_SHORT).show();*/
-				
-				getNetworkData(nwork, user, pwd);
-				displayListView();
-				doTimerTask();
+				int netRes = getNetworkData(nwork, user, pwd);
+				if (netRes == 0) {
+					displayListView();
+					doTimerTask();
+				} else if (netRes == -1) {
+					Toast.makeText(getApplicationContext(), "Ошибка сети",
+							Toast.LENGTH_LONG).show();
+					displayListView();
+					doTimerTask();
+				} else if (netRes == -2) {
+					Toast.makeText(getApplicationContext(), "Неправильный логин или пароль",
+							Toast.LENGTH_LONG).show();
+					finish(); // Выходим из приложения
+				}
 			}
 		});
 
