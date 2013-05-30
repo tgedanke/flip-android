@@ -139,7 +139,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Clean all data
 		dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
 		// Add some data
-		dbHelper.insertTestEntries();
+		// dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
 		
 		
