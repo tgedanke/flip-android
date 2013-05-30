@@ -86,6 +86,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	static String tvDcomment;
 	static String tvLocNumItems;
 	static String tvDIsredy;
+	static String tvDInway;
 
 	// Идентификаторы контекстного меню списка (при длительном нажатии на элемент списка)
 	private static final int CM_CATCH_ORDER = 0;
@@ -139,7 +140,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Clean all data
 		dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
 		// Add some data
-		// dbHelper.insertTestEntries();
+		//dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
 		
 		
@@ -406,7 +407,8 @@ public class CourierMain extends Activity implements OnClickListener {
 				tvDcomment = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_Rems));
 				tvLocNumItems = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_locnumitems));
 				tvDIsredy = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_isready));
-				 
+				tvDInway = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_inway));
+				
 				//Toast.makeText(getApplicationContext(), ordersClient + " " + ordersId,
 				//		Toast.LENGTH_SHORT).show();
 				// Обновляем
@@ -572,6 +574,10 @@ public class CourierMain extends Activity implements OnClickListener {
 					Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС Ок",
 							Toast.LENGTH_LONG).show();
 					tvDIsredy = "1";
+					// После установки статуса Ок надо сбросить статус Еду
+					if (! tvDInway.equals("0")) {
+						int catchres = dbHelper.updOrderCatchIt(ordersId, orderDetail_aNO);
+					}
 				} else {
 					dbHelper.updOrderIsRedy(ordersId, false);
 					Toast.makeText(getApplicationContext(), "СТАТУС Ок СБРОШЕН",
