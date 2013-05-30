@@ -36,7 +36,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		
 		TextView tvOSorDNorEmp = (TextView)view.findViewById(R.id.tvOSorDNorEmp);
 		String strOSorDNorEmp = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_OSorDNorEMP));
-		if (! strOSorDNorEmp.equals("null")) {
+		if (! strOSorDNorEmp.equals("NULL")) {
 			tvOSorDNorEmp.setText(strOSorDNorEmp);
 		} else {
 			tvOSorDNorEmp.setText("");
