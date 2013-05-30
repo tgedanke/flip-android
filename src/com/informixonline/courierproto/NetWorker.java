@@ -157,6 +157,7 @@ public class NetWorker {
 						aNoListOnServer = "'" + ord.getString("ano") + "' , " + aNoListOnServer;
 						
 						if (dbhelper.isNewOrder(ord.getString("ano"))) {
+							// Необходимо для определения есть ли такой заказ aNo локально или это новая запись которую надо сохранить локально
 							Log.d("NETWORKER", "dbhelper.createOrder " + ord.getString("ano"));
 							cntNewOrders = cntNewOrders + 1;
 							
@@ -214,6 +215,7 @@ public class NetWorker {
         }
         catch(IOException e)
         {
+        	// Когда нет связи с сервером
         	Log.d(TAG_POST, "IOException " + e.getMessage());
         	cntNewOrders = -1;
         }
@@ -337,12 +339,15 @@ public class NetWorker {
         }
         catch(IOException e)
         {
+        	// Когда нет связи с сервером
         	Log.d(TAG_POST, e.getMessage());
         }
     } // End sendData    POD
     
     // Передача данных go (inway), ready(isready), view(isview)
-    public void sendDataGRV(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String[] snddata) { 
+    // Возвращает -1 если была ошибка передачи
+    public int sendDataGRV(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String[] snddata) {
+    	int sendResult = 0;
     	// String[] snddata = { orderDetail_aNO, event, tdd, "" }
     	// Исключительно для event = go (inway), ready(isready), view(isview) dbAct - courLog 
         
@@ -374,7 +379,7 @@ public class NetWorker {
         nvps_logpoddata.add(new BasicNameValuePair("eventtime", snddata[2]));
         nvps_logpoddata.add(new BasicNameValuePair("rem", snddata[3]));
         
-        
+        Log.d("NETWORKER", "SEND data:" + snddata[0] + " " + snddata[1] + " " + snddata[2] + " " + snddata[3]);
         
         // Регистрация на сервере
         try
@@ -429,16 +434,25 @@ public class NetWorker {
             
         }
         catch (SocketTimeoutException ste) {
+        	sendResult = -1;
         	Log.d(TAG_POST, "SocketTimeoutException " + ste.getMessage());
         }
         catch (UnsupportedEncodingException ex)
         {
+        	sendResult = -2;
         	Log.d(TAG_POST, ex.getMessage());
         }
         catch(IOException e)
         {
+        	sendResult = -1;
         	Log.d(TAG_POST, e.getMessage());
         }
+        catch (Exception e)
+        {
+        	sendResult = -1;
+        	Log.d(TAG_POST, e.getMessage());
+        }
+        return sendResult;
     } // End sendDataGRV
 
 }

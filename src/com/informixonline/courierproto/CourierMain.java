@@ -3,6 +3,7 @@ package com.informixonline.courierproto;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -107,6 +108,13 @@ public class CourierMain extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
 		
+		// Получаем сохраненные сетевые настройки
+    	SharedPreferences sharedAppConfig;
+    	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+    	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
+    	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
+		Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
+		
 		// Строка статуса
 		tvCourName = (TextView)findViewById(R.id.tvCourName);
 		tvRefrTime = (TextView)findViewById(R.id.tvRefrTime);
@@ -124,16 +132,20 @@ public class CourierMain extends Activity implements OnClickListener {
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);
-
+        
+        Log.d("CourierMain", "--- After showLogin()");
 		dbHelper = new OrderDbAdapter(this);
 		dbHelper.open();
 
 		// Clean all data
-		// dbHelper.deleteAllOrders(); // закомментировал для проверки добавления
+		dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
 		// Add some data
 		//dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
 		
+		
+		// Отправляем данные накопившиеся в оффлайн если они есть только после успешного логина
+		// sendOfflineData();
 
 		
 		// Кнопки отладки
@@ -198,6 +210,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				// Активити ПОД (исключительно для накладных)
 				Log.d("CourierMain.onActivityResult",
 						"Result from POD Activity");
+				long rowid = data.getLongExtra("ordersid", 0);
 				String wb_no = data.getStringExtra("wb_no");
 				String p_d_in = data.getStringExtra("p_d_in");
 				String tdd = data.getStringExtra("tdd");
@@ -205,10 +218,16 @@ public class CourierMain extends Activity implements OnClickListener {
 				String[] snddata = { wb_no, p_d_in, tdd, rcpn };
 				Log.d("CourierMain.onActivityResult", "wb_no = " + wb_no
 						+ " p_d_in = " + p_d_in + " tdd = " + tdd + " rcpn = "
-						+ rcpn);
+						+ rcpn + " rowid = " + rowid);
 				
 				nwork.sendData(this.dbHelper, this.user, this.pwd,
 				this.login_URL, this.getdata_URL, snddata);
+				
+				// обновление времени tdd
+				dbHelper.updPodTime(rowid, tdd);
+				cursor.requery();
+				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.notifyDataSetChanged();
 			} else {
 				Log.d("CourierMain.onActivityResult", "POD Result cancel");
 			}
@@ -230,14 +249,15 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("CourierMain.getNetworkData", "--- Network OK ---");
 			
 	    	// Получаем сохраненные сетевые настройки
-	    	SharedPreferences sharedAppConfig;
+/*	    	SharedPreferences sharedAppConfig;
 	    	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
 	    	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
 	    	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
 			Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
-	    	
+*/	    	
 		    res = nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 		    
+		    // Устанавливаем статусную строку
 		    this.tvCourName.setText(nwork.username);
 		    this.tvRefrTime.setText(this.getDateTimeEvent(1));
 		    int cntrecsall = dbHelper.getCountOrd();
@@ -253,6 +273,10 @@ public class CourierMain extends Activity implements OnClickListener {
 	String user, pwd, username;
 	String login_URL, getdata_URL;
 
+	boolean checkSameUserLogin (String userLogin) {
+		return false;
+	}
+	
 	// Показываем окно ввода имени и пароля
 	private void showLogin() {
 
@@ -272,15 +296,21 @@ public class CourierMain extends Activity implements OnClickListener {
 		ln.addView(etPwd);
 		
 		alert.setView(ln);
+		
+
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				user = etUser.getText().toString().trim();
 				pwd = etPwd.getText().toString().trim();
-/*				Toast.makeText(getApplicationContext(), user,
-						Toast.LENGTH_SHORT).show();*/
+				if (! checkSameUserLogin(user)) {
+					// Новый логин
+					//dbHelper.deleteAllOrders();
+				}
+				Log.d("CourierMain", "--- In show login Ok ---");
+				//dbHelper.open();
 				int netRes = getNetworkData(nwork, user, pwd);
-				if (netRes == 0) {
+				if (netRes >= 0) {
 					displayListView();
 					doTimerTask();
 				} else if (netRes == -1) {
@@ -514,16 +544,24 @@ public class CourierMain extends Activity implements OnClickListener {
 				dataAdapter.notifyDataSetChanged();
 				
 				// Передача данных на сервер
-				Log.d("THREAD", Thread.currentThread().getName());
-				Thread tInWaySender = new Thread(new Runnable() {
-					public void run() {
-						String[] snddata = { orderDetail_aNO, "go", getDateTimeEvent (0), "" };
-						nwork.sendDataGRV(dbHelper, user, pwd,
-								login_URL, getdata_URL, snddata);
-						Log.d("THREAD", Thread.currentThread().getName());
-					}
-				});
-				tInWaySender.start();
+				if (catchres != 2) {
+					Log.d("THREAD", Thread.currentThread().getName());
+					Thread tInWaySender = new Thread(new Runnable() {
+						public void run() {
+							String[] snddata = { orderDetail_aNO, "go", getDateTimeEvent (0), "" };
+							// Здесь надо поймать -1 от nwork.sendDataGRV если была ошибка передачи,
+							// сохранить snddata в хранилище чтобы потом попытаться вновь отправить все неотправленное
+							int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
+									login_URL, getdata_URL, snddata);
+							if (sendResult == -1) {
+								// Нет сети - сохраняем данные snddata в оффлайн хранилище
+								dbHelper.saveSnddata("courLog", snddata);
+							}
+							Log.d("THREAD", Thread.currentThread().getName());
+						}
+					});
+					tInWaySender.start();
+				}
 			} else {
 				Log.d("CourierMain", "--- ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ ГОТОВОГО ЗАКАЗА ---");
 				Toast.makeText(getApplicationContext(), "ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ СТАТУСА Ок",
@@ -574,7 +612,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("CourierMain", "--- In switch кнопка ПОД ---");
 			if (recType_forDetail.equals("1")) {
 				Intent intentPOD = new Intent(this, ActPod.class);
-
+				intentPOD.putExtra("ordersid", ordersId);
 				intentPOD.putExtra("tvDorder_num", orderDetail_aNO);
 				startActivityForResult(intentPOD, ARC_POD);
 				// Возвращаемое значение обрабатывается в onActivityResult
@@ -672,7 +710,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	TimerTask mTimerTask;
 	final Handler handler = new Handler();
 	Timer t = new Timer();
-	final int TIMER_START = 60000; // задержка перед запуском мсек
+	final int TIMER_START = 3000; // задержка перед запуском мсек
 	final int TIMER_PERIOD = 180000; // период повтора мсек
 	
 	// Используем отдельный поток
@@ -703,6 +741,8 @@ public class CourierMain extends Activity implements OnClickListener {
 							Log.d("TIMER", "Count records from cursor new/all " + cntnewrecs + "/" + cntallrecs);
 							dataAdapter.swapCursor(dbHelper.fetchModOrders());
 							dataAdapter.notifyDataSetChanged();
+							
+							sendOfflineData(); // отправляем оффлайн данные
 						} else { // Проблемы связи с сервером
 							imgvSrvOff.setVisibility(View.VISIBLE);
 							imgvSrvOn.setVisibility(View.INVISIBLE);
@@ -742,13 +782,39 @@ public class CourierMain extends Activity implements OnClickListener {
 			DTFORMAT = "HH:mm";
 			break;
 		}
-		Date c = Calendar.getInstance().getTime(); // TimeZone.getTimeZone("Europe/Moscow")
+		Date c = Calendar.getInstance().getTime(); 
 		TimeZone tz = TimeZone.getTimeZone("Europe/Moscow");
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
 				DTFORMAT);
 		dateFormat.setTimeZone(tz);
 		return dateFormat.format(c);
+	}
+	
+	// Отправка оффлайн данных 
+	void sendOfflineData() {
+		final List<String[]> dataList = dbHelper.getSnddata();
+		if ( dataList != null) {
+					
+			for (String[] rowData : dataList) {
+				
+				Log.d("CourierMain", "Offline send = " + rowData[0] + rowData[1] + rowData[2] + rowData[3] + " id=" + rowData[4] + " type=" + rowData[5]);
+				if ((rowData[5]).equals("courLog")) {
+					// String[] snddata = { orderDetail_aNO, event, tdd, "" }
+					int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
+							login_URL, getdata_URL, rowData);
+					if (sendResult >= 0) { // отправка на сервер успешно, удалить оффлайн запись
+						dbHelper.deleteOfflineData(rowData[4]);
+					}
+				} else if ((rowData[5]).equals("SetPOD")) {
+					// String[] snddata = { wb_no, p_d_in, tdd, rcpn };
+					//int sendResult = nwork.sendData(this.dbHelper, this.user, this.pwd,
+					//		this.login_URL, this.getdata_URL, rowData);
+				} else {
+					Log.d("CourierMain", "WARNING sendOfflineData unknown type for sending=" + rowData[5]);
+				}
+			}
+		}
 	}
 }
 

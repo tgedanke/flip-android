@@ -21,6 +21,7 @@ public class ActPod extends Activity implements OnClickListener {
 	Button btnOk, btnCancel;
 	Date c = Calendar.getInstance().getTime(); //TimeZone.getTimeZone("Europe/Moscow")
 	TimeZone tz = TimeZone.getTimeZone("Europe/Moscow");
+	long ordersId;
 	
 	@Override
 	protected void onCreate(Bundle SavedInstanceState) {
@@ -33,6 +34,8 @@ public class ActPod extends Activity implements OnClickListener {
 		btnCancel.setOnClickListener(this);
 		
 		Intent intent = getIntent();
+		
+		ordersId = intent.getLongExtra("ordersid", 0);
 		
 		String aNo = intent.getStringExtra("tvDorder_num");
 		tvPodOrdNum = (TextView)findViewById(R.id.tvPodOrdNum);
@@ -53,6 +56,7 @@ public class ActPod extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.btnPodOk:
 			Intent intentOk = new Intent();
+			intentOk.putExtra("ordersid", this.ordersId);
 			intentOk.putExtra("wb_no", tvPodOrdNum.getText().toString());
 			
 			//String date = new SimpleDateFormat("yyyyMMdd").format(c);

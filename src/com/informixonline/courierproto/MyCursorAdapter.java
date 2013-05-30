@@ -29,6 +29,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 	   
 	@Override
 	public void bindView(View view, Context arg1, Cursor cursor) {
+		
 		LinearLayout llvMain = (LinearLayout)view.findViewById(R.id.llvMain);
 		TextView tvRecType = (TextView)view.findViewById(R.id.tvRecType);
 		tvRecType.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType)));
@@ -65,16 +66,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 			llvMain.setBackgroundColor(Color.rgb(135,206,250));
 		}
 		
-		TextView tvIsredy = (TextView)view.findViewById(R.id.tvIsredy);
-		if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)).equals("1")) {
-			tvIsredy.setTextColor(Color.BLUE);
-			//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
-			tvIsredy.setText("Ок");
-		} else {
-			tvIsredy.setTextColor(Color.GRAY);
-			tvIsredy.setText("Ок");
-		}
-		//tvIsredy.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)));
+
 		
 		TextView tvAddress = (TextView)view.findViewById(R.id.tvaAddress);
 		tvAddress.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_aAddress)));
@@ -87,13 +79,52 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		
 		TextView tvNumt = (TextView)view.findViewById(R.id.tvNumt);
 		TextView tvNum = (TextView)view.findViewById(R.id.tvNum);
-		if ((cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail)).equals("0"))) {
+		
+		// Тип 0 - заказ, 1 - накладная, 2 - счет
+		TextView tvIsredy = (TextView)view.findViewById(R.id.tvIsredy);
+		String recType_forDetail = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail));
+		tvNumt.setText("");
+		tvNum.setText("");
+		if (recType_forDetail.equals("0")) {
 			// Только для заказов
+			// Установка цвета ОК 
+			//cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail))
+			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)).equals("1")) {
+				tvIsredy.setTextColor(Color.BLUE);
+				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
+				tvIsredy.setText("Ок");
+			} else {
+				tvIsredy.setTextColor(Color.GRAY);
+				tvIsredy.setText("Ок");
+			}
+			//tvIsredy.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)));
+			
 			tvNumt.setText(" Кол-во:");
 			tvNum.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
-		} else {
-			tvNumt.setText("");
-			tvNum.setText("");
+			
+		} else if (recType_forDetail.equals("1")) {
+			// накладные
+			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_tdd)).equals("null")) {
+				tvIsredy.setText("ПОД");
+				tvIsredy.setTextColor(Color.BLUE);
+				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
+			} else {
+				tvIsredy.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_tdd)));
+				tvIsredy.setTextColor(Color.GRAY);
+			}
+			
+		} else if (recType_forDetail.equals("2")) {
+			// счет
+			// Установка цвета ОК 
+			//cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail))
+			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)).equals("1")) {
+				tvIsredy.setTextColor(Color.BLUE);
+				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
+				tvIsredy.setText("Ок");
+			} else {
+				tvIsredy.setTextColor(Color.GRAY);
+				tvIsredy.setText("Ок");
+			}
 		}
 		
 	}

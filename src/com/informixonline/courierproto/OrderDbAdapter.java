@@ -1,5 +1,8 @@
 package com.informixonline.courierproto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -77,15 +80,17 @@ public class OrderDbAdapter {
 		", Rems " +
 		", locnumitems " + 
 		", isview " +
+		", tdd " +
 		"from Orders ";
 	
-	private static final String TAG = "OrdersDbAdapter";
+	private static final String TAG = "ORDERDBADAPTER";
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 
 	private static final String DATABASE_NAME = "Courier.db";
 	private static final String SQLITE_TABLE = "Orders";
-	private static final int DATABASE_VERSION = 2;
+	private static final String OFFLINE_TABLE = "snddata";
+	private static final int DATABASE_VERSION = 5;
 
 	private final Context mCtx;
 
@@ -98,7 +103,7 @@ public class OrderDbAdapter {
 			+ "," + KEY_Cont + "," + KEY_ContPhone + "," + KEY_Packs + ","
 			+ KEY_Wt + "," + KEY_VolWt + "," + KEY_Rems + "," + KEY_ordStatus
 			+ "," + KEY_ordType + "," + KEY_recType + "," + KEY_isready + ","
-			+ KEY_inway + "," + KEY_isview + "," + KEY_rcpn + "," + KEY_locnumitems + " default 0 " + ");";
+			+ KEY_inway + "," + KEY_isview + "," + KEY_rcpn + "," + KEY_locnumitems + " default 0 " + "); ";
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -110,6 +115,7 @@ public class OrderDbAdapter {
 		public void onCreate(SQLiteDatabase db) {
 			Log.w(TAG, DATABASE_CREATE);
 			db.execSQL(DATABASE_CREATE);
+			db.execSQL("CREATE TABLE if not exists snddata (_id integer PRIMARY KEY autoincrement, sndtype, f1, f2, f3, f4)");
 		}
 
 		@Override
@@ -117,6 +123,7 @@ public class OrderDbAdapter {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
 					+ newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + SQLITE_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS snddata");
 			onCreate(db);
 		}
 	}
@@ -191,7 +198,7 @@ public class OrderDbAdapter {
 
 		int doneDelete = 0;
 		doneDelete = mDb.delete(SQLITE_TABLE, null, null);
-		Log.w(TAG, Integer.toString(doneDelete));
+		Log.w(TAG, Integer.toString(doneDelete) + "--- Deleted records by deleteAllOrders()");
 		return doneDelete > 0;
 
 	}
@@ -376,7 +383,59 @@ public class OrderDbAdapter {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_isview, "1");
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
+		//mDb.update(table, values, whereClause, whereArgs)
 		return rowsUpd;
+	}
+	
+	int updPodTime(long rowid, String tdd) {
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_tdd, tdd);
+		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
+		return rowsUpd;
+	}
+	
+	// Сохранение данных для отправки при отсутствии сети
+	void saveSnddata(String sndtype, String [] snddata) {
+		// snddata
+		ContentValues cv = new ContentValues();
+		cv.put("sndtype", sndtype);
+		cv.put("f1", snddata[0]);
+		cv.put("f2", snddata[1]);
+		cv.put("f3", snddata[2]);
+		cv.put("f4", snddata[3]);
+		mDb.insert("snddata", null, cv);
+	}
+	
+	// Получаем оффлайн данные для отправки на сервер
+	List<String[]> getSnddata() {
+		List<String[]> strSnddata = new ArrayList<String[]>();
+		String SQL = "select _id, sndtype, f1,f2,f3,f4 from snddata";
+		Cursor mCursor = mDb.rawQuery(SQL, null);
+		
+		if (mCursor.moveToFirst()) {
+			//String [] data = new String [6];
+			do { //получаем {f1, f2, f3, f4} == { orderDetail_aNO или wb_no, event или p_d_in, tdd или eventtime, rcpn или rem = "" }
+				String [] data = new String [6];
+				data[0] = mCursor.getString(2); // wb_no или ano
+				data[1] = mCursor.getString(3); // p_d_in (дата) или event
+				data[2] = mCursor.getString(4); // tdd или eventtime
+				data[3] = mCursor.getString(5); // rcpn или rem ""
+				data[4] = mCursor.getString(0); // rowid для удаления при успешной отправке 
+				data[5] = mCursor.getString(1); // для определения типа - sdntype = SetPOD или courLog
+				strSnddata.add(data);
+			} while (mCursor.moveToNext());
+		} else {
+			strSnddata = null;
+		}
+		return strSnddata;
+	}
+	
+	// Удаление оффлайн данных после отправки на сервер
+	boolean deleteOfflineData(String rowid) {
+		int doneDelete = 0;
+		doneDelete = mDb.delete(OFFLINE_TABLE, "_id=?", new String [] {rowid});
+		Log.w(TAG, Integer.toString(doneDelete) + "--- Deleted records by deleteOfflineData(rowid) ---");
+		return doneDelete >= 0;
 	}
 	
 	// Необходимо для определения есть ли такой заказ aNo локально или это новая запись которую надо сохранить локально
@@ -401,7 +460,7 @@ public class OrderDbAdapter {
 			cntDel = true; 
 			Log.d("ORDERDBADAPTER", "record deleted");
 		}
-		Log.d("ORDERDBADAPTER", "record deleted " + mCursor.getCount());
+		Log.d("ORDERDBADAPTER", "not exist record deleted " + mCursor.getCount());
 		return cntDel;
 	}
 	
