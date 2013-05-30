@@ -140,7 +140,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Clean all data
 		dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
 		// Add some data
-		//dbHelper.insertTestEntries();
+		dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
 		
 		
@@ -595,8 +595,12 @@ public class CourierMain extends Activity implements OnClickListener {
 				Thread tInOkSender = new Thread(new Runnable() {
 					public void run() {
 						String[] snddata = { orderDetail_aNO, "ready", getDateTimeEvent (0), "" };
-						nwork.sendDataGRV(dbHelper, user, pwd,
+						int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
 								login_URL, getdata_URL, snddata);
+						if (sendResult == -1) {
+							// Нет сети - сохраняем данные snddata в оффлайн хранилище
+							dbHelper.saveSnddata("courLog", snddata);
+						}
 						Log.d("THREAD", Thread.currentThread().getName());
 					}
 				});
@@ -673,8 +677,12 @@ public class CourierMain extends Activity implements OnClickListener {
 			Thread tDetailSender = new Thread(new Runnable() {
 				public void run() {
 					String[] snddata = { orderDetail_aNO, "vieword", getDateTimeEvent (0), "" };
-					nwork.sendDataGRV(dbHelper, user, pwd,
+					int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
 							login_URL, getdata_URL, snddata);
+					if (sendResult == -1) {
+						// Нет сети - сохраняем данные snddata в оффлайн хранилище
+						dbHelper.saveSnddata("courLog", snddata);
+					}
 					Log.d("THREAD", Thread.currentThread().getName());
 				}
 			});
