@@ -223,8 +223,9 @@ public class NetWorker {
     } // End getData
     
     // Передача данных POD
-    public void sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) { 
-    	// Исключительно для накладнах. Данные пересылаются сначала для  dbAct = SetPOD затем dbAct - courLog (event=pod)
+    public int sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) {
+    	int sendResult = 0;
+    	// Исключительно для накладных. Данные пересылаются сначала для  dbAct = SetPOD затем dbAct - courLog (event=pod)
         
 /*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
@@ -332,16 +333,21 @@ public class NetWorker {
         }
         catch (SocketTimeoutException ste) {
         	Log.d(TAG_POST, "SocketTimeoutException " + ste.getMessage());
+        	sendResult = -1;
         }
         catch (UnsupportedEncodingException ex)
         {
         	Log.d(TAG_POST, ex.getMessage());
+        	sendResult = -2;
         }
         catch(IOException e)
         {
         	// Когда нет связи с сервером
         	Log.d(TAG_POST, e.getMessage());
+        	sendResult = -1;
         }
+        
+        return sendResult;
     } // End sendData    POD
     
     // Передача данных go (inway), ready(isready), view(isview)
@@ -452,6 +458,7 @@ public class NetWorker {
         	sendResult = -1;
         	Log.d(TAG_POST, e.getMessage());
         }
+        
         return sendResult;
     } // End sendDataGRV
 

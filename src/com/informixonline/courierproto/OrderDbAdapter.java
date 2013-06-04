@@ -403,7 +403,7 @@ public class OrderDbAdapter {
 		cv.put("f2", snddata[1]);
 		cv.put("f3", snddata[2]);
 		cv.put("f4", snddata[3]);
-		mDb.insert("snddata", null, cv);
+		mDb.insert(OFFLINE_TABLE, null, cv);
 	}
 	
 	// Получаем оффлайн данные для отправки на сервер

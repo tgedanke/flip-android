@@ -215,8 +215,12 @@ public class CourierMain extends Activity implements OnClickListener {
 						+ " p_d_in = " + p_d_in + " tdd = " + tdd + " rcpn = "
 						+ rcpn + " rowid = " + rowid);
 				
-				nwork.sendData(this.dbHelper, this.user, this.pwd,
+				int sendResult = nwork.sendData(this.dbHelper, this.user, this.pwd,
 				this.login_URL, this.getdata_URL, snddata);
+				if (sendResult == -1) {
+					// Нет сети - сохраняем данные snddata в оффлайн хранилище
+					dbHelper.saveSnddata("SetPOD", snddata); // 6|SetPOD|1567-3118|20130603|14:54|testoffline1
+				}
 				
 				// обновление времени tdd
 				dbHelper.updPodTime(rowid, tdd);
@@ -812,13 +816,17 @@ public class CourierMain extends Activity implements OnClickListener {
 					}
 				} else if ((rowData[5]).equals("SetPOD")) {
 					// String[] snddata = { wb_no, p_d_in, tdd, rcpn };
-					//int sendResult = nwork.sendData(this.dbHelper, this.user, this.pwd,
-					//		this.login_URL, this.getdata_URL, rowData);
+					int sendResult = nwork.sendData(this.dbHelper, this.user, this.pwd,
+							this.login_URL, this.getdata_URL, rowData);
+					if (sendResult >= 0) {// отправка на сервер успешно, удалить оффлайн запись
+						dbHelper.deleteOfflineData(rowData[4]);
+					}
 				} else {
 					Log.d("CourierMain", "WARNING sendOfflineData unknown type for sending=" + rowData[5]);
 				}
 			}
 		}
 	}
+	
 }
 
