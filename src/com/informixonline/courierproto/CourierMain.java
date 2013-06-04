@@ -20,6 +20,7 @@ import android.os.StrictMode;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +45,7 @@ import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -280,24 +283,122 @@ public class CourierMain extends Activity implements OnClickListener {
 	private void showLogin() {
 
 		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setCancelable(false); // запрет закрытия диалога кнопкой назад
 		alert.setTitle("Введите имя и пароль");
 		
+		final AlertDialog alertDialog = alert.create();
+		
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+			    LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+		params.weight = 1;
+		
+		LinearLayout.LayoutParams paramsEditTxt = new LinearLayout.LayoutParams(
+			    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		paramsEditTxt.weight = 1;
+		
 		final LinearLayout ln = new LinearLayout(this);
-		ln.setOrientation(1);
+		ln.setOrientation(LinearLayout.HORIZONTAL);
 		ln.setDividerPadding(5);
+		
+		final LinearLayout lnf = new LinearLayout(this);
+		lnf.setOrientation(LinearLayout.VERTICAL);
+		lnf.setDividerPadding(5);
+		
+		// Общий Layout
+		final LinearLayout lnv = new LinearLayout(this);
+		lnv.setOrientation(LinearLayout.VERTICAL);
+		lnv.addView(lnf);
+		lnv.addView(ln);
+		
 		final EditText etUser = new EditText(this);
 		final EditText etPwd = new EditText(this);
+		final EditText etNetAddr = new EditText(this);
 		etPwd.setHint("Password");
 		etUser.setHint("User");
+		etNetAddr.setHint("Сетевой адрес");
+		etPwd.setLayoutParams(paramsEditTxt);
+		etUser.setLayoutParams(paramsEditTxt);
+		etNetAddr.setLayoutParams(paramsEditTxt);
+		
+		lnf.addView(etNetAddr);
+		etNetAddr.setVisibility(EditText.INVISIBLE);
+		
 		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ввод пароля скрыт
 		
-		ln.addView(etUser);
-		ln.addView(etPwd);
-		
-		alert.setView(ln);
-		
+		Button btnOk = new Button(this);
 
+		btnOk.setLayoutParams(params);
+		Button btnCancel = new Button(this);
+		btnCancel.setLayoutParams(params);
+		Button btnSet = new Button(this);
+		btnSet.setLayoutParams(params);
+		btnOk.setText("Ok");
+		btnCancel.setText("Выход");
+		btnSet.setText("Настройка сети");
+		ln.addView(btnOk);
+		ln.addView(btnCancel);
+		ln.addView(btnSet);
+		
+		btnOk.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				user = etUser.getText().toString().trim();
+				pwd = etPwd.getText().toString().trim();
+				if (! checkSameUserLogin(user)) {
+					// Новый логин
+					//dbHelper.deleteAllOrders();
+				}
+				Log.d("CourierMain", "--- In show login Ok ---");
+				//dbHelper.open();
+				int netRes = getNetworkData(nwork, user, pwd);
+				if (netRes >= 0) {
+					displayListView();
+					doTimerTask();
+				} else if (netRes == -1) {
+					Toast.makeText(getApplicationContext(), "Ошибка сети",
+							Toast.LENGTH_LONG).show();
+				} // else if (netRes == -2) { 
+				else {
+					Toast.makeText(getApplicationContext(), "Неправильный логин или пароль",
+							Toast.LENGTH_LONG).show();
+				}
+					
+			}
+		});
+		
+		btnSet.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+					etNetAddr.setVisibility(EditText.VISIBLE);
+					//onBackPressed();
+					
+			}
+		});
+		
+		btnCancel.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				finish(); // переделать чтобы выходил без exception
+				//alert.setCancelable(true);
+				// onBackPressed();
+				//alertDialog.cancel();
+			}
+			
+		});
+		
+		
+		lnf.addView(etUser);
+		lnf.addView(etPwd);
+		
+		alertDialog.setView(lnv);
+
+/*
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				user = etUser.getText().toString().trim();
@@ -333,7 +434,19 @@ public class CourierMain extends Activity implements OnClickListener {
 								Toast.LENGTH_LONG).show();
 					}
 				});
-		alert.show();
+		
+/*		alert.setNeutralButton("Настройки", 
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				Log.d("CourierMain", "--- In SETTINGS кнопка Set ---");
+
+
+			}
+		});*/
+		
+		
+		alertDialog.show();
+		
 	}
 
 	@Override
