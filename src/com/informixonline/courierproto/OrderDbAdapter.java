@@ -246,7 +246,7 @@ public class OrderDbAdapter {
 	
 	public Cursor fetchModOrders() {
 		
-		Cursor mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_isview + " asc", null); // 15.05 order by isview для вывода новых записей первыми
+		Cursor mCursor = mDb.rawQuery(SQL_CASE, null); // убрал " order by " + KEY_isview + " asc"
 		
 		if (mCursor != null) {
 			mCursor.moveToFirst();
