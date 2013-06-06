@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.text.Editable;
@@ -63,6 +64,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	//final static String APPCFG_LOGIN = "LOGIN";
 	final static String APPCFG_LOGIN_URL = "LOGIN_URL";
 	final static String APPCFG_GETDATA_URL = "GETDATA_URL";
+	final static String APPCFG_ADDR_URL = "ADDRURL";
 	
 	// Коды активити для получения результата Activity Return Code - ARC
 	final int ARC_NUMITEMS = 1; // Активити Кол-во отправлений 
@@ -275,9 +277,9 @@ public class CourierMain extends Activity implements OnClickListener {
 	String user, pwd, username;
 	String login_URL, getdata_URL;
 
-	boolean checkSameUserLogin (String userLogin) {
+/*	boolean checkSameUserLogin (String userLogin) {
 		return false;
-	}
+	}*/
 	
 	// Показываем окно ввода имени и пароля
 	private void showLogin() {
@@ -346,16 +348,40 @@ public class CourierMain extends Activity implements OnClickListener {
 				// TODO Auto-generated method stub
 				user = etUser.getText().toString().trim();
 				pwd = etPwd.getText().toString().trim();
-				if (! checkSameUserLogin(user)) {
+/*				if (! checkSameUserLogin(user)) {
 					// Новый логин
 					//dbHelper.deleteAllOrders();
-				}
+				}*/
 				Log.d("CourierMain", "--- In show login Ok ---");
 				//dbHelper.open();
+				
+				// Сохранение сетевого адреса
+				if ((etNetAddr.getVisibility() == EditText.VISIBLE)) {
+					int lenAddr = etNetAddr.getText().toString().length();
+					if (lenAddr > 0) {
+						// Сохраняем введенный сетевой адрес
+						SharedPreferences sharedAppConfig;
+						sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+						Editor ed = sharedAppConfig.edit();
+						String netAddr = etNetAddr.getText().toString();
+						ed.putString(APPCFG_ADDR_URL, netAddr);
+						ed.putString(APPCFG_LOGIN_URL, netAddr + "/fp/cr/data/login.php");
+						ed.putString(APPCFG_GETDATA_URL, netAddr + "/fp/cr/data/data.php");
+						ed.commit();
+						
+				    	login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
+				    	getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
+						Log.d("CourierMain", "SAVE NETWORK addr = " + netAddr + " login_URL = " + login_URL + " getdata_URL = " + getdata_URL);
+					}
+				}
+				
 				int netRes = getNetworkData(nwork, user, pwd);
 				if (netRes >= 0) {
+					
 					displayListView();
 					doTimerTask();
+					
+					alertDialog.cancel(); // или dismiss() ?
 				} else if (netRes == -1) {
 					Toast.makeText(getApplicationContext(), "Ошибка сети",
 							Toast.LENGTH_LONG).show();
@@ -368,14 +394,16 @@ public class CourierMain extends Activity implements OnClickListener {
 			}
 		});
 		
+		// Настройка сетевого адреса
 		btnSet.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-					etNetAddr.setVisibility(EditText.VISIBLE);
-					//onBackPressed();
-					
+				SharedPreferences sharedAppConfig;
+				sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+				etNetAddr.setVisibility(EditText.VISIBLE);
+				etNetAddr.setText(sharedAppConfig.getString(APPCFG_ADDR_URL, ""));
 			}
 		});
 		
