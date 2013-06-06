@@ -31,7 +31,8 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f09004b;
-        public static final int action_settings=0x7f09005c;
+        public static final int RelativeLayout1=0x7f090058;
+        public static final int action_settings=0x7f09005d;
         public static final int btnAddr=0x7f09001a;
         public static final int btnCancNumItems=0x7f090029;
         public static final int btnClient=0x7f09001b;
@@ -108,9 +109,9 @@ public final class R {
         public static final int tvNakladnaya=0x7f090043;
         public static final int tvNewAll=0x7f090016;
         public static final int tvNewAllRecs=0x7f090017;
-        public static final int tvNum=0x7f09005b;
+        public static final int tvNum=0x7f09005c;
         public static final int tvNumItems=0x7f090027;
-        public static final int tvNumt=0x7f09005a;
+        public static final int tvNumt=0x7f09005b;
         public static final int tvOSorDNorEmp=0x7f090051;
         public static final int tvOrderHead=0x7f09002a;
         public static final int tvOrderHeadDlv=0x7f090000;
@@ -120,8 +121,8 @@ public final class R {
         public static final int tvRecType=0x7f090050;
         public static final int tvRefrTime=0x7f090015;
         public static final int tvRefresh=0x7f090014;
-        public static final int tvTime=0x7f090058;
-        public static final int tvTimeBE=0x7f090059;
+        public static final int tvTime=0x7f090059;
+        public static final int tvTimeBE=0x7f09005a;
         public static final int tvaAddress=0x7f090055;
     }
     public static final class layout {
