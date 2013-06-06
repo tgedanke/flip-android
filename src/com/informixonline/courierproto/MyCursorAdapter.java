@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,10 +102,11 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 			
 			tvNumt.setText(" Кол-во:");
 			tvNum.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
+			//Log.d("ADAPTER", "Кол-во" + cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
 			
 		} else if (recType_forDetail.equals("1")) {
 			// накладные
-			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_tdd)).equals("null")) {
+			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_tdd)).equalsIgnoreCase("null")) {
 				tvIsredy.setText("ПОД");
 				tvIsredy.setTextColor(Color.BLUE);
 				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));

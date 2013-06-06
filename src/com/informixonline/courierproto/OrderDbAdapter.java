@@ -366,6 +366,7 @@ public class OrderDbAdapter {
 			cv.put(KEY_isready, "0");
 			Log.d("ORDERDBADAPTER", "Статус ОК будет сброшен");
 		}
+		cv.put(KEY_inway, "0"); // сбрасываем статус Еду (при нажатии Ок)
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 		return rowsUpd;
 	}

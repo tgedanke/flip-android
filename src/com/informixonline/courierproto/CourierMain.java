@@ -719,9 +719,10 @@ public class CourierMain extends Activity implements OnClickListener {
 					Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС Ок",
 							Toast.LENGTH_LONG).show();
 					tvDIsredy = "1";
-					// После установки статуса Ок надо сбросить статус Еду
+					// После установки статуса Ок надо сбросить статус Еду - 
+					// FIX он сбрасывается в updOrderIsRedy
 					if (! tvDInway.equals("0")) {
-						int catchres = dbHelper.updOrderCatchIt(ordersId, orderDetail_aNO);
+						//int catchres = dbHelper.updOrderCatchIt(ordersId, orderDetail_aNO);
 					}
 				} else {
 					dbHelper.updOrderIsRedy(ordersId, false);
