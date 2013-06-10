@@ -48,12 +48,24 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/tvNewAllRecs"
+            android:id="@+id/tvNewRecs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="tvNewAllRecs"
+            android:text="tvNewRecs"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvDelNewAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/tvAllRecs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvAllRecs" />
 
         <ImageView
             android:id="@+id/imgvSrvOff"

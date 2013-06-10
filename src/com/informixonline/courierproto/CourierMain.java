@@ -105,7 +105,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	// Кнопки главной активити
 	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll;
 	
-	TextView tvCourName, tvRefrTime, tvNewAllRecs; // статусная строка
+	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
 
 	@Override
@@ -123,8 +123,14 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Строка статуса
 		tvCourName = (TextView)findViewById(R.id.tvCourName);
 		tvRefrTime = (TextView)findViewById(R.id.tvRefrTime);
-		tvNewAllRecs = (TextView)findViewById(R.id.tvNewAllRecs);
-		tvNewAllRecs.setText("");
+		//tvNewAllRecs = (TextView)findViewById(R.id.tvNewAllRecs);
+		//tvNewAllRecs.setText("");
+		
+		tvAllRecs = (TextView)findViewById(R.id.tvAllRecs);
+		tvAllRecs.setText("");
+		tvNewRecs = (TextView)findViewById(R.id.tvNewRecs);
+		tvNewRecs.setText("");
+		
 		imgvSrvOn = (ImageView)findViewById(R.id.imgvSrvOn);
 		imgvSrvOff = (ImageView)findViewById(R.id.imgvSrvOff);
 		imgvSrvOff.setVisibility(View.INVISIBLE);
@@ -267,7 +273,10 @@ public class CourierMain extends Activity implements OnClickListener {
 		    this.tvCourName.setText(nwork.username);
 		    this.tvRefrTime.setText(this.getDateTimeEvent(1));
 		    int cntrecsall = dbHelper.getCountOrd();
-		    this.tvNewAllRecs.setText("0/" + Integer.toString(cntrecsall)); 
+		    int cntnewrecs = dbHelper.getNewCountOrd();
+		    //this.tvNewAllRecs.setText("0/" + Integer.toString(cntrecsall)); 
+		    this.tvAllRecs.setText(Integer.toString(cntrecsall));
+		    this.tvNewRecs.setText(Integer.toString(cntnewrecs));
 			//dbHelper.insertTestEntries(); // DEBUG
 		} else {
 			// display error
@@ -831,10 +840,12 @@ public class CourierMain extends Activity implements OnClickListener {
 						// Нет сети - сохраняем данные snddata в оффлайн хранилище
 						dbHelper.saveSnddata("courLog", snddata);
 					}
+					
 					Log.d("THREAD", Thread.currentThread().getName());
 				}
 			});
 			tDetailSender.start();
+			tvNewRecs.setText(Integer.toString(dbHelper.getNewCountOrd()));
 			Log.d("DETAIL_KEY", "--- tvDorder_num = " + orderDetail_aNO);
 			break;
 			
@@ -855,6 +866,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			cursor.requery();
 			dataAdapter.swapCursor(dbHelper.fetchModOrders());
 			dataAdapter.notifyDataSetChanged();
+			tvNewRecs.setText(Integer.toString(dbHelper.getNewCountOrd()));
 			Toast.makeText(getApplicationContext(), "Все записи отмечены как просмотренные",
 					Toast.LENGTH_LONG).show();
 			break;
@@ -898,9 +910,12 @@ public class CourierMain extends Activity implements OnClickListener {
 							
 							cursor.requery();
 							int cntallrecs = cursor.getCount();
-							tvNewAllRecs.setText(Integer.toString(cntnewrecs) + "/" + Integer.toString(cntallrecs));
+							int cntnewnotviewrecs = dbHelper.getNewCountOrd();
+							//tvNewAllRecs.setText(Integer.toString(cntnewrecs) + "/" + Integer.toString(cntallrecs));
+							tvAllRecs.setText(Integer.toString(cntallrecs));
+							tvNewRecs.setText(Integer.toString(cntnewnotviewrecs));
 							tvRefrTime.setText(getDateTimeEvent(1));
-							Log.d("TIMER", "Count records from cursor new/all " + cntnewrecs + "/" + cntallrecs);
+							Log.d("TIMER", "Count records from cursor new/all " + cntnewnotviewrecs + "/" + cntallrecs);
 							dataAdapter.swapCursor(dbHelper.fetchModOrders());
 							dataAdapter.notifyDataSetChanged();
 							
@@ -908,7 +923,9 @@ public class CourierMain extends Activity implements OnClickListener {
 						} else { // Проблемы связи с сервером
 							imgvSrvOff.setVisibility(View.VISIBLE);
 							imgvSrvOn.setVisibility(View.INVISIBLE);
-							tvNewAllRecs.setText("");
+							//tvNewAllRecs.setText("");
+							tvNewRecs.setText("");
+							tvAllRecs.setText("");
 							tvRefrTime.setText(getDateTimeEvent(1));
 						}
 					}

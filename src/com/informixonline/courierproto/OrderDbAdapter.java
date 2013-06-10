@@ -473,6 +473,15 @@ public class OrderDbAdapter {
 		return cntDel;
 	}
 	
+	int getNewCountOrd() {
+		int cnt = 0;
+		String SQLCNT = "select _id from orders where isview <> '1'";
+		Cursor mCursor = mDb.rawQuery(SQLCNT, null);
+		cnt = mCursor.getCount();
+		Log.d("ORDERDBADAPTER", "Count new recs = " + Integer.toString(mCursor.getCount()));
+		return cnt;
+	}
+	
 	int getCountOrd () {
 		String SQLCNT = "select _id from orders";
 		Cursor mCursor = mDb.rawQuery(SQLCNT, null);
