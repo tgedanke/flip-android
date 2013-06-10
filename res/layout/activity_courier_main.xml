@@ -147,6 +147,12 @@
             android:layout_height="wrap_content"
             android:text="Кол-во" />
 
+        <Button
+            android:id="@+id/btnAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  Все  " />
+
     </LinearLayout>
 
 </LinearLayout>

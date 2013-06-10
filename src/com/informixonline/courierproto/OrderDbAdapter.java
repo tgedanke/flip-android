@@ -395,6 +395,14 @@ public class OrderDbAdapter {
 		return rowsUpd;
 	}
 	
+	// Пометка всех заказов как просмотренных
+	int updAllView() {
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_isview, "1");
+		int rowsUpd = mDb.update(SQLITE_TABLE, cv, null, null);
+		return rowsUpd;
+	}
+	
 	// Сохранение данных для отправки при отсутствии сети
 	void saveSnddata(String sndtype, String [] snddata) {
 		// snddata

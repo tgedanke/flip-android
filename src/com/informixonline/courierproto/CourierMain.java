@@ -103,7 +103,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems;
+	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll;
 	
 	TextView tvCourName, tvRefrTime, tvNewAllRecs; // статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
@@ -178,6 +178,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnDetail.setOnClickListener(this);
 		btnNumItems = (Button)findViewById(R.id.btnNumItems);
 		btnNumItems.setOnClickListener(this);
+		btnAll = (Button)findViewById(R.id.btnAll);
+		btnAll.setOnClickListener(this);
 		
 		// Generate ListView from SQLite Database
 		// displayListView(); moved to dialog
@@ -845,6 +847,16 @@ public class CourierMain extends Activity implements OnClickListener {
 				intent.putExtra("ordersid", ordersId);
 				startActivityForResult(intent, ARC_NUMITEMS);
 			}
+			break;
+		
+		case R.id.btnAll:
+			// Отметить все записи как просмотренные
+			dbHelper.updAllView();
+			cursor.requery();
+			dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			dataAdapter.notifyDataSetChanged();
+			Toast.makeText(getApplicationContext(), "Все записи отмечены как просмотренные",
+					Toast.LENGTH_LONG).show();
 			break;
 			
 		case R.id.btnExit:
