@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.text.Editable;
@@ -107,12 +108,15 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
+	
+	static boolean firstStart = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
-		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
 		// Получаем сохраненные сетевые настройки
     	SharedPreferences sharedAppConfig;
     	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
@@ -134,6 +138,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		imgvSrvOn = (ImageView)findViewById(R.id.imgvSrvOn);
 		imgvSrvOff = (ImageView)findViewById(R.id.imgvSrvOff);
 		imgvSrvOff.setVisibility(View.INVISIBLE);
+		
 
 		// Показываем диалог логина и ждем ввода
 		//boolean res = false;
@@ -153,7 +158,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Add some data
 		//dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
-		
+
 		
 		// Отправляем данные накопившиеся в оффлайн если они есть только после успешного логина
 		// sendOfflineData();
@@ -185,11 +190,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnNumItems = (Button)findViewById(R.id.btnNumItems);
 		btnNumItems.setOnClickListener(this);
 		btnAll = (Button)findViewById(R.id.btnAll);
-		btnAll.setOnClickListener(this);
-		
+		btnAll.setOnClickListener(this);	
 		// Generate ListView from SQLite Database
 		// displayListView(); moved to dialog
-		
 	}
 	
 	// Получение результатов от опр.активити в главной активити (опр.по коду requestCode)
