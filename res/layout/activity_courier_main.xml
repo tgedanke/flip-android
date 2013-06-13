@@ -104,12 +104,6 @@
             android:text="Время" />
 
         <Button
-            android:id="@+id/btnSaveSet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Настройка" />
-
-        <Button
             android:id="@+id/btnExit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

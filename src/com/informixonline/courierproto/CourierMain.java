@@ -103,7 +103,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnSettings, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll;
+	Button btnAddr, btnClient, btnTime, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll; //btnSettings
 	
 	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
@@ -168,8 +168,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnTime = (Button)findViewById(R.id.btnTime);
 		btnTime.setOnClickListener(this);
 		
-		btnSettings = (Button)findViewById(R.id.btnSaveSet);
-		btnSettings.setOnClickListener(this);
+		//btnSettings = (Button)findViewById(R.id.btnSaveSet);
+		//btnSettings.setOnClickListener(this);
 		
 		btnExit = (Button)findViewById(R.id.btnExit);
 		btnExit.setOnClickListener(this);
@@ -669,11 +669,11 @@ public class CourierMain extends Activity implements OnClickListener {
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
-		case R.id.btnSaveSet:
+/*		case R.id.btnSaveSet:
 			Log.d("CourierMain", "--- In SETTINGS кнопка Set ---");
 			Intent intentActSet = new Intent(this, ActSettings.class);
 			startActivity(intentActSet);
-			break;
+			break;*/
 			
 		case R.id.btnInWay:
 			// При нажатии запись помечается но список перематывается (т.е. запись снова надо искать)

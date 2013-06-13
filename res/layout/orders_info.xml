@@ -50,6 +50,19 @@
             android:layout_alignParentTop="true"
             android:text="isredy"
             android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tvCh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="14dp"
+            android:layout_toLeftOf="@+id/tvInWay"
+            android:text="tvCh"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
     </RelativeLayout>
 
     <LinearLayout

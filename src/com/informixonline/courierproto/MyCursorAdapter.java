@@ -43,6 +43,15 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 			tvOSorDNorEmp.setText("");
 		}
 		
+		TextView tvCh = (TextView)view.findViewById(R.id.tvCh);
+		String strTvCh = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_aCash));
+		if (! (strTvCh.equalsIgnoreCase("null"))) {
+			tvCh.setTextColor(Color.YELLOW);
+			tvCh.setText("$");
+		} else {
+			tvCh.setText(" ");
+		}
+		
 		TextView inWay = (TextView)view.findViewById(R.id.tvInWay);		
 		if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)).equals("≈‰Û")) {
 			// llvMain.setBackgroundColor(Color.rgb(255,228,181));
@@ -70,10 +79,20 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 
 		
 		TextView tvAddress = (TextView)view.findViewById(R.id.tvaAddress);
-		tvAddress.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_aAddress)));
+		String strtvAddress = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_aAddress));
+		if (strtvAddress.equalsIgnoreCase("null")) {
+			tvAddress.setText("");
+		} else {
+			tvAddress.setText(strtvAddress);
+		}
 		
 		TextView tvClient = (TextView)view.findViewById(R.id.tvClient);
-		tvClient.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_client)));
+		String strtvClient = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_client));
+		if (strtvClient.equalsIgnoreCase("null")) {
+			tvClient.setText("");
+		} else {
+			tvClient.setText(strtvClient);
+		}
 		
 		TextView tvTimeBE = (TextView)view.findViewById(R.id.tvTimeBE);
 		tvTimeBE.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_timeBE)));
