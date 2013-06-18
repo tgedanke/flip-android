@@ -62,7 +62,7 @@ public class CourierMain extends Activity implements OnClickListener {
 
 	//  лючи сетевых настроек (используетс€ в ActSettings и NetWorker) дл€ доступа к хранению настроек
 	final static String SHAREDPREF = "sharedstore";
-	//final static String APPCFG_LOGIN = "LOGIN";
+	final static String APPCFG_LOGIN = "LOGIN"; // предыдущий логин в программе, чтобы определить, удал€ть старые локальные данные или нет
 	final static String APPCFG_LOGIN_URL = "LOGIN_URL";
 	final static String APPCFG_GETDATA_URL = "GETDATA_URL";
 	final static String APPCFG_ADDR_URL = "ADDRURL";
@@ -108,8 +108,6 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусна€ строка
 	ImageView imgvSrvOff, imgvSrvOn;
-	
-	static boolean firstStart = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +120,7 @@ public class CourierMain extends Activity implements OnClickListener {
     	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
     	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
     	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
+    	this.prev_user = sharedAppConfig.getString(APPCFG_LOGIN, "nologin");
 		Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
 		
 		// —трока статуса
@@ -154,7 +153,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		dbHelper.open();
 
 		// Clean all data
-		dbHelper.deleteAllOrders(); // удал€ем старые данные перед работой
+		//dbHelper.deleteAllOrders(); // удал€ем старые данные перед работой
 		// Add some data
 		//dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
@@ -288,12 +287,14 @@ public class CourierMain extends Activity implements OnClickListener {
 		return res;
 	}
 	
-	String user, pwd, username;
+	String user, pwd, username, prev_user;
 	String login_URL, getdata_URL;
 
-/*	boolean checkSameUserLogin (String userLogin) {
-		return false;
-	}*/
+	boolean checkSameUserLogin (String userLogin, String prev_login) {
+		// ѕроверка на совпадение введенного имени пользовател€ и предыдущего,
+		// чтобы определить удал€ть старые данные или нет
+		return userLogin.equals(prev_login);
+	}
 	
 	// ѕоказываем окно ввода имени и парол€
 	private void showLogin() {
@@ -387,6 +388,18 @@ public class CourierMain extends Activity implements OnClickListener {
 				    	getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
 						Log.d("CourierMain", "SAVE NETWORK addr = " + netAddr + " login_URL = " + login_URL + " getdata_URL = " + getdata_URL);
 					}
+				}
+				
+				if (! checkSameUserLogin(user, prev_user)) {
+					// Ќовый логин отличаетс€ от предыдущего, удал€ем локальные данные
+					Log.d("CourierMain", "LOGIN DIFFER, DELETE LOCAL DATA, OLD LOGIN = " + prev_user + " new login = " + user);
+					dbHelper.deleteAllOrders();
+					// и сохран€ем новый логин дл€ сравнени€ в следующем сеансе работы программы
+					SharedPreferences sharedAppConfig;
+					sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+					Editor ed = sharedAppConfig.edit();
+					ed.putString(APPCFG_LOGIN, user);
+					ed.commit();
 				}
 				
 				int netRes = getNetworkData(nwork, user, pwd);
