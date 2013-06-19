@@ -194,6 +194,42 @@ public class OrderDbAdapter {
 		return mDb.insert(SQLITE_TABLE, null, initialValues);
 	}
 	
+	public int updateOrder(	String aNo,
+			String displayNo,
+			String aCash,
+			String aAddress,
+			String client,
+			String timeB,
+			String timeE,
+			String tdd,
+			String Cont,
+			String ContPhone,
+			String Packs,
+			String Wt,
+			String VolWt,
+			String Rems,
+			String ordStatus
+			) {
+		ContentValues updValues = new ContentValues();
+		// initialValues.put(KEY_aNo, aNo);
+		updValues.put(KEY_displayNo, displayNo);
+		updValues.put(KEY_aCash, aCash);
+		updValues.put(KEY_aAddress, aAddress);
+		updValues.put(KEY_client, client);
+		updValues.put(KEY_timeB, timeB);
+		updValues.put(KEY_timeE, timeE);
+		updValues.put(KEY_tdd, tdd);
+		updValues.put(KEY_Cont, Cont);
+		updValues.put(KEY_ContPhone, ContPhone);
+		updValues.put(KEY_Packs, Packs);
+		updValues.put(KEY_Wt, Wt);
+		updValues.put(KEY_VolWt, VolWt);
+		updValues.put(KEY_Rems, Rems);
+		updValues.put(KEY_ordStatus, ordStatus);
+		
+		return mDb.update(SQLITE_TABLE, updValues, KEY_aNo+"=?", new String [] {aNo});
+	}
+	
 	public boolean deleteAllOrders() {
 
 		int doneDelete = 0;

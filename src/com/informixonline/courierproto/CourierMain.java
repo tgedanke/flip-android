@@ -380,8 +380,8 @@ public class CourierMain extends Activity implements OnClickListener {
 						Editor ed = sharedAppConfig.edit();
 						String netAddr = etNetAddr.getText().toString();
 						ed.putString(APPCFG_ADDR_URL, netAddr);
-						ed.putString(APPCFG_LOGIN_URL, netAddr + "/fp/cr/data/login.php");
-						ed.putString(APPCFG_GETDATA_URL, netAddr + "/fp/cr/data/data.php");
+						ed.putString(APPCFG_LOGIN_URL, netAddr + "cr/data/login.php");
+						ed.putString(APPCFG_GETDATA_URL, netAddr + "cr/data/data.php");
 						ed.commit();
 						
 				    	login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");

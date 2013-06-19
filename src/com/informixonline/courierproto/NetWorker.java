@@ -183,6 +183,24 @@ public class NetWorker {
 											ord.getString("isview"),
 											ord.getString("rcpn")
 								);
+						} else {
+							// учитываем что данные на сервере могли изменится, делаем update каждой неновой записи
+							int cntUpdOrders = dbhelper.updateOrder(ord.getString("ano"),
+									ord.getString("displayno"),
+									ord.getString("acash"),
+									ord.getString("aaddress"),
+									ord.getString("client"),
+									ord.getString("timeb"),
+									ord.getString("timee"),
+									ord.getString("tdd"),
+									ord.getString("cont"),
+									ord.getString("contphone"),
+									ord.getString("packs"),
+									ord.getString("wt"),
+									ord.getString("volwt"),
+									ord.getString("rems"),
+									ord.getString("ordstatus"));
+							Log.d("NETWORKER", "UPDATE non new record, count = " + cntUpdOrders);
 						}
 						
 					}
