@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:padding="3dp"
             android:text="@string/orders_head"
-            android:textSize="12sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tvCourName"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="tvCourName"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tvRefresh"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text=" Обновлено:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tvRefrTime"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:text="tvRefrTime"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tvNewAll"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:text=" Новых/Всего: "
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tvNewRecs"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:text="tvNewRecs"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tvDelNewAll"
@@ -65,7 +65,8 @@
             android:id="@+id/tvAllRecs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="tvAllRecs" />
+            android:text="tvAllRecs"
+            android:textSize="16dp" />
 
         <ImageView
             android:id="@+id/imgvSrvOff"
