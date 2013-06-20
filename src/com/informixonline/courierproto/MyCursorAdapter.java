@@ -88,7 +88,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		
 		TextView tvClient = (TextView)view.findViewById(R.id.tvClient);
 		String strtvClient = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_client));
-		if (strtvClient.equalsIgnoreCase("null")) {
+		if (strtvClient.equalsIgnoreCase("null") || strtvClient.equals(0)) {
 			tvClient.setText("");
 		} else {
 			tvClient.setText(strtvClient);

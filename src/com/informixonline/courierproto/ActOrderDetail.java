@@ -36,16 +36,45 @@ public class ActOrderDetail extends Activity {
 		String tvDorder_state_ordStatus = intent.getStringExtra("tvDorder_state_ordStatus");
 		tvDorder_state.setText(tvDorder_state_ordStatus);
 		
-		tvDacash.setText(intent.getStringExtra("tvDacash"));
-		tvDaddr.setText(intent.getStringExtra("tvDaddr_aAddress"));
-		tvDcomp_name.setText(intent.getStringExtra("tvDcomp_name_client"));
-		tvDcontact.setText(intent.getStringExtra("tvDcontact_Cont"));
-		tvDcontact_num.setText(intent.getStringExtra("tvDcontact_num_ContPhone"));
-		tvDtimeBE.setText(intent.getStringExtra("tvDtimeBE"));
-		tvDpos_num.setText(intent.getStringExtra("tvDpos_num_Packs"));
-		tvDweight.setText(intent.getStringExtra("tvDweight_Wt"));
-		tvDvol_weight.setText(intent.getStringExtra("tvDvol_weight_VolWt"));
-		tvDcomment.setText(intent.getStringExtra("tvDcomment"));
+		String strtvDacash = intent.getStringExtra("tvDacash");
+		if (strtvDacash.equalsIgnoreCase("null")) {strtvDacash = "0";};
+		tvDacash.setText(strtvDacash);
+		
+		String strtvDaddr_aAddress = intent.getStringExtra("tvDaddr_aAddress");
+		if (strtvDaddr_aAddress.equalsIgnoreCase("null")) {strtvDaddr_aAddress = "";};
+		tvDaddr.setText(strtvDaddr_aAddress);
+		
+		String strtvDcomp_name_client = intent.getStringExtra("tvDcomp_name_client");
+		if (strtvDcomp_name_client.equalsIgnoreCase("null")) {strtvDcomp_name_client = "";};
+		tvDcomp_name.setText(strtvDcomp_name_client);
+		
+		String strtvDcontact_Cont = intent.getStringExtra("tvDcontact_Cont");
+		if (strtvDcontact_Cont.equalsIgnoreCase("null")) {strtvDcontact_Cont = "";};
+		tvDcontact.setText(strtvDcontact_Cont);
+		
+		String strtvDcontact_num_ContPhone = intent.getStringExtra("tvDcontact_num_ContPhone");
+		if (strtvDcontact_num_ContPhone.equalsIgnoreCase("null")) {strtvDcontact_num_ContPhone = "";};
+		tvDcontact_num.setText(strtvDcontact_num_ContPhone);
+		
+		String strtvDtimeBE = intent.getStringExtra("tvDtimeBE");
+		if (strtvDtimeBE.equalsIgnoreCase("null")) {strtvDtimeBE = "";};
+		tvDtimeBE.setText(strtvDtimeBE);
+		
+		String strtvDpos_num_Packs = intent.getStringExtra("tvDpos_num_Packs");
+		if (strtvDpos_num_Packs.equalsIgnoreCase("null")) {strtvDpos_num_Packs = "";};
+		tvDpos_num.setText(strtvDpos_num_Packs);
+		
+		String strtvDweight_Wt = intent.getStringExtra("tvDweight_Wt");
+		if (strtvDweight_Wt.equalsIgnoreCase("null")) {strtvDweight_Wt = "";};
+		tvDweight.setText(strtvDweight_Wt);
+		
+		String strtvDvol_weight_VolWt = intent.getStringExtra("tvDvol_weight_VolWt");
+		if (strtvDvol_weight_VolWt.equalsIgnoreCase("null")) {strtvDvol_weight_VolWt = "";};
+		tvDvol_weight.setText(strtvDvol_weight_VolWt);
+		
+		String strtvDcomment = intent.getStringExtra("tvDcomment");
+		if (strtvDcomment.equalsIgnoreCase("null")) {strtvDcomment = "";}
+		tvDcomment.setText(strtvDcomment);
 
 	}
 }
