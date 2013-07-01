@@ -33,8 +33,12 @@ public class ActOrderDetail extends Activity {
 		String Dorder_num = intent.getStringExtra("tvDorder_num");
 		tvDorder_num.setText(Dorder_num);
 		
-		String tvDorder_state_ordStatus = intent.getStringExtra("tvDorder_state_ordStatus");
-		tvDorder_state.setText(tvDorder_state_ordStatus);
+		//String tvDorder_state_ordStatus = intent.getStringExtra("tvDorder_state_ordStatus");
+		//tvDorder_state.setText(tvDorder_state_ordStatus);
+		
+		String strtvDorder_state_ordStatus = intent.getStringExtra("tvDorder_state_ordStatus");
+		if (strtvDorder_state_ordStatus.equalsIgnoreCase("null")) {strtvDorder_state_ordStatus = "";};
+		tvDorder_state.setText(strtvDorder_state_ordStatus);
 		
 		String strtvDacash = intent.getStringExtra("tvDacash");
 		if (strtvDacash.equalsIgnoreCase("null")) {strtvDacash = "0";};

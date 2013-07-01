@@ -17,7 +17,8 @@ import android.widget.TextView;
  * јдаптер дл€ вывода элементов списка
  */
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) 
+//@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) 
+@TargetApi(16)
 public class MyCursorAdapter extends SimpleCursorAdapter {
 	   
 	   public MyCursorAdapter(Context context, int layout, Cursor c,
@@ -67,7 +68,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		// ѕодсветка выбранной записи и остальных
 		if (CourierMain.ordersId == cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID))) {
 			// выбранна€ запись - зеленым
-			llvMain.setBackgroundColor(Color.rgb(0,255,127));
+			// llvMain.setBackgroundColor(Color.rgb(0,255,127)); теперь за подсветку выбранного отвечает селектор
 		} else if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isview)).equals("1")) {
 			// просмотренные записи - белым
 			llvMain.setBackgroundColor(Color.WHITE);

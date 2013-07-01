@@ -54,7 +54,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) 
+//@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+@TargetApi(16)
 public class CourierMain extends Activity implements OnClickListener {
 	
 	static long ordersId; // ID заказа выбранного в списке для подсветки через CustomAdapter
@@ -114,7 +115,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
+		
 		// Получаем сохраненные сетевые настройки
     	SharedPreferences sharedAppConfig;
     	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
@@ -192,6 +193,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnAll.setOnClickListener(this);	
 		// Generate ListView from SQLite Database
 		// displayListView(); moved to dialog
+
 	}
 	
 	// Получение результатов от опр.активити в главной активити (опр.по коду requestCode)
@@ -542,6 +544,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		listView.setAdapter(dataAdapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		
+		// Селектор
+		listView.setSelector(R.drawable.selector_item);
+		
 		// Отметка заказа в списке
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -552,7 +557,8 @@ public class CourierMain extends Activity implements OnClickListener {
 				Cursor cursor = (Cursor) listView.getItemAtPosition(position);
 				
 				// Меняем цвет выделенного элемента списка
-				// listView.getChildAt(position).setBackgroundColor(Color.BLUE);
+				//listView.getChildAt(position).setBackgroundColor(Color.RED);
+				
 				
 				// Получаем значение поля этой записи из таблицы
 				// String ordersClient = cursor.getString(cursor
@@ -587,6 +593,12 @@ public class CourierMain extends Activity implements OnClickListener {
 				// dbHelper.updOrderCatchIt(ordersId, true);
 				//tvNewAllRecs.setText(cursor.getCount());
 				
+				// Подсветка выбранной записи и остальных - 28.06 тест работает некорректно
+/*				if (ordersId == cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID))) {
+					// выбранная запись - зеленым
+					//llvMain.setBackgroundColor(Color.RED);
+					listView.getChildAt(position).setBackgroundColor(Color.RED);
+				}*/
 			}
 		});
 
@@ -804,9 +816,9 @@ public class CourierMain extends Activity implements OnClickListener {
 			// обновляем поле isredy
 			// dbHelper.updOrderIsRedy(ordersId);
 			dbHelper.updOrderIsView(ordersId);
-			cursor.requery();
+/*			cursor.requery();
 			dataAdapter.swapCursor(dbHelper.fetchModOrders());
-			dataAdapter.notifyDataSetChanged();
+			dataAdapter.notifyDataSetChanged();*/
 			if (recType_forDetail.equals("0")) {
 				// Детали заказа
 				Intent intent = new Intent(this, ActOrderDetail.class);
@@ -844,6 +856,10 @@ public class CourierMain extends Activity implements OnClickListener {
 				intent.putExtra("tvDcomment", tvDcomment);
 				startActivity(intent);
 			}
+			
+			cursor.requery();
+			dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			dataAdapter.notifyDataSetChanged();
 			
 			// Передача данных на сервер				
 			Log.d("THREAD", Thread.currentThread().getName());
