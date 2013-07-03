@@ -105,11 +105,16 @@
             android:text="Время" />
 
         <Button
+            android:id="@+id/btnType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   Тип   " />
+
+        <Button
             android:id="@+id/btnExit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Выход" />
-
     </LinearLayout>
 
     <ListView

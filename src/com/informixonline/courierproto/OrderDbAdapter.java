@@ -352,6 +352,12 @@ public class OrderDbAdapter {
 		return mCursor;
 	}
 	
+	public Cursor fetchSortType() {
+		Cursor mCursor = null;
+		mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_ordType + ", " + KEY_aAddress, null);
+		return mCursor;
+	}
+	
 	// Взятие/возврат выбранного заказа в работу
 	int updOrderCatchIt (long rowid, String aNo) // long rowid, boolean isCatch
 	{

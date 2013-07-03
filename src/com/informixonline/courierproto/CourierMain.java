@@ -105,7 +105,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll; //btnSettings
+	Button btnAddr, btnClient, btnTime, btnType, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll; //btnSettings
 	
 	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
@@ -172,6 +172,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 		btnTime = (Button)findViewById(R.id.btnTime);
 		btnTime.setOnClickListener(this);
+		
+		btnType = (Button)findViewById(R.id.btnType);
+		btnType.setOnClickListener(this);
 		
 		//btnSettings = (Button)findViewById(R.id.btnSaveSet);
 		//btnSettings.setOnClickListener(this);
@@ -694,6 +697,12 @@ public class CourierMain extends Activity implements OnClickListener {
 			Log.d("CourierMain", "--- In SORT кнопка Время ---");
 			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
 			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(SQLSORTORDER));
+			dataAdapter.notifyDataSetChanged();
+			break;
+			
+		case R.id.btnType:
+			Log.d("CourierMain", "--- In SORT кнопка Время ---");
+			dataAdapter.swapCursor(dbHelper.fetchSortType());
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
