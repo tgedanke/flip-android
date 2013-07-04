@@ -701,7 +701,8 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 			
 		case R.id.btnType:
-			Log.d("CourierMain", "--- In SORT кнопка Время ---");
+			Log.d("CourierMain", "--- In SORT кнопка Тип ---");
+			cursor.requery();
 			dataAdapter.swapCursor(dbHelper.fetchSortType());
 			dataAdapter.notifyDataSetChanged();
 			break;
@@ -867,7 +868,8 @@ public class CourierMain extends Activity implements OnClickListener {
 			}
 			
 			cursor.requery();
-			dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			//dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			//dataAdapter.swapCursor(cursor);
 			dataAdapter.notifyDataSetChanged();
 			
 			// Передача данных на сервер				

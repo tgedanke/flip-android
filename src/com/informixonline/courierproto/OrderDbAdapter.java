@@ -354,7 +354,7 @@ public class OrderDbAdapter {
 	
 	public Cursor fetchSortType() {
 		Cursor mCursor = null;
-		mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_ordType + ", " + KEY_aAddress, null);
+		mCursor = mDb.rawQuery(SQL_CASE + " order by " + KEY_ordType + ", " + KEY_aAddress + " desc", null);
 		return mCursor;
 	}
 	
