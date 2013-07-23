@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="android_green">#99CC00</color>
+    <color name="black_alpha">#9933CC</color>
+    <color name="white_alpha">#FFBB33</color>
+</resources>
