@@ -38,18 +38,18 @@ public class OrderDbAdapter {
 	public static final String KEY_rcpn = "rcpn";
 	public static final String KEY_comment = "comment";
 
-	// Поля для запроса с подстановкой
+	// РџРѕР»СЏ РґР»СЏ Р·Р°РїСЂРѕСЃР° СЃ РїРѕРґСЃС‚Р°РЅРѕРІРєРѕР№
 	public static final String KEY_OSorDNorEMP = "OSorDNorEMP";
 	public static final String KEY_timeBE = "timeBE";
 	
-	// Поле для локального хранения кол-ва посылок
+	// РџРѕР»Рµ РґР»СЏ Р»РѕРєР°Р»СЊРЅРѕРіРѕ С…СЂР°РЅРµРЅРёСЏ РєРѕР»-РІР° РїРѕСЃС‹Р»РѕРє
 	public static final String KEY_locnumitems = "locnumitems";
 	
 	static final String SQL_CASE = "select _id, " +
 			"case " + 
-			"when recType = '0' then 'Заказ' " +
-			"when recType = '1' then 'Накладная' " +
-			"when recType = '2' then 'Счет' " +
+			"when recType = '0' then 'Р—Р°РєР°Р·' " +
+			"when recType = '1' then 'РќР°РєР»Р°РґРЅР°СЏ' " +
+			"when recType = '2' then 'РЎС‡РµС‚' " +
 		"end as recType, " +
 		"case " +
 			"when recType = '0' then ordStatus "+
@@ -59,12 +59,12 @@ public class OrderDbAdapter {
 		"end as OSorDNorEMP, "+
 		"case "+
 			"when inWay = '0' then '0' "+
-			"else 'Еду' "+
+			"else 'Р•РґСѓ' "+
 		"end as inway, "+
 		"isready, "+
 		"aAddress, client, "+
 		"case "+
-			"when recType = '0' then ' с ' || timeB || ' по ' || timeE "+
+			"when recType = '0' then ' СЃ ' || timeB || ' РїРѕ ' || timeE "+
 			"else '' "+
 		"end as timeBE "+
 		", recType as recType_forDetail " +
@@ -94,7 +94,7 @@ public class OrderDbAdapter {
 
 	private final Context mCtx;
 
-	// Структура таблицы
+	// РЎС‚СЂСѓРєС‚СѓСЂР° С‚Р°Р±Р»РёС†С‹
 	private static final String DATABASE_CREATE = "CREATE TABLE if not exists "
 			+ SQLITE_TABLE + " (" + KEY_ROWID
 			+ " integer PRIMARY KEY autoincrement," + KEY_aNo + ","
@@ -144,7 +144,7 @@ public class OrderDbAdapter {
 		}
 	}
 
-	// Создание записи в таблице
+	// РЎРѕР·РґР°РЅРёРµ Р·Р°РїРёСЃРё РІ С‚Р°Р±Р»РёС†Рµ
 	public long createOrder(	String aNo,
 								String displayNo,
 								String aCash,
@@ -239,14 +239,14 @@ public class OrderDbAdapter {
 
 	}
 	
-	// Пока не делаю
+	// РџРѕРєР° РЅРµ РґРµР»Р°СЋ
 	public Cursor fetchOrdersByName(String inputText) throws SQLException {
 		Log.w(TAG, inputText);
 
 		return null;
 	}
 	
-	// Извлекает все записи без подстановки
+	// РР·РІР»РµРєР°РµС‚ РІСЃРµ Р·Р°РїРёСЃРё Р±РµР· РїРѕРґСЃС‚Р°РЅРѕРІРєРё
 	public Cursor fetchAllOrders() {
 
 		Cursor mCursor = mDb.query(SQLITE_TABLE, new String[] { KEY_ROWID,
@@ -282,7 +282,7 @@ public class OrderDbAdapter {
 	
 	public Cursor fetchModOrders() {
 		
-		Cursor mCursor = mDb.rawQuery(SQL_CASE, null); // убрал " order by " + KEY_isview + " asc"
+		Cursor mCursor = mDb.rawQuery(SQL_CASE, null); // СѓР±СЂР°Р» " order by " + KEY_isview + " asc"
 		
 		if (mCursor != null) {
 			mCursor.moveToFirst();
@@ -358,35 +358,35 @@ public class OrderDbAdapter {
 		return mCursor;
 	}
 	
-	// Взятие/возврат выбранного заказа в работу
+	// Р’Р·СЏС‚РёРµ/РІРѕР·РІСЂР°С‚ РІС‹Р±СЂР°РЅРЅРѕРіРѕ Р·Р°РєР°Р·Р° РІ СЂР°Р±РѕС‚Сѓ
 	int updOrderCatchIt (long rowid, String aNo) // long rowid, boolean isCatch
 	{
 		ContentValues cv = new ContentValues();
-		int CATCH_OK = 1; // заказ взят
-		int CATCH_RES = 0; // заказ сброшен
-		int CATCHED_OTHER = 2; // другая запись со статусом взята
+		int CATCH_OK = 1; // Р·Р°РєР°Р· РІР·СЏС‚
+		int CATCH_RES = 0; // Р·Р°РєР°Р· СЃР±СЂРѕС€РµРЅ
+		int CATCHED_OTHER = 2; // РґСЂСѓРіР°СЏ Р·Р°РїРёСЃСЊ СЃРѕ СЃС‚Р°С‚СѓСЃРѕРј РІР·СЏС‚Р°
 		int res = 3;
 /*		if (isCatch) {
 			cv.put(KEY_inway, "1");
-			Log.d(TAG, "Заказ будет взят");
+			Log.d(TAG, "Р—Р°РєР°Р· Р±СѓРґРµС‚ РІР·СЏС‚");
 		} else {
 			cv.put(KEY_inway, "0");
-			Log.d(TAG, "Заказ будет сброшен");
+			Log.d(TAG, "Р—Р°РєР°Р· Р±СѓРґРµС‚ СЃР±СЂРѕС€РµРЅ");
 		}*/
 		Cursor mCursor = mDb.rawQuery("select aNo from orders where inway = ?", new String[] {"1"});
 		if (mCursor != null) {
-			if (! mCursor.moveToFirst()) { // не найдены другие записи у которых ЕДУ = 1
+			if (! mCursor.moveToFirst()) { // РЅРµ РЅР°Р№РґРµРЅС‹ РґСЂСѓРіРёРµ Р·Р°РїРёСЃРё Сѓ РєРѕС‚РѕСЂС‹С… Р•Р”РЈ = 1
 				cv.put(KEY_inway, "1");
-				Log.d(TAG, "Заказ будет взят");
+				Log.d(TAG, "Р—Р°РєР°Р· Р±СѓРґРµС‚ РІР·СЏС‚");
 				res = CATCH_OK;
 				mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 				Log.d(TAG, "Updated record rowid = " + rowid + " and res = " + res);
-			} else { // найдена запись у которой ЕДУ = 1
+			} else { // РЅР°Р№РґРµРЅР° Р·Р°РїРёСЃСЊ Сѓ РєРѕС‚РѕСЂРѕР№ Р•Р”РЈ = 1
 				String selaNo = mCursor.getString(mCursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_aNo));
 				
-				if (selaNo.equals(aNo)) { // если она текущая сбрасываем ЕДУ = 0 или возвращаем CATCHED_OTHER если не текущая
+				if (selaNo.equals(aNo)) { // РµСЃР»Рё РѕРЅР° С‚РµРєСѓС‰Р°СЏ СЃР±СЂР°СЃС‹РІР°РµРј Р•Р”РЈ = 0 РёР»Рё РІРѕР·РІСЂР°С‰Р°РµРј CATCHED_OTHER РµСЃР»Рё РЅРµ С‚РµРєСѓС‰Р°СЏ
 					cv.put(KEY_inway, "0");
-					Log.d(TAG, "Заказ будет сброшен");
+					Log.d(TAG, "Р—Р°РєР°Р· Р±СѓРґРµС‚ СЃР±СЂРѕС€РµРЅ");
 					res = CATCH_RES;
 					mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 					Log.d(TAG, "Updated record rowid = " + rowid + " and res = " + res);
@@ -398,17 +398,17 @@ public class OrderDbAdapter {
 		return res;
 	}
 	
-	// Обновление флага что заказ просмотрен (не просмотрен а готов) (Поле Ок)
+	// РћР±РЅРѕРІР»РµРЅРёРµ С„Р»Р°РіР° С‡С‚Рѕ Р·Р°РєР°Р· РїСЂРѕСЃРјРѕС‚СЂРµРЅ (РЅРµ РїСЂРѕСЃРјРѕС‚СЂРµРЅ Р° РіРѕС‚РѕРІ) (РџРѕР»Рµ РћРє)
 	int updOrderIsRedy(long rowid, boolean isready) {
 		ContentValues cv = new ContentValues();
 		if (isready) {
 			cv.put(KEY_isready, "1"); 
-			Log.d("ORDERDBADAPTER", "Статус ОК будет установлен");
+			Log.d("ORDERDBADAPTER", "РЎС‚Р°С‚СѓСЃ РћРљ Р±СѓРґРµС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅ");
 		} else {
 			cv.put(KEY_isready, "0");
-			Log.d("ORDERDBADAPTER", "Статус ОК будет сброшен");
+			Log.d("ORDERDBADAPTER", "РЎС‚Р°С‚СѓСЃ РћРљ Р±СѓРґРµС‚ СЃР±СЂРѕС€РµРЅ");
 		}
-		cv.put(KEY_inway, "0"); // сбрасываем статус Еду (при нажатии Ок)
+		cv.put(KEY_inway, "0"); // СЃР±СЂР°СЃС‹РІР°РµРј СЃС‚Р°С‚СѓСЃ Р•РґСѓ (РїСЂРё РЅР°Р¶Р°С‚РёРё РћРє)
 		int rowsUpd = mDb.update(SQLITE_TABLE, cv, KEY_ROWID+"=?", new String [] {Long.toString(rowid)});
 		return rowsUpd;
 	}
@@ -421,7 +421,7 @@ public class OrderDbAdapter {
 		return rowsUpd;
 	}
 	
-	// Обновление поля заказ просмотрен (при нажатии на кнопку Подробно)
+	// РћР±РЅРѕРІР»РµРЅРёРµ РїРѕР»СЏ Р·Р°РєР°Р· РїСЂРѕСЃРјРѕС‚СЂРµРЅ (РїСЂРё РЅР°Р¶Р°С‚РёРё РЅР° РєРЅРѕРїРєСѓ РџРѕРґСЂРѕР±РЅРѕ)
 	int updOrderIsView(long rowid) {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_isview, "1");
@@ -437,7 +437,7 @@ public class OrderDbAdapter {
 		return rowsUpd;
 	}
 	
-	// Пометка всех заказов как просмотренных
+	// РџРѕРјРµС‚РєР° РІСЃРµС… Р·Р°РєР°Р·РѕРІ РєР°Рє РїСЂРѕСЃРјРѕС‚СЂРµРЅРЅС‹С…
 	int updAllView() {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_isview, "1");
@@ -445,7 +445,7 @@ public class OrderDbAdapter {
 		return rowsUpd;
 	}
 	
-	// Сохранение данных для отправки при отсутствии сети
+	// РЎРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РґР»СЏ РѕС‚РїСЂР°РІРєРё РїСЂРё РѕС‚СЃСѓС‚СЃС‚РІРёРё СЃРµС‚Рё
 	void saveSnddata(String sndtype, String [] snddata) {
 		// snddata
 		ContentValues cv = new ContentValues();
@@ -457,7 +457,7 @@ public class OrderDbAdapter {
 		mDb.insert(OFFLINE_TABLE, null, cv);
 	}
 	
-	// Получаем оффлайн данные для отправки на сервер
+	// РџРѕР»СѓС‡Р°РµРј РѕС„С„Р»Р°Р№РЅ РґР°РЅРЅС‹Рµ РґР»СЏ РѕС‚РїСЂР°РІРєРё РЅР° СЃРµСЂРІРµСЂ
 	List<String[]> getSnddata() {
 		List<String[]> strSnddata = new ArrayList<String[]>();
 		String SQL = "select _id, sndtype, f1,f2,f3,f4 from snddata";
@@ -465,14 +465,14 @@ public class OrderDbAdapter {
 		
 		if (mCursor.moveToFirst()) {
 			//String [] data = new String [6];
-			do { //получаем {f1, f2, f3, f4} == { orderDetail_aNO или wb_no, event или p_d_in, tdd или eventtime, rcpn или rem = "" }
+			do { //РїРѕР»СѓС‡Р°РµРј {f1, f2, f3, f4} == { orderDetail_aNO РёР»Рё wb_no, event РёР»Рё p_d_in, tdd РёР»Рё eventtime, rcpn РёР»Рё rem = "" }
 				String [] data = new String [6];
-				data[0] = mCursor.getString(2); // wb_no или ano
-				data[1] = mCursor.getString(3); // p_d_in (дата) или event
-				data[2] = mCursor.getString(4); // tdd или eventtime
-				data[3] = mCursor.getString(5); // rcpn или rem ""
-				data[4] = mCursor.getString(0); // rowid для удаления при успешной отправке 
-				data[5] = mCursor.getString(1); // для определения типа - sdntype = SetPOD или courLog
+				data[0] = mCursor.getString(2); // wb_no РёР»Рё ano
+				data[1] = mCursor.getString(3); // p_d_in (РґР°С‚Р°) РёР»Рё event
+				data[2] = mCursor.getString(4); // tdd РёР»Рё eventtime
+				data[3] = mCursor.getString(5); // rcpn РёР»Рё rem ""
+				data[4] = mCursor.getString(0); // rowid РґР»СЏ СѓРґР°Р»РµРЅРёСЏ РїСЂРё СѓСЃРїРµС€РЅРѕР№ РѕС‚РїСЂР°РІРєРµ 
+				data[5] = mCursor.getString(1); // РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ С‚РёРїР° - sdntype = SetPOD РёР»Рё courLog
 				strSnddata.add(data);
 			} while (mCursor.moveToNext());
 		} else {
@@ -481,7 +481,7 @@ public class OrderDbAdapter {
 		return strSnddata;
 	}
 	
-	// Удаление оффлайн данных после отправки на сервер
+	// РЈРґР°Р»РµРЅРёРµ РѕС„С„Р»Р°Р№РЅ РґР°РЅРЅС‹С… РїРѕСЃР»Рµ РѕС‚РїСЂР°РІРєРё РЅР° СЃРµСЂРІРµСЂ
 	boolean deleteOfflineData(String rowid) {
 		int doneDelete = 0;
 		doneDelete = mDb.delete(OFFLINE_TABLE, "_id=?", new String [] {rowid});
@@ -489,20 +489,20 @@ public class OrderDbAdapter {
 		return doneDelete >= 0;
 	}
 	
-	// Необходимо для определения есть ли такой заказ aNo локально или это новая запись которую надо сохранить локально
+	// РќРµРѕР±С…РѕРґРёРјРѕ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РµСЃС‚СЊ Р»Рё С‚Р°РєРѕР№ Р·Р°РєР°Р· aNo Р»РѕРєР°Р»СЊРЅРѕ РёР»Рё СЌС‚Рѕ РЅРѕРІР°СЏ Р·Р°РїРёСЃСЊ РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ СЃРѕС…СЂР°РЅРёС‚СЊ Р»РѕРєР°Р»СЊРЅРѕ
 	boolean isNewOrder(String aNo) {
-		boolean res = true; // запись новая локально нет
+		boolean res = true; // Р·Р°РїРёСЃСЊ РЅРѕРІР°СЏ Р»РѕРєР°Р»СЊРЅРѕ РЅРµС‚
 		String SQL = "select aNo from orders where aNo = ?";
 		Cursor mCursor = mDb.rawQuery(SQL, new String[] {aNo});
 
 		if (mCursor.moveToFirst()) {
-			res = false; // такая запись есть локально
+			res = false; // С‚Р°РєР°СЏ Р·Р°РїРёСЃСЊ РµСЃС‚СЊ Р»РѕРєР°Р»СЊРЅРѕ
 		}
 		Log.d("ORDERDBADAPTER", "isNewOrder record present is " + res);
 		return res;
 	}
 	
-	// Удаление несуществующих на сервере записей
+	// РЈРґР°Р»РµРЅРёРµ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… РЅР° СЃРµСЂРІРµСЂРµ Р·Р°РїРёСЃРµР№
 	boolean deleteNotExistOrd(String aNoListOnServer) {
 		boolean cntDel = false;
 		String SQLDEL = "delete from orders where aNo not in (" + aNoListOnServer + ")";
@@ -531,23 +531,23 @@ public class OrderDbAdapter {
 		return mCursor.getCount();
 	}
 
-	// Тестовые данные
+	// РўРµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ
 	public void insertTestEntries () {
 		createOrder(
 	   //aNo, displayNo, aCash, aAddress, client, timeB, timeE, tdd, Cont, ContPhone, Packs, Wt, VolWt, Rems, ordStatus, ordType, recType, isready, inway, isview, rcpn)
-		"1509-9545","1509-9545","NULL","4-Й ЛИХАЧЁВСКИЙ ПЕР. 4","ЭСАБ (4-Й ЛИХ)","NULL","NULL","10:15","МОМОТ","89857274131","2","2.7","0","Документы","NULL","NULL","1","0","0","0","NULL");
-		createOrder("3988","3988","NULL","АДМИРАЛА МАКАРОВА, Д.8","ЮПС ЭС СИ ЭС","NULL","NULL","16:42","ЮПС Эс Си Эс","785-71-50","1","0.1","0","","NULL","NULL","1","0","0","0","NULL");
-		createOrder("266121","ЗАКАЗ","NULL","ВОЙКОВСКИЙ 5-Й ПР. 2","БЕЗАНТ","9:00","17:30","NULL","любое","720-66-38,720-66-39","NULL","NULL","0","Куда: ROV -ЭКСПРЕСС ГРУЗ   , Получатель: ООО ТТЦ Импульс ПЛЮС +, Адрес:РОСТОВ-на ДОНУ  Семашко 117а/146 оф.12, Контакт: Дьяченко Михаил, Телефон: 2462-586, Примечание отправителя: ЭКЛЗ, Примечание получателя: сч № 2555","NULL","0","0","0","0","0","NULL");
-		createOrder("37965","37965","NULL","ВРУБЕЛЯ Д.12 БЦ СОКОЛ 1","МАРАТЕКС","NULL","NULL","12:25","Маратекс","89169904999","1","0.2","0","","NULL","NULL","1","0","0","0","NULL");
-		createOrder("1616-3520","1616-3520","NULL","ЛЕНИНГРАДСКИЙ ПР-Т  Д.63 ОФ.504","АПРИОРИ ООО","NULL","NULL","12:05","РЕМИЗОВА ВЛАДА ","9067906193","1","18.6","0","Документы","NULL","NULL","1","0","1","0","NULL");
-		createOrder("1619-6322","1619-6322","NULL","ЛЕНИНГРАДСКОЕ ШОССЕ 65 СТР5","СИНЕЛАБЛОГИСТИКА","NULL","NULL","16:30","Синелаблогистика","7893724","2","6","0","","NULL","NULL","1","0","0","0","NULL");
-		createOrder("32002431","32002431","NULL","ЛЕНИНГРАДСКОЕ ШОССЕ Д. 71 Г","ООО МЕТРО КЕШ ЭНД КЕРРИ","NULL","NULL","16:10","ООО Метро Кеш Энд Ке","8-495-502-17-72","1","0.2","0","","NULL","NULL","1","0","0","0","NULL");
-		createOrder("1188354","1188354","NULL","ПР-Д.СТАРОПЕТРОВСКИЙ  Д.7А,  КОРП.25  АП.4", "ООО БЕЛЛЬ","NULL","NULL","12:52","ООО Белль","Сероштанова Светлана 495-","1","0.1","0","","NULL","NULL","1","0","0","0","NULL");
-		createOrder("812006317","812006317","NULL","СМОЛЬНАЯ 31 КВ 79","ВЕКТОРФОИЛТЕК","NULL","NULL","NULL","ТАТЬЯНА","9162391516","1","0.1","0","Документы","NULL","NULL","1","0","0","0","NULL");
-		createOrder("266130","ЗАКАЗ","NULL","СМОЛЬНАЯ УЛ. 14","СПЕКТР-АВИА ООО","13:30","18:00","NULL","СВЕТЛАНА .......","2312830","NULL","NULL","NULL","NULL","NULL","1","0","0","0","0","NULL");
-		createOrder("1286-6456","1286-6456","NULL","СМОЛЬНАЯ УЛ. 20А","ГЕКСАГОН ЦШК ООО","NULL","NULL","15:15","ЗЕЛЕНЧУК ВЛАДИМИР","89260012941","1","1.08","0","деталь с возвратом","NULL","NULL","1","0","0","0","NULL");
-		createOrder("266200","ЗАКАЗ","NULL","СМОЛЬНАЯ УЛ. 20А","ГЕКСОГОН","NULL","NULL","NULL","Антон ..Наталья","7887920","NULL","NULL","NULL","NULL","NULL","0","0","0","0","0","NULL");
-		createOrder("1203-7452","1203-7452","NULL","СТАРОПЕТРОВСКИЙ ПР-Д Д. 7 А СТР. 25","БЕЛЛЬ ООО ","NULL","NULL","12:52","ЗВОНКОВА","495-641-5790","1","0.7","0","Документы","NULL","NULL","1","0","0","0","NULL");
-		createOrder("1366-5298","1366-5298","NULL","УЛ ПРАВОБЕРЕЖНАЯ СТР 1Б","МЕДИА МАРКТ","NULL","NULL","15:58","ЖИЛЯБИНА ИРИНА","89250820980","1","1.26","0","ПЛАСТИКОВАЯ КАРТА","NULL","NULL","1","0","0","0","NULL");
+		"1509-9545","1509-9545","NULL","4-Р™ Р›РРҐРђР§РЃР’РЎРљРР™ РџР•Р . 4","Р­РЎРђР‘ (4-Р™ Р›РРҐ)","NULL","NULL","10:15","РњРћРњРћРў","89857274131","2","2.7","0","Р”РѕРєСѓРјРµРЅС‚С‹","NULL","NULL","1","0","0","0","NULL");
+		createOrder("3988","3988","NULL","РђР”РњРР РђР›Рђ РњРђРљРђР РћР’Рђ, Р”.8","Р®РџРЎ Р­РЎ РЎР Р­РЎ","NULL","NULL","16:42","Р®РџРЎ Р­СЃ РЎРё Р­СЃ","785-71-50","1","0.1","0","","NULL","NULL","1","0","0","0","NULL");
+		createOrder("266121","Р—РђРљРђР—","NULL","Р’РћР™РљРћР’РЎРљРР™ 5-Р™ РџР . 2","Р‘Р•Р—РђРќРў","9:00","17:30","NULL","Р»СЋР±РѕРµ","720-66-38,720-66-39","NULL","NULL","0","РљСѓРґР°: ROV -Р­РљРЎРџР Р•РЎРЎ Р“Р РЈР—   , РџРѕР»СѓС‡Р°С‚РµР»СЊ: РћРћРћ РўРўР¦ РРјРїСѓР»СЊСЃ РџР›Р®РЎ +, РђРґСЂРµСЃ:Р РћРЎРўРћР’-РЅР° Р”РћРќРЈ  РЎРµРјР°С€РєРѕ 117Р°/146 РѕС„.12, РљРѕРЅС‚Р°РєС‚: Р”СЊСЏС‡РµРЅРєРѕ РњРёС…Р°РёР», РўРµР»РµС„РѕРЅ: 2462-586, РџСЂРёРјРµС‡Р°РЅРёРµ РѕС‚РїСЂР°РІРёС‚РµР»СЏ: Р­РљР›Р—, РџСЂРёРјРµС‡Р°РЅРёРµ РїРѕР»СѓС‡Р°С‚РµР»СЏ: СЃС‡ в„– 2555","NULL","0","0","0","0","0","NULL");
+		createOrder("37965","37965","NULL","Р’Р РЈР‘Р•Р›РЇ Р”.12 Р‘Р¦ РЎРћРљРћР› 1","РњРђР РђРўР•РљРЎ","NULL","NULL","12:25","РњР°СЂР°С‚РµРєСЃ","89169904999","1","0.2","0","","NULL","NULL","1","0","0","0","NULL");
+		createOrder("1616-3520","1616-3520","NULL","Р›Р•РќРРќР“Р РђР”РЎРљРР™ РџР -Рў  Р”.63 РћР¤.504","РђРџР РРћР Р РћРћРћ","NULL","NULL","12:05","Р Р•РњРР—РћР’Рђ Р’Р›РђР”Рђ ","9067906193","1","18.6","0","Р”РѕРєСѓРјРµРЅС‚С‹","NULL","NULL","1","0","1","0","NULL");
+		createOrder("1619-6322","1619-6322","NULL","Р›Р•РќРРќР“Р РђР”РЎРљРћР• РЁРћРЎРЎР• 65 РЎРўР 5","РЎРРќР•Р›РђР‘Р›РћР“РРЎРўРРљРђ","NULL","NULL","16:30","РЎРёРЅРµР»Р°Р±Р»РѕРіРёСЃС‚РёРєР°","7893724","2","6","0","","NULL","NULL","1","0","0","0","NULL");
+		createOrder("32002431","32002431","NULL","Р›Р•РќРРќР“Р РђР”РЎРљРћР• РЁРћРЎРЎР• Р”. 71 Р“","РћРћРћ РњР•РўР Рћ РљР•РЁ Р­РќР” РљР•Р Р Р","NULL","NULL","16:10","РћРћРћ РњРµС‚СЂРѕ РљРµС€ Р­РЅРґ РљРµ","8-495-502-17-72","1","0.2","0","","NULL","NULL","1","0","0","0","NULL");
+		createOrder("1188354","1188354","NULL","РџР -Р”.РЎРўРђР РћРџР•РўР РћР’РЎРљРР™  Р”.7Рђ,  РљРћР Рџ.25  РђРџ.4", "РћРћРћ Р‘Р•Р›Р›Р¬","NULL","NULL","12:52","РћРћРћ Р‘РµР»Р»СЊ","РЎРµСЂРѕС€С‚Р°РЅРѕРІР° РЎРІРµС‚Р»Р°РЅР° 495-","1","0.1","0","","NULL","NULL","1","0","0","0","NULL");
+		createOrder("812006317","812006317","NULL","РЎРњРћР›Р¬РќРђРЇ 31 РљР’ 79","Р’Р•РљРўРћР Р¤РћРР›РўР•Рљ","NULL","NULL","NULL","РўРђРўР¬РЇРќРђ","9162391516","1","0.1","0","Р”РѕРєСѓРјРµРЅС‚С‹","NULL","NULL","1","0","0","0","NULL");
+		createOrder("266130","Р—РђРљРђР—","NULL","РЎРњРћР›Р¬РќРђРЇ РЈР›. 14","РЎРџР•РљРўР -РђР’РРђ РћРћРћ","13:30","18:00","NULL","РЎР’Р•РўР›РђРќРђ .......","2312830","NULL","NULL","NULL","NULL","NULL","1","0","0","0","0","NULL");
+		createOrder("1286-6456","1286-6456","NULL","РЎРњРћР›Р¬РќРђРЇ РЈР›. 20Рђ","Р“Р•РљРЎРђР“РћРќ Р¦РЁРљ РћРћРћ","NULL","NULL","15:15","Р—Р•Р›Р•РќР§РЈРљ Р’Р›РђР”РРњРР ","89260012941","1","1.08","0","РґРµС‚Р°Р»СЊ СЃ РІРѕР·РІСЂР°С‚РѕРј","NULL","NULL","1","0","0","0","NULL");
+		createOrder("266200","Р—РђРљРђР—","NULL","РЎРњРћР›Р¬РќРђРЇ РЈР›. 20Рђ","Р“Р•РљРЎРћР“РћРќ","NULL","NULL","NULL","РђРЅС‚РѕРЅ ..РќР°С‚Р°Р»СЊСЏ","7887920","NULL","NULL","NULL","NULL","NULL","0","0","0","0","0","NULL");
+		createOrder("1203-7452","1203-7452","NULL","РЎРўРђР РћРџР•РўР РћР’РЎРљРР™ РџР -Р” Р”. 7 Рђ РЎРўР . 25","Р‘Р•Р›Р›Р¬ РћРћРћ ","NULL","NULL","12:52","Р—Р’РћРќРљРћР’Рђ","495-641-5790","1","0.7","0","Р”РѕРєСѓРјРµРЅС‚С‹","NULL","NULL","1","0","0","0","NULL");
+		createOrder("1366-5298","1366-5298","NULL","РЈР› РџР РђР’РћР‘Р•Р Р•Р–РќРђРЇ РЎРўР  1Р‘","РњР•Р”РРђ РњРђР РљРў","NULL","NULL","15:58","Р–РР›РЇР‘РРќРђ РР РРќРђ","89250820980","1","1.26","0","РџР›РђРЎРўРРљРћР’РђРЇ РљРђР РўРђ","NULL","NULL","1","0","0","0","NULL");
 	}
 }

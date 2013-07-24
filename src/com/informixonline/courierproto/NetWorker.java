@@ -50,13 +50,13 @@ public class NetWorker {
     
     public int getData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String getdataURL) { 
         
-/*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
+/*        // Р’С‹РєР»СЋС‡Р°РµРј РїСЂРѕРІРµСЂРєСѓ СЂР°Р±РѕС‚С‹ СЃ СЃРµС‚СЊСЋ РІ С‚РµРєСѓС‰РµРј UI РїРѕС‚РѕРєРµ (РїРµСЂРµРЅРµСЃРµРЅРѕ РІ CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
-    	int cntNewOrders = 0; // кол-во новых записей
+    	int cntNewOrders = 0; // РєРѕР»-РІРѕ РЅРѕРІС‹С… Р·Р°РїРёСЃРµР№
     	
-    	// Параметры таймаута подключений
+    	// РџР°СЂР°РјРµС‚СЂС‹ С‚Р°Р№РјР°СѓС‚Р° РїРѕРґРєР»СЋС‡РµРЅРёР№
     	HttpParams httpParameters = new BasicHttpParams();
     	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
     	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
@@ -75,7 +75,7 @@ public class NetWorker {
         nvps_getdata.add(new BasicNameValuePair("dbAct", DBGET));
         //nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
         
-        // Регистрация на сервере
+        // Р РµРіРёСЃС‚СЂР°С†РёСЏ РЅР° СЃРµСЂРІРµСЂРµ
         try
         {
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8)); //HTTP.UTF_8
@@ -91,7 +91,7 @@ public class NetWorker {
                 	//System.out.println(line);
                 	Log.d(TAG_POST, line);
                 	
-                    // Получение имени пользователя
+                    // РџРѕР»СѓС‡РµРЅРёРµ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
                 	//if (this.username == null) {
 	                    try {
 	                    	JSONObject jObjlogin = new JSONObject(line);
@@ -109,18 +109,18 @@ public class NetWorker {
                 }
                 	   
                 if (! loginRes.equals("true")) {
-                	return -2; // Неверное имя пользователя или пароль
+                	return -2; // РќРµРІРµСЂРЅРѕРµ РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РїР°СЂРѕР»СЊ
                 }
                 intro.close();
                 
 
             } else {
-            	// Реагируем на ошибки доступа к серверу
+            	// Р РµР°РіРёСЂСѓРµРј РЅР° РѕС€РёР±РєРё РґРѕСЃС‚СѓРїР° Рє СЃРµСЂРІРµСЂСѓ
             	return -1;
             }
             
-            // Получение отсутствующих данных и удаление несуществующих на сервере
-            String aNoListOnServer = ""; // Список заказов принятых с сервера (нужен для удаления локальных записей которые удалены на сервере)
+            // РџРѕР»СѓС‡РµРЅРёРµ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РёС… РґР°РЅРЅС‹С… Рё СѓРґР°Р»РµРЅРёРµ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… РЅР° СЃРµСЂРІРµСЂРµ
+            String aNoListOnServer = ""; // РЎРїРёСЃРѕРє Р·Р°РєР°Р·РѕРІ РїСЂРёРЅСЏС‚С‹С… СЃ СЃРµСЂРІРµСЂР° (РЅСѓР¶РµРЅ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ Р»РѕРєР°Р»СЊРЅС‹С… Р·Р°РїРёСЃРµР№ РєРѕС‚РѕСЂС‹Рµ СѓРґР°Р»РµРЅС‹ РЅР° СЃРµСЂРІРµСЂРµ)
             
             //DefaultHttpClient cliente=new DefaultHttpClient();
             HttpPost post_data=new HttpPost(getdataURL);
@@ -157,7 +157,7 @@ public class NetWorker {
 						aNoListOnServer = "'" + ord.getString("ano") + "' , " + aNoListOnServer;
 						
 						if (dbhelper.isNewOrder(ord.getString("ano"))) {
-							// Необходимо для определения есть ли такой заказ aNo локально или это новая запись которую надо сохранить локально
+							// РќРµРѕР±С…РѕРґРёРјРѕ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РµСЃС‚СЊ Р»Рё С‚Р°РєРѕР№ Р·Р°РєР°Р· aNo Р»РѕРєР°Р»СЊРЅРѕ РёР»Рё СЌС‚Рѕ РЅРѕРІР°СЏ Р·Р°РїРёСЃСЊ РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ СЃРѕС…СЂР°РЅРёС‚СЊ Р»РѕРєР°Р»СЊРЅРѕ
 							Log.d("NETWORKER", "dbhelper.createOrder " + ord.getString("ano"));
 							cntNewOrders = cntNewOrders + 1;
 							
@@ -184,7 +184,7 @@ public class NetWorker {
 											ord.getString("rcpn")
 								);
 						} else {
-							// учитываем что данные на сервере могли изменится, делаем update каждой неновой записи
+							// СѓС‡РёС‚С‹РІР°РµРј С‡С‚Рѕ РґР°РЅРЅС‹Рµ РЅР° СЃРµСЂРІРµСЂРµ РјРѕРіР»Рё РёР·РјРµРЅРёС‚СЃСЏ, РґРµР»Р°РµРј update РєР°Р¶РґРѕР№ РЅРµРЅРѕРІРѕР№ Р·Р°РїРёСЃРё
 							int cntUpdOrders = dbhelper.updateOrder(ord.getString("ano"),
 									ord.getString("displayno"),
 									ord.getString("acash"),
@@ -207,18 +207,18 @@ public class NetWorker {
 					
 					aNoListOnServer = aNoListOnServer + " 'test'";
 					Log.d("NETWORKER", aNoListOnServer);
-					// Удаляем несуществующие на сервере записи
+					// РЈРґР°Р»СЏРµРј РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ РЅР° СЃРµСЂРІРµСЂРµ Р·Р°РїРёСЃРё
 					dbhelper.deleteNotExistOrd(aNoListOnServer);
-					// Если не удалось соединится с сервером или на сервере нет данных то локальные записи не удаляются
+					// Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕРµРґРёРЅРёС‚СЃСЏ СЃ СЃРµСЂРІРµСЂРѕРј РёР»Рё РЅР° СЃРµСЂРІРµСЂРµ РЅРµС‚ РґР°РЅРЅС‹С… С‚Рѕ Р»РѕРєР°Р»СЊРЅС‹Рµ Р·Р°РїРёСЃРё РЅРµ СѓРґР°Р»СЏСЋС‚СЃСЏ
 				} catch (Exception e) {
 					Log.e("JSON Parser", "Error parsing data " + e.toString());
-					// Здесь можно выставить индикатор нет данных 
+					// Р—РґРµСЃСЊ РјРѕР¶РЅРѕ РІС‹СЃС‚Р°РІРёС‚СЊ РёРЅРґРёРєР°С‚РѕСЂ РЅРµС‚ РґР°РЅРЅС‹С… 
 					
 				}
                 
 
             } else {
-            	// Реагируем на ошибки доступа к серверу
+            	// Р РµР°РіРёСЂСѓРµРј РЅР° РѕС€РёР±РєРё РґРѕСЃС‚СѓРїР° Рє СЃРµСЂРІРµСЂСѓ
             	return -1;
             }
             
@@ -233,24 +233,24 @@ public class NetWorker {
         }
         catch(IOException e)
         {
-        	// Когда нет связи с сервером
+        	// РљРѕРіРґР° РЅРµС‚ СЃРІСЏР·Рё СЃ СЃРµСЂРІРµСЂРѕРј
         	Log.d(TAG_POST, "IOException " + e.getMessage());
         	cntNewOrders = -1;
         }
         return cntNewOrders;
     } // End getData
     
-    // Передача данных POD
+    // РџРµСЂРµРґР°С‡Р° РґР°РЅРЅС‹С… POD
     public int sendData(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String [] snddata) {
     	int sendResult = 0;
-    	// Исключительно для накладных. Данные пересылаются сначала для  dbAct = SetPOD затем dbAct - courLog (event=pod)
+    	// РСЃРєР»СЋС‡РёС‚РµР»СЊРЅРѕ РґР»СЏ РЅР°РєР»Р°РґРЅС‹С…. Р”Р°РЅРЅС‹Рµ РїРµСЂРµСЃС‹Р»Р°СЋС‚СЃСЏ СЃРЅР°С‡Р°Р»Р° РґР»СЏ  dbAct = SetPOD Р·Р°С‚РµРј dbAct - courLog (event=pod)
         
-/*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
+/*        // Р’С‹РєР»СЋС‡Р°РµРј РїСЂРѕРІРµСЂРєСѓ СЂР°Р±РѕС‚С‹ СЃ СЃРµС‚СЊСЋ РІ С‚РµРєСѓС‰РµРј UI РїРѕС‚РѕРєРµ (РїРµСЂРµРЅРµСЃРµРЅРѕ РІ CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
     	
-    	// Параметры таймаута подключений
+    	// РџР°СЂР°РјРµС‚СЂС‹ С‚Р°Р№РјР°СѓС‚Р° РїРѕРґРєР»СЋС‡РµРЅРёР№
     	HttpParams httpParameters = new BasicHttpParams();
     	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
     	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
@@ -266,13 +266,13 @@ public class NetWorker {
         
         nvps.add(new BasicNameValuePair("user",dlgloginUser));
         nvps.add(new BasicNameValuePair("password",dlgloginpwd));
-        // Данные POD
+        // Р”Р°РЅРЅС‹Рµ POD
         nvps_snddata.add(new BasicNameValuePair("dbAct", DBSND));
         nvps_snddata.add(new BasicNameValuePair("wb_no", snddata[0]));
         nvps_snddata.add(new BasicNameValuePair("p_d_in", snddata[1]));
         nvps_snddata.add(new BasicNameValuePair("tdd", snddata[2]));
         nvps_snddata.add(new BasicNameValuePair("rcpn", snddata[3]));
-        // Данные действий для event=POD
+        // Р”Р°РЅРЅС‹Рµ РґРµР№СЃС‚РІРёР№ РґР»СЏ event=POD
         nvps_logpoddata.add(new BasicNameValuePair("dbAct", DBLOGPOD));
         nvps_logpoddata.add(new BasicNameValuePair("ano", snddata[0]));
         nvps_logpoddata.add(new BasicNameValuePair("event", "pod"));
@@ -281,7 +281,7 @@ public class NetWorker {
         
         
         
-        // Регистрация на сервере
+        // Р РµРіРёСЃС‚СЂР°С†РёСЏ РЅР° СЃРµСЂРІРµСЂРµ
         try
         {
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8)); //HTTP.UTF_8
@@ -300,7 +300,7 @@ public class NetWorker {
                 intro.close();
             }
             
-            // Отправка данных
+            // РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С…
             HttpPost post_data=new HttpPost(senddataURL);
             
             post_data.setEntity(new UrlEncodedFormEntity(nvps_snddata, HTTP.UTF_8)); //HTTP.UTF_8
@@ -325,7 +325,7 @@ public class NetWorker {
                 
             } 
             
-            // пересылка данных courLog для POD
+            // РїРµСЂРµСЃС‹Р»РєР° РґР°РЅРЅС‹С… courLog РґР»СЏ POD
             post_data.setEntity(new UrlEncodedFormEntity(nvps_logpoddata, HTTP.UTF_8)); //HTTP.UTF_8
             Log.d(TAG_POST, "--- BEFORE POST SEND DATA ---");
             response_data = cliente.execute(post_data);
@@ -360,7 +360,7 @@ public class NetWorker {
         }
         catch(IOException e)
         {
-        	// Когда нет связи с сервером
+        	// РљРѕРіРґР° РЅРµС‚ СЃРІСЏР·Рё СЃ СЃРµСЂРІРµСЂРѕРј
         	Log.d(TAG_POST, e.getMessage());
         	sendResult = -1;
         }
@@ -368,19 +368,19 @@ public class NetWorker {
         return sendResult;
     } // End sendData    POD
     
-    // Передача данных go (inway), ready(isready), view(isview)
-    // Возвращает -1 если была ошибка передачи
+    // РџРµСЂРµРґР°С‡Р° РґР°РЅРЅС‹С… go (inway), ready(isready), view(isview)
+    // Р’РѕР·РІСЂР°С‰Р°РµС‚ -1 РµСЃР»Рё Р±С‹Р»Р° РѕС€РёР±РєР° РїРµСЂРµРґР°С‡Рё
     public int sendDataGRV(OrderDbAdapter dbhelper, String dlgloginUser, String dlgloginpwd, String loginURL, String senddataURL, String[] snddata) {
     	int sendResult = 0;
     	// String[] snddata = { orderDetail_aNO, event, tdd, "" }
-    	// Исключительно для event = go (inway), ready(isready), view(isview) dbAct - courLog 
+    	// РСЃРєР»СЋС‡РёС‚РµР»СЊРЅРѕ РґР»СЏ event = go (inway), ready(isready), view(isview) dbAct - courLog 
         
-/*        // Выключаем проверку работы с сетью в текущем UI потоке (перенесено в CourierMain)
+/*        // Р’С‹РєР»СЋС‡Р°РµРј РїСЂРѕРІРµСЂРєСѓ СЂР°Р±РѕС‚С‹ СЃ СЃРµС‚СЊСЋ РІ С‚РµРєСѓС‰РµРј UI РїРѕС‚РѕРєРµ (РїРµСЂРµРЅРµСЃРµРЅРѕ РІ CourierMain)
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);*/
     	
-    	// Параметры таймаута подключений
+    	// РџР°СЂР°РјРµС‚СЂС‹ С‚Р°Р№РјР°СѓС‚Р° РїРѕРґРєР»СЋС‡РµРЅРёР№
     	HttpParams httpParameters = new BasicHttpParams();
     	HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
     	HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
@@ -396,7 +396,7 @@ public class NetWorker {
         
         nvps.add(new BasicNameValuePair("user",dlgloginUser));
         nvps.add(new BasicNameValuePair("password",dlgloginpwd));
-        // Данные действий для event=courLog
+        // Р”Р°РЅРЅС‹Рµ РґРµР№СЃС‚РІРёР№ РґР»СЏ event=courLog
         nvps_logpoddata.add(new BasicNameValuePair("dbAct", DBLOGPOD));
         nvps_logpoddata.add(new BasicNameValuePair("ano", snddata[0]));
         nvps_logpoddata.add(new BasicNameValuePair("event", snddata[1]));
@@ -405,7 +405,7 @@ public class NetWorker {
         
         Log.d("NETWORKER", "SEND data:" + snddata[0] + " " + snddata[1] + " " + snddata[2] + " " + snddata[3]);
         
-        // Регистрация на сервере
+        // Р РµРіРёСЃС‚СЂР°С†РёСЏ РЅР° СЃРµСЂРІРµСЂРµ
         try
         {
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8)); //HTTP.UTF_8
@@ -424,7 +424,7 @@ public class NetWorker {
                 intro.close();
             }
             
-            // Отправка данных
+            // РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С…
             HttpPost post_data=new HttpPost(senddataURL);
             
             //post_data.setEntity(new UrlEncodedFormEntity(nvps_snddata, HTTP.UTF_8)); //HTTP.UTF_8
@@ -433,7 +433,7 @@ public class NetWorker {
             //Log.d(TAG_POST, "--- AFTER POST SEND DATA ---");
 
             
-            // пересылка данных courLog для POD
+            // РїРµСЂРµСЃС‹Р»РєР° РґР°РЅРЅС‹С… courLog РґР»СЏ POD
             post_data.setEntity(new UrlEncodedFormEntity(nvps_logpoddata, HTTP.UTF_8)); //HTTP.UTF_8
             Log.d(TAG_POST, "--- BEFORE POST SEND DATA ---");
             response_data = cliente.execute(post_data);

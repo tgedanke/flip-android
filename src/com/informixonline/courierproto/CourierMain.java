@@ -58,26 +58,26 @@ import android.widget.AdapterView.OnItemClickListener;
 @TargetApi(16)
 public class CourierMain extends Activity implements OnClickListener {
 	
-	static long ordersId; // ID заказа выбранного в списке для подсветки через CustomAdapter
-	private byte SQLSORTORDER = 0; // флаг признака сортировки: 0 desc 1 asc для запоминания (после каждого нажатия кнопки меняется) 
+	static long ordersId; // ID Р·Р°РєР°Р·Р° РІС‹Р±СЂР°РЅРЅРѕРіРѕ РІ СЃРїРёСЃРєРµ РґР»СЏ РїРѕРґСЃРІРµС‚РєРё С‡РµСЂРµР· CustomAdapter
+	private byte SQLSORTORDER = 0; // С„Р»Р°Рі РїСЂРёР·РЅР°РєР° СЃРѕСЂС‚РёСЂРѕРІРєРё: 0 desc 1 asc РґР»СЏ Р·Р°РїРѕРјРёРЅР°РЅРёСЏ (РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё РјРµРЅСЏРµС‚СЃСЏ) 
 
-	// Ключи сетевых настроек (используется в ActSettings и NetWorker) для доступа к хранению настроек
+	// РљР»СЋС‡Рё СЃРµС‚РµРІС‹С… РЅР°СЃС‚СЂРѕРµРє (РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ ActSettings Рё NetWorker) РґР»СЏ РґРѕСЃС‚СѓРїР° Рє С…СЂР°РЅРµРЅРёСЋ РЅР°СЃС‚СЂРѕРµРє
 	final static String SHAREDPREF = "sharedstore";
-	final static String APPCFG_LOGIN = "LOGIN"; // предыдущий логин в программе, чтобы определить, удалять старые локальные данные или нет
+	final static String APPCFG_LOGIN = "LOGIN"; // РїСЂРµРґС‹РґСѓС‰РёР№ Р»РѕРіРёРЅ РІ РїСЂРѕРіСЂР°РјРјРµ, С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»РёС‚СЊ, СѓРґР°Р»СЏС‚СЊ СЃС‚Р°СЂС‹Рµ Р»РѕРєР°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РёР»Рё РЅРµС‚
 	final static String APPCFG_LOGIN_URL = "LOGIN_URL";
 	final static String APPCFG_GETDATA_URL = "GETDATA_URL";
 	final static String APPCFG_ADDR_URL = "ADDRURL";
 	
-	// Коды активити для получения результата Activity Return Code - ARC
-	final int ARC_NUMITEMS = 1; // Активити Кол-во отправлений 
-	final int ARC_POD = 2; // Активити ПОД
+	// РљРѕРґС‹ Р°РєС‚РёРІРёС‚Рё РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р° Activity Return Code - ARC
+	final int ARC_NUMITEMS = 1; // РђРєС‚РёРІРёС‚Рё РљРѕР»-РІРѕ РѕС‚РїСЂР°РІР»РµРЅРёР№ 
+	final int ARC_POD = 2; // РђРєС‚РёРІРёС‚Рё РџРћР”
 	
 	Cursor cursor;
 	ListView listView;
 	NetWorker nwork = new NetWorker();
 	
-	// Список переменных для передачи в детальную форму 
-	static String recType_forDetail = "N"; // 0 - заказ, 1 - накладная, 2 - счет
+	// РЎРїРёСЃРѕРє РїРµСЂРµРјРµРЅРЅС‹С… РґР»СЏ РїРµСЂРµРґР°С‡Рё РІ РґРµС‚Р°Р»СЊРЅСѓСЋ С„РѕСЂРјСѓ 
+	static String recType_forDetail = "N"; // 0 - Р·Р°РєР°Р·, 1 - РЅР°РєР»Р°РґРЅР°СЏ, 2 - СЃС‡РµС‚
 	static String orderDetail_aNO;
 	static String tvDorder_state_ordStatus;
 	static String tvDorder_type_ordType;
@@ -95,7 +95,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	static String tvDIsredy;
 	static String tvDInway;
 
-	// Идентификаторы контекстного меню списка (при длительном нажатии на элемент списка)
+	// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ СЃРїРёСЃРєР° (РїСЂРё РґР»РёС‚РµР»СЊРЅРѕРј РЅР°Р¶Р°С‚РёРё РЅР° СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР°)
 	private static final int CM_CATCH_ORDER = 0;
 	private static final int CM_RET_ORDER = 1;
 	private static final int CM_BACK_ORDER = 2;
@@ -104,10 +104,10 @@ public class CourierMain extends Activity implements OnClickListener {
 	// private SimpleCursorAdapter dataAdapter;
 	private MyCursorAdapter dataAdapter;
 	
-	// Кнопки главной активити
+	// РљРЅРѕРїРєРё РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
 	Button btnAddr, btnClient, btnTime, btnType, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll; //btnSettings
 	
-	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусная строка
+	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs СЃС‚Р°С‚СѓСЃРЅР°СЏ СЃС‚СЂРѕРєР°
 	ImageView imgvSrvOff, imgvSrvOn;
 
 	@Override
@@ -116,7 +116,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_courier_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		
-		// Получаем сохраненные сетевые настройки
+		// РџРѕР»СѓС‡Р°РµРј СЃРѕС…СЂР°РЅРµРЅРЅС‹Рµ СЃРµС‚РµРІС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё
     	SharedPreferences sharedAppConfig;
     	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
     	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
@@ -124,7 +124,7 @@ public class CourierMain extends Activity implements OnClickListener {
     	this.prev_user = sharedAppConfig.getString(APPCFG_LOGIN, "nologin");
 		Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
 		
-		// Строка статуса
+		// РЎС‚СЂРѕРєР° СЃС‚Р°С‚СѓСЃР°
 		tvCourName = (TextView)findViewById(R.id.tvCourName);
 		tvRefrTime = (TextView)findViewById(R.id.tvRefrTime);
 		//tvNewAllRecs = (TextView)findViewById(R.id.tvNewAllRecs);
@@ -140,11 +140,11 @@ public class CourierMain extends Activity implements OnClickListener {
 		imgvSrvOff.setVisibility(View.INVISIBLE);
 		
 
-		// Показываем диалог логина и ждем ввода
+		// РџРѕРєР°Р·С‹РІР°РµРј РґРёР°Р»РѕРі Р»РѕРіРёРЅР° Рё Р¶РґРµРј РІРІРѕРґР°
 		//boolean res = false;
 		showLogin();
 		
-        // Выключаем проверку работы с сетью в текущем UI потоке
+        // Р’С‹РєР»СЋС‡Р°РµРј РїСЂРѕРІРµСЂРєСѓ СЂР°Р±РѕС‚С‹ СЃ СЃРµС‚СЊСЋ РІ С‚РµРєСѓС‰РµРј UI РїРѕС‚РѕРєРµ
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitAll().build();
         		StrictMode.setThreadPolicy(policy);
@@ -154,16 +154,16 @@ public class CourierMain extends Activity implements OnClickListener {
 		dbHelper.open();
 
 		// Clean all data
-		//dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
+		//dbHelper.deleteAllOrders(); // СѓРґР°Р»СЏРµРј СЃС‚Р°СЂС‹Рµ РґР°РЅРЅС‹Рµ РїРµСЂРµРґ СЂР°Р±РѕС‚РѕР№
 		// Add some data
 		//dbHelper.insertTestEntries();
 		//Log.d("POST", "--- DELETE ALL orders before connect ---");
 
 		
-		// Отправляем данные накопившиеся в оффлайн если они есть только после успешного логина
+		// РћС‚РїСЂР°РІР»СЏРµРј РґР°РЅРЅС‹Рµ РЅР°РєРѕРїРёРІС€РёРµСЃСЏ РІ РѕС„С„Р»Р°Р№РЅ РµСЃР»Рё РѕРЅРё РµСЃС‚СЊ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕРіРѕ Р»РѕРіРёРЅР°
 		// sendOfflineData();
 		
-		// Кнопки на главной активити
+		// РљРЅРѕРїРєРё РЅР° РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
 		btnAddr = (Button)findViewById(R.id.btnAddr);
 		btnAddr.setOnClickListener(this);
 		
@@ -199,19 +199,19 @@ public class CourierMain extends Activity implements OnClickListener {
 
 	}
 	
-	// Получение результатов от опр.активити в главной активити (опр.по коду requestCode)
+	// РџРѕР»СѓС‡РµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РѕС‚ РѕРїСЂ.Р°РєС‚РёРІРёС‚Рё РІ РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё (РѕРїСЂ.РїРѕ РєРѕРґСѓ requestCode)
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case ARC_NUMITEMS:
-			// Активити Кол-во отправлений - обновляем если нажато Ок
+			// РђРєС‚РёРІРёС‚Рё РљРѕР»-РІРѕ РѕС‚РїСЂР°РІР»РµРЅРёР№ - РѕР±РЅРѕРІР»СЏРµРј РµСЃР»Рё РЅР°Р¶Р°С‚Рѕ РћРє
 			if (resultCode == RESULT_OK) {
 				String numItems = data.getStringExtra("numitems");
 				long rowid = data.getLongExtra("ordersid", 0);
 				Log.d("CourierMain.onActivityResult", "numItems = " + numItems
 						+ " rowid = " + rowid);
 				dbHelper.updLocNumItems(rowid, numItems);
-				// обновляем курсор
+				// РѕР±РЅРѕРІР»СЏРµРј РєСѓСЂСЃРѕСЂ
 				cursor.requery();
 				dataAdapter.swapCursor(dbHelper.fetchModOrders());
 				dataAdapter.notifyDataSetChanged();
@@ -222,7 +222,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			
 		case ARC_POD:
 			if (resultCode == RESULT_OK) {
-				// Активити ПОД (исключительно для накладных)
+				// РђРєС‚РёРІРёС‚Рё РџРћР” (РёСЃРєР»СЋС‡РёС‚РµР»СЊРЅРѕ РґР»СЏ РЅР°РєР»Р°РґРЅС‹С…)
 				Log.d("CourierMain.onActivityResult",
 						"Result from POD Activity");
 				long rowid = data.getLongExtra("ordersid", 0);
@@ -238,11 +238,11 @@ public class CourierMain extends Activity implements OnClickListener {
 				int sendResult = nwork.sendData(this.dbHelper, this.user, this.pwd,
 				this.login_URL, this.getdata_URL, snddata);
 				if (sendResult == -1) {
-					// Нет сети - сохраняем данные snddata в оффлайн хранилище
+					// РќРµС‚ СЃРµС‚Рё - СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ snddata РІ РѕС„С„Р»Р°Р№РЅ С…СЂР°РЅРёР»РёС‰Рµ
 					dbHelper.saveSnddata("SetPOD", snddata); // 6|SetPOD|1567-3118|20130603|14:54|testoffline1
 				}
 				
-				// обновление времени tdd
+				// РѕР±РЅРѕРІР»РµРЅРёРµ РІСЂРµРјРµРЅРё tdd
 				dbHelper.updPodTime(rowid, tdd);
 				cursor.requery();
 				dataAdapter.swapCursor(dbHelper.fetchModOrders());
@@ -260,14 +260,14 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 	private int getNetworkData(NetWorker nwork, String user, String pwd) {
 		int res = 0;
-		// Проверяем сетевые разрешения
+		// РџСЂРѕРІРµСЂСЏРµРј СЃРµС‚РµРІС‹Рµ СЂР°Р·СЂРµС€РµРЅРёСЏ
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
 			
 			Log.d("CourierMain.getNetworkData", "--- Network OK ---");
 			
-	    	// Получаем сохраненные сетевые настройки
+	    	// РџРѕР»СѓС‡Р°РµРј СЃРѕС…СЂР°РЅРµРЅРЅС‹Рµ СЃРµС‚РµРІС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё
 /*	    	SharedPreferences sharedAppConfig;
 	    	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
 	    	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
@@ -276,7 +276,7 @@ public class CourierMain extends Activity implements OnClickListener {
 */	    	
 		    res = nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 		    
-		    // Устанавливаем статусную строку
+		    // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚Р°С‚СѓСЃРЅСѓСЋ СЃС‚СЂРѕРєСѓ
 		    this.tvCourName.setText(nwork.username);
 		    this.tvRefrTime.setText(this.getDateTimeEvent(1));
 		    int cntrecsall = dbHelper.getCountOrd();
@@ -296,17 +296,17 @@ public class CourierMain extends Activity implements OnClickListener {
 	String login_URL, getdata_URL;
 
 	boolean checkSameUserLogin (String userLogin, String prev_login) {
-		// Проверка на совпадение введенного имени пользователя и предыдущего,
-		// чтобы определить удалять старые данные или нет
+		// РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕРІРїР°РґРµРЅРёРµ РІРІРµРґРµРЅРЅРѕРіРѕ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РїСЂРµРґС‹РґСѓС‰РµРіРѕ,
+		// С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»РёС‚СЊ СѓРґР°Р»СЏС‚СЊ СЃС‚Р°СЂС‹Рµ РґР°РЅРЅС‹Рµ РёР»Рё РЅРµС‚
 		return userLogin.equals(prev_login);
 	}
 	
-	// Показываем окно ввода имени и пароля
+	// РџРѕРєР°Р·С‹РІР°РµРј РѕРєРЅРѕ РІРІРѕРґР° РёРјРµРЅРё Рё РїР°СЂРѕР»СЏ
 	private void showLogin() {
 
 		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setCancelable(false); // запрет закрытия диалога кнопкой назад
-		alert.setTitle("Введите имя и пароль");
+		alert.setCancelable(false); // Р·Р°РїСЂРµС‚ Р·Р°РєСЂС‹С‚РёСЏ РґРёР°Р»РѕРіР° РєРЅРѕРїРєРѕР№ РЅР°Р·Р°Рґ
+		alert.setTitle("Р’РІРµРґРёС‚Рµ РёРјСЏ Рё РїР°СЂРѕР»СЊ");
 		
 		final AlertDialog alertDialog = alert.create();
 		
@@ -326,7 +326,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		lnf.setOrientation(LinearLayout.VERTICAL);
 		lnf.setDividerPadding(5);
 		
-		// Общий Layout
+		// РћР±С‰РёР№ Layout
 		final LinearLayout lnv = new LinearLayout(this);
 		lnv.setOrientation(LinearLayout.VERTICAL);
 		lnv.addView(lnf);
@@ -337,7 +337,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		final EditText etNetAddr = new EditText(this);
 		etPwd.setHint("Password");
 		etUser.setHint("User");
-		etNetAddr.setHint("Сетевой адрес");
+		etNetAddr.setHint("РЎРµС‚РµРІРѕР№ Р°РґСЂРµСЃ");
 		etPwd.setLayoutParams(paramsEditTxt);
 		etUser.setLayoutParams(paramsEditTxt);
 		etNetAddr.setLayoutParams(paramsEditTxt);
@@ -345,7 +345,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		lnf.addView(etNetAddr);
 		etNetAddr.setVisibility(EditText.INVISIBLE);
 		
-		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ввод пароля скрыт
+		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Р’РІРѕРґ РїР°СЂРѕР»СЏ СЃРєСЂС‹С‚
 		
 		Button btnOk = new Button(this);
 
@@ -355,8 +355,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		Button btnSet = new Button(this);
 		btnSet.setLayoutParams(params);
 		btnOk.setText("Ok");
-		btnCancel.setText("Выход");
-		btnSet.setText("Настройка сети");
+		btnCancel.setText("Р’С‹С…РѕРґ");
+		btnSet.setText("РќР°СЃС‚СЂРѕР№РєР° СЃРµС‚Рё");
 		ln.addView(btnOk);
 		ln.addView(btnCancel);
 		ln.addView(btnSet);
@@ -369,17 +369,17 @@ public class CourierMain extends Activity implements OnClickListener {
 				user = etUser.getText().toString().trim();
 				pwd = etPwd.getText().toString().trim();
 /*				if (! checkSameUserLogin(user)) {
-					// Новый логин
+					// РќРѕРІС‹Р№ Р»РѕРіРёРЅ
 					//dbHelper.deleteAllOrders();
 				}*/
 				Log.d("CourierMain", "--- In show login Ok ---");
 				//dbHelper.open();
 				
-				// Сохранение сетевого адреса
+				// РЎРѕС…СЂР°РЅРµРЅРёРµ СЃРµС‚РµРІРѕРіРѕ Р°РґСЂРµСЃР°
 				if ((etNetAddr.getVisibility() == EditText.VISIBLE)) {
 					int lenAddr = etNetAddr.getText().toString().length();
 					if (lenAddr > 0) {
-						// Сохраняем введенный сетевой адрес
+						// РЎРѕС…СЂР°РЅСЏРµРј РІРІРµРґРµРЅРЅС‹Р№ СЃРµС‚РµРІРѕР№ Р°РґСЂРµСЃ
 						SharedPreferences sharedAppConfig;
 						sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
 						Editor ed = sharedAppConfig.edit();
@@ -396,10 +396,10 @@ public class CourierMain extends Activity implements OnClickListener {
 				}
 				
 				if (! checkSameUserLogin(user, prev_user)) {
-					// Новый логин отличается от предыдущего, удаляем локальные данные
+					// РќРѕРІС‹Р№ Р»РѕРіРёРЅ РѕС‚Р»РёС‡Р°РµС‚СЃСЏ РѕС‚ РїСЂРµРґС‹РґСѓС‰РµРіРѕ, СѓРґР°Р»СЏРµРј Р»РѕРєР°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ
 					Log.d("CourierMain", "LOGIN DIFFER, DELETE LOCAL DATA, OLD LOGIN = " + prev_user + " new login = " + user);
 					dbHelper.deleteAllOrders();
-					// и сохраняем новый логин для сравнения в следующем сеансе работы программы
+					// Рё СЃРѕС…СЂР°РЅСЏРµРј РЅРѕРІС‹Р№ Р»РѕРіРёРЅ РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ РІ СЃР»РµРґСѓСЋС‰РµРј СЃРµР°РЅСЃРµ СЂР°Р±РѕС‚С‹ РїСЂРѕРіСЂР°РјРјС‹
 					SharedPreferences sharedAppConfig;
 					sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
 					Editor ed = sharedAppConfig.edit();
@@ -413,20 +413,20 @@ public class CourierMain extends Activity implements OnClickListener {
 					displayListView();
 					doTimerTask();
 					
-					alertDialog.cancel(); // или dismiss() ?
+					alertDialog.cancel(); // РёР»Рё dismiss() ?
 				} else if (netRes == -1) {
-					Toast.makeText(getApplicationContext(), "Ошибка сети",
+					Toast.makeText(getApplicationContext(), "РћС€РёР±РєР° СЃРµС‚Рё",
 							Toast.LENGTH_LONG).show();
 				} // else if (netRes == -2) { 
 				else {
-					Toast.makeText(getApplicationContext(), "Неправильный логин или пароль",
+					Toast.makeText(getApplicationContext(), "РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ",
 							Toast.LENGTH_LONG).show();
 				}
 					
 			}
 		});
 		
-		// Настройка сетевого адреса
+		// РќР°СЃС‚СЂРѕР№РєР° СЃРµС‚РµРІРѕРіРѕ Р°РґСЂРµСЃР°
 		btnSet.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -444,7 +444,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				finish(); // переделать чтобы выходил без exception
+				finish(); // РїРµСЂРµРґРµР»Р°С‚СЊ С‡С‚РѕР±С‹ РІС‹С…РѕРґРёР» Р±РµР· exception
 				//alert.setCancelable(true);
 				// onBackPressed();
 				//alertDialog.cancel();
@@ -464,7 +464,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				user = etUser.getText().toString().trim();
 				pwd = etPwd.getText().toString().trim();
 				if (! checkSameUserLogin(user)) {
-					// Новый логин
+					// РќРѕРІС‹Р№ Р»РѕРіРёРЅ
 					//dbHelper.deleteAllOrders();
 				}
 				Log.d("CourierMain", "--- In show login Ok ---");
@@ -474,14 +474,14 @@ public class CourierMain extends Activity implements OnClickListener {
 					displayListView();
 					doTimerTask();
 				} else if (netRes == -1) {
-					Toast.makeText(getApplicationContext(), "Ошибка сети",
+					Toast.makeText(getApplicationContext(), "РћС€РёР±РєР° СЃРµС‚Рё",
 							Toast.LENGTH_LONG).show();
 					displayListView();
 					doTimerTask();
 				} else if (netRes == -2) {
-					Toast.makeText(getApplicationContext(), "Неправильный логин или пароль",
+					Toast.makeText(getApplicationContext(), "РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ",
 							Toast.LENGTH_LONG).show();
-					finish(); // Выходим из приложения
+					finish(); // Р’С‹С…РѕРґРёРј РёР· РїСЂРёР»РѕР¶РµРЅРёСЏ
 				}
 			}
 		});
@@ -490,15 +490,15 @@ public class CourierMain extends Activity implements OnClickListener {
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						dialog.cancel();
-						Toast.makeText(getApplicationContext(), "Вход отменен",
+						Toast.makeText(getApplicationContext(), "Р’С…РѕРґ РѕС‚РјРµРЅРµРЅ",
 								Toast.LENGTH_LONG).show();
 					}
 				});
 		
-/*		alert.setNeutralButton("Настройки", 
+/*		alert.setNeutralButton("РќР°СЃС‚СЂРѕР№РєРё", 
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				Log.d("CourierMain", "--- In SETTINGS кнопка Set ---");
+				Log.d("CourierMain", "--- In SETTINGS РєРЅРѕРїРєР° Set ---");
 
 
 			}
@@ -547,10 +547,10 @@ public class CourierMain extends Activity implements OnClickListener {
 		listView.setAdapter(dataAdapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		
-		// Селектор
+		// РЎРµР»РµРєС‚РѕСЂ
 		listView.setSelector(R.drawable.selector_item);
 		
-		// Отметка заказа в списке
+		// РћС‚РјРµС‚РєР° Р·Р°РєР°Р·Р° РІ СЃРїРёСЃРєРµ
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> listView, View view,
@@ -559,19 +559,19 @@ public class CourierMain extends Activity implements OnClickListener {
 				// result set
 				Cursor cursor = (Cursor) listView.getItemAtPosition(position);
 				
-				// Меняем цвет выделенного элемента списка
+				// РњРµРЅСЏРµРј С†РІРµС‚ РІС‹РґРµР»РµРЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР°
 				//listView.getChildAt(position).setBackgroundColor(Color.RED);
 				
 				
-				// Получаем значение поля этой записи из таблицы
+				// РџРѕР»СѓС‡Р°РµРј Р·РЅР°С‡РµРЅРёРµ РїРѕР»СЏ СЌС‚РѕР№ Р·Р°РїРёСЃРё РёР· С‚Р°Р±Р»РёС†С‹
 				// String ordersClient = cursor.getString(cursor
 				//		.getColumnIndexOrThrow("client"));	
 				
-				// Получаем ID выбранной в списке записи
+				// РџРѕР»СѓС‡Р°РµРј ID РІС‹Р±СЂР°РЅРЅРѕР№ РІ СЃРїРёСЃРєРµ Р·Р°РїРёСЃРё
 				ordersId = cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID));
-				Log.d("LISTITEMCLICK", Long.toString(ordersId) + " выбран идентификатор");
+				Log.d("LISTITEMCLICK", Long.toString(ordersId) + " РІС‹Р±СЂР°РЅ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ");
 				
-				// Запоминаем значение выбранной в списке записи
+				// Р—Р°РїРѕРјРёРЅР°РµРј Р·РЅР°С‡РµРЅРёРµ РІС‹Р±СЂР°РЅРЅРѕР№ РІ СЃРїРёСЃРєРµ Р·Р°РїРёСЃРё
 				recType_forDetail = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_recType_forDetail));
 				orderDetail_aNO = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_aNo));
 				tvDorder_state_ordStatus = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ordStatus));
@@ -592,13 +592,13 @@ public class CourierMain extends Activity implements OnClickListener {
 				
 				//Toast.makeText(getApplicationContext(), ordersClient + " " + ordersId,
 				//		Toast.LENGTH_SHORT).show();
-				// Обновляем
+				// РћР±РЅРѕРІР»СЏРµРј
 				// dbHelper.updOrderCatchIt(ordersId, true);
 				//tvNewAllRecs.setText(cursor.getCount());
 				
-				// Подсветка выбранной записи и остальных - 28.06 тест работает некорректно
+				// РџРѕРґСЃРІРµС‚РєР° РІС‹Р±СЂР°РЅРЅРѕР№ Р·Р°РїРёСЃРё Рё РѕСЃС‚Р°Р»СЊРЅС‹С… - 28.06 С‚РµСЃС‚ СЂР°Р±РѕС‚Р°РµС‚ РЅРµРєРѕСЂСЂРµРєС‚РЅРѕ
 /*				if (ordersId == cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID))) {
-					// выбранная запись - зеленым
+					// РІС‹Р±СЂР°РЅРЅР°СЏ Р·Р°РїРёСЃСЊ - Р·РµР»РµРЅС‹Рј
 					//llvMain.setBackgroundColor(Color.RED);
 					listView.getChildAt(position).setBackgroundColor(Color.RED);
 				}*/
@@ -627,37 +627,37 @@ public class CourierMain extends Activity implements OnClickListener {
 			}
 		});*/
 		
-	    // добавляем контекстное меню к списку
+	    // РґРѕР±Р°РІР»СЏРµРј РєРѕРЅС‚РµРєСЃС‚РЅРѕРµ РјРµРЅСЋ Рє СЃРїРёСЃРєСѓ
 	    registerForContextMenu(listView);
 
 	}
     
-	// Создание контекстного меню
+	// РЎРѕР·РґР°РЅРёРµ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, CM_CATCH_ORDER, 0, "Начать выполнение");
-		menu.add(0, CM_RET_ORDER, 0, "Отменить выполнение");
-		menu.add(0, CM_BACK_ORDER, 0, "Назад к списку");
+		menu.add(0, CM_CATCH_ORDER, 0, "РќР°С‡Р°С‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ");
+		menu.add(0, CM_RET_ORDER, 0, "РћС‚РјРµРЅРёС‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ");
+		menu.add(0, CM_BACK_ORDER, 0, "РќР°Р·Р°Рґ Рє СЃРїРёСЃРєСѓ");
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean onContextItemSelected(MenuItem item) {
-		// получаем из пункта контекстного меню данные по пункту списка
+		// РїРѕР»СѓС‡Р°РµРј РёР· РїСѓРЅРєС‚Р° РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ РґР°РЅРЅС‹Рµ РїРѕ РїСѓРЅРєС‚Сѓ СЃРїРёСЃРєР°
 		AdapterContextMenuInfo order_acmi = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		if (item.getItemId() == CM_CATCH_ORDER) {
-			// извлекаем id записи и обновляем соответствующую запись в БД
+			// РёР·РІР»РµРєР°РµРј id Р·Р°РїРёСЃРё Рё РѕР±РЅРѕРІР»СЏРµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ Р·Р°РїРёСЃСЊ РІ Р‘Р”
 			dbHelper.updOrderCatchIt(order_acmi.id, orderDetail_aNO);
-			// обновляем курсор
+			// РѕР±РЅРѕРІР»СЏРµРј РєСѓСЂСЃРѕСЂ
 			cursor.requery();
 			dataAdapter.notifyDataSetChanged();
 			return true;
 		}
 		else if (item.getItemId() == CM_RET_ORDER) {
-			// извлекаем id записи и обновляем соответствующую запись в БД
+			// РёР·РІР»РµРєР°РµРј id Р·Р°РїРёСЃРё Рё РѕР±РЅРѕРІР»СЏРµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ Р·Р°РїРёСЃСЊ РІ Р‘Р”
 			dbHelper.updOrderCatchIt(order_acmi.id, orderDetail_aNO);
-			// обновляем курсор
+			// РѕР±РЅРѕРІР»СЏРµРј РєСѓСЂСЃРѕСЂ
 			cursor.requery();
 			dataAdapter.notifyDataSetChanged();
 			return true;	
@@ -667,18 +667,18 @@ public class CourierMain extends Activity implements OnClickListener {
 	  
 	  protected void onDestroy() {
 		    super.onDestroy();
-		    // закрываем подключение при выходе
+		    // Р·Р°РєСЂС‹РІР°РµРј РїРѕРґРєР»СЋС‡РµРЅРёРµ РїСЂРё РІС‹С…РѕРґРµ
 		    stopTask();
 		    dbHelper.close();
 		  }
 
 	@Override
 	public void onClick(View v) {
-		// Обработчик кнопок главной активити
+		// РћР±СЂР°Р±РѕС‚С‡РёРє РєРЅРѕРїРѕРє РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
 		
 		switch (v.getId()) {
 		case R.id.btnAddr:
-			Log.d("CourierMain", "--- In SORT кнопка Адрес ---");
+			Log.d("CourierMain", "--- In SORT РєРЅРѕРїРєР° РђРґСЂРµСЃ ---");
 			//dataAdapter.swapCursor(cursor).close();
 			//cursor = dbHelper.fetchSortOrders(1);
 			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
@@ -687,64 +687,64 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 			
 		case R.id.btnClient:
-			Log.d("CourierMain", "--- In SORT кнопка Клиент ---");
+			Log.d("CourierMain", "--- In SORT РєРЅРѕРїРєР° РљР»РёРµРЅС‚ ---");
 			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
 			dataAdapter.swapCursor(dbHelper.fetchSortClients(SQLSORTORDER));
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
 		case R.id.btnTime:
-			Log.d("CourierMain", "--- In SORT кнопка Время ---");
+			Log.d("CourierMain", "--- In SORT РєРЅРѕРїРєР° Р’СЂРµРјСЏ ---");
 			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
 			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(SQLSORTORDER));
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
 		case R.id.btnType:
-			Log.d("CourierMain", "--- In SORT кнопка Тип ---");
+			Log.d("CourierMain", "--- In SORT РєРЅРѕРїРєР° РўРёРї ---");
 			cursor.requery();
 			dataAdapter.swapCursor(dbHelper.fetchSortType());
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
 /*		case R.id.btnSaveSet:
-			Log.d("CourierMain", "--- In SETTINGS кнопка Set ---");
+			Log.d("CourierMain", "--- In SETTINGS РєРЅРѕРїРєР° Set ---");
 			Intent intentActSet = new Intent(this, ActSettings.class);
 			startActivity(intentActSet);
 			break;*/
 			
 		case R.id.btnInWay:
-			// При нажатии запись помечается но список перематывается (т.е. запись снова надо искать)
-			Log.d("CourierMain", "--- In switch кнопка Еду ---");
-			if (! tvDIsredy.equals("1")) { // Можно делать статус Еду только у неготового заказа и только у одного
+			// РџСЂРё РЅР°Р¶Р°С‚РёРё Р·Р°РїРёСЃСЊ РїРѕРјРµС‡Р°РµС‚СЃСЏ РЅРѕ СЃРїРёСЃРѕРє РїРµСЂРµРјР°С‚С‹РІР°РµС‚СЃСЏ (С‚.Рµ. Р·Р°РїРёСЃСЊ СЃРЅРѕРІР° РЅР°РґРѕ РёСЃРєР°С‚СЊ)
+			Log.d("CourierMain", "--- In switch РєРЅРѕРїРєР° Р•РґСѓ ---");
+			if (! tvDIsredy.equals("1")) { // РњРѕР¶РЅРѕ РґРµР»Р°С‚СЊ СЃС‚Р°С‚СѓСЃ Р•РґСѓ С‚РѕР»СЊРєРѕ Сѓ РЅРµРіРѕС‚РѕРІРѕРіРѕ Р·Р°РєР°Р·Р° Рё С‚РѕР»СЊРєРѕ Сѓ РѕРґРЅРѕРіРѕ
 				int catchres = dbHelper.updOrderCatchIt(ordersId, orderDetail_aNO);
 				if (catchres == 1) {
-					Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС ЕДУ",
+					Toast.makeText(getApplicationContext(), "РЈРЎРўРђРќРћР’Р›Р•Рќ РЎРўРђРўРЈРЎ Р•Р”РЈ",
 							Toast.LENGTH_LONG).show();
 				} else if (catchres == 0) {
-					Toast.makeText(getApplicationContext(), "СТАТУС ЕДУ СБРОШЕН",
+					Toast.makeText(getApplicationContext(), "РЎРўРђРўРЈРЎ Р•Р”РЈ РЎР‘Р РћРЁР•Рќ",
 							Toast.LENGTH_LONG).show();
 				} else if (catchres == 2) {
-					Toast.makeText(getApplicationContext(), "СТАТУС ЕДУ НЕ МОЖЕТ БЫТЬ УСТАНОВЛЕН БОЛЬШЕ ЧЕМ У ОДНОЙ ЗАПИСИ",
+					Toast.makeText(getApplicationContext(), "РЎРўРђРўРЈРЎ Р•Р”РЈ РќР• РњРћР–Р•Рў Р‘Р«РўР¬ РЈРЎРўРђРќРћР’Р›Р•Рќ Р‘РћР›Р¬РЁР• Р§Р•Рњ РЈ РћР”РќРћР™ Р—РђРџРРЎР",
 							Toast.LENGTH_LONG).show();
 				}
-				// обновляем курсор
+				// РѕР±РЅРѕРІР»СЏРµРј РєСѓСЂСЃРѕСЂ
 				cursor.requery();
 				dataAdapter.swapCursor(dbHelper.fetchModOrders());
 				dataAdapter.notifyDataSetChanged();
 				
-				// Передача данных на сервер
+				// РџРµСЂРµРґР°С‡Р° РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
 				if (catchres != 2) {
 					Log.d("THREAD", Thread.currentThread().getName());
 					Thread tInWaySender = new Thread(new Runnable() {
 						public void run() {
 							String[] snddata = { orderDetail_aNO, "go", getDateTimeEvent (0), "" };
-							// Здесь надо поймать -1 от nwork.sendDataGRV если была ошибка передачи,
-							// сохранить snddata в хранилище чтобы потом попытаться вновь отправить все неотправленное
+							// Р—РґРµСЃСЊ РЅР°РґРѕ РїРѕР№РјР°С‚СЊ -1 РѕС‚ nwork.sendDataGRV РµСЃР»Рё Р±С‹Р»Р° РѕС€РёР±РєР° РїРµСЂРµРґР°С‡Рё,
+							// СЃРѕС…СЂР°РЅРёС‚СЊ snddata РІ С…СЂР°РЅРёР»РёС‰Рµ С‡С‚РѕР±С‹ РїРѕС‚РѕРј РїРѕРїС‹С‚Р°С‚СЊСЃСЏ РІРЅРѕРІСЊ РѕС‚РїСЂР°РІРёС‚СЊ РІСЃРµ РЅРµРѕС‚РїСЂР°РІР»РµРЅРЅРѕРµ
 							int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
 									login_URL, getdata_URL, snddata);
 							if (sendResult == -1) {
-								// Нет сети - сохраняем данные snddata в оффлайн хранилище
+								// РќРµС‚ СЃРµС‚Рё - СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ snddata РІ РѕС„С„Р»Р°Р№РЅ С…СЂР°РЅРёР»РёС‰Рµ
 								dbHelper.saveSnddata("courLog", snddata);
 							}
 							Log.d("THREAD", Thread.currentThread().getName());
@@ -753,39 +753,39 @@ public class CourierMain extends Activity implements OnClickListener {
 					tInWaySender.start();
 				}
 			} else {
-				Log.d("CourierMain", "--- ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ ГОТОВОГО ЗАКАЗА ---");
-				Toast.makeText(getApplicationContext(), "ЕДУ НЕЛЬЗЯ УСТАНОВИТЬ ДЛЯ СТАТУСА Ок",
+				Log.d("CourierMain", "--- Р•Р”РЈ РќР•Р›Р¬Р—РЇ РЈРЎРўРђРќРћР’РРўР¬ Р”Р›РЇ Р“РћРўРћР’РћР“Рћ Р—РђРљРђР—Рђ ---");
+				Toast.makeText(getApplicationContext(), "Р•Р”РЈ РќР•Р›Р¬Р—РЇ РЈРЎРўРђРќРћР’РРўР¬ Р”Р›РЇ РЎРўРђРўРЈРЎРђ РћРє",
 						Toast.LENGTH_LONG).show();
 			}
 			break;
 			
 		case R.id.btnOk:
-			Log.d("CourierMain", "--- In switch кнопка Ок ordersId = " + ordersId);
-			// После проверки надо изменить значение переменной tvDIsredy (чтобы не перещелкивать текущую запись для повтороного изменения) 
-			if (! recType_forDetail.equals("1")) { // на накладных кнопка Ок ничего не делает
-				if (! tvDIsredy.equals("1")) { // Если статус текущей записи не Ок 
+			Log.d("CourierMain", "--- In switch РєРЅРѕРїРєР° РћРє ordersId = " + ordersId);
+			// РџРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё РЅР°РґРѕ РёР·РјРµРЅРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№ tvDIsredy (С‡С‚РѕР±С‹ РЅРµ РїРµСЂРµС‰РµР»РєРёРІР°С‚СЊ С‚РµРєСѓС‰СѓСЋ Р·Р°РїРёСЃСЊ РґР»СЏ РїРѕРІС‚РѕСЂРѕРЅРѕРіРѕ РёР·РјРµРЅРµРЅРёСЏ) 
+			if (! recType_forDetail.equals("1")) { // РЅР° РЅР°РєР»Р°РґРЅС‹С… РєРЅРѕРїРєР° РћРє РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµС‚
+				if (! tvDIsredy.equals("1")) { // Р•СЃР»Рё СЃС‚Р°С‚СѓСЃ С‚РµРєСѓС‰РµР№ Р·Р°РїРёСЃРё РЅРµ РћРє 
 					dbHelper.updOrderIsRedy(ordersId, true);
-					Toast.makeText(getApplicationContext(), "УСТАНОВЛЕН СТАТУС Ок",
+					Toast.makeText(getApplicationContext(), "РЈРЎРўРђРќРћР’Р›Р•Рќ РЎРўРђРўРЈРЎ РћРє",
 							Toast.LENGTH_LONG).show();
 					tvDIsredy = "1";
-					// После установки статуса Ок надо сбросить статус Еду - 
-					// FIX он сбрасывается в updOrderIsRedy
+					// РџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё СЃС‚Р°С‚СѓСЃР° РћРє РЅР°РґРѕ СЃР±СЂРѕСЃРёС‚СЊ СЃС‚Р°С‚СѓСЃ Р•РґСѓ - 
+					// FIX РѕРЅ СЃР±СЂР°СЃС‹РІР°РµС‚СЃСЏ РІ updOrderIsRedy
 					if (! tvDInway.equals("0")) {
 						//int catchres = dbHelper.updOrderCatchIt(ordersId, orderDetail_aNO);
 					}
 				} else {
 					dbHelper.updOrderIsRedy(ordersId, false);
-					Toast.makeText(getApplicationContext(), "СТАТУС Ок СБРОШЕН",
+					Toast.makeText(getApplicationContext(), "РЎРўРђРўРЈРЎ РћРє РЎР‘Р РћРЁР•Рќ",
 							Toast.LENGTH_LONG).show();
 					tvDIsredy = "0";
 				} 
 	
-				// обновляем курсор
+				// РѕР±РЅРѕРІР»СЏРµРј РєСѓСЂСЃРѕСЂ
 				cursor.requery();
 				dataAdapter.swapCursor(dbHelper.fetchModOrders());
 				dataAdapter.notifyDataSetChanged();
 				
-				// Передача данных на сервер				
+				// РџРµСЂРµРґР°С‡Р° РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ				
 				Log.d("THREAD", Thread.currentThread().getName());
 				Thread tInOkSender = new Thread(new Runnable() {
 					public void run() {
@@ -793,7 +793,7 @@ public class CourierMain extends Activity implements OnClickListener {
 						int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
 								login_URL, getdata_URL, snddata);
 						if (sendResult == -1) {
-							// Нет сети - сохраняем данные snddata в оффлайн хранилище
+							// РќРµС‚ СЃРµС‚Рё - СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ snddata РІ РѕС„С„Р»Р°Р№РЅ С…СЂР°РЅРёР»РёС‰Рµ
 							dbHelper.saveSnddata("courLog", snddata);
 						}
 						Log.d("THREAD", Thread.currentThread().getName());
@@ -801,41 +801,41 @@ public class CourierMain extends Activity implements OnClickListener {
 				});
 				tInOkSender.start();
 			} else {
-				Toast.makeText(getApplicationContext(), "Для НАКЛАДНЫХ не применимо",
+				Toast.makeText(getApplicationContext(), "Р”Р»СЏ РќРђРљР›РђР”РќР«РҐ РЅРµ РїСЂРёРјРµРЅРёРјРѕ",
 						Toast.LENGTH_LONG).show();
 			}
 			break;
 			
 		case R.id.btnPod:
-			// работает только для Накладных, recType_forDetail.equals("1")
-			Log.d("CourierMain", "--- In switch кнопка ПОД ---");
+			// СЂР°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ РґР»СЏ РќР°РєР»Р°РґРЅС‹С…, recType_forDetail.equals("1")
+			Log.d("CourierMain", "--- In switch РєРЅРѕРїРєР° РџРћР” ---");
 			if (recType_forDetail.equals("1")) {
 				Intent intentPOD = new Intent(this, ActPod.class);
 				intentPOD.putExtra("ordersid", ordersId);
 				intentPOD.putExtra("tvDorder_num", orderDetail_aNO);
 				startActivityForResult(intentPOD, ARC_POD);
-				// Возвращаемое значение обрабатывается в onActivityResult
+				// Р’РѕР·РІСЂР°С‰Р°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ РІ onActivityResult
 			} else {
-				Toast.makeText(getApplicationContext(), "Для ЗАКАЗОВ и СЧЕТОВ не применимо",
+				Toast.makeText(getApplicationContext(), "Р”Р»СЏ Р—РђРљРђР—РћР’ Рё РЎР§Р•РўРћР’ РЅРµ РїСЂРёРјРµРЅРёРјРѕ",
 						Toast.LENGTH_LONG).show();
 			}
 			break;
 			
 		case R.id.btnDetail:
-			Log.d("CourierMain", "--- In switch кнопка ПОДРОБНО --- тип " + recType_forDetail);
-			// обновляем поле isredy
+			Log.d("CourierMain", "--- In switch РєРЅРѕРїРєР° РџРћР”Р РћР‘РќРћ --- С‚РёРї " + recType_forDetail);
+			// РѕР±РЅРѕРІР»СЏРµРј РїРѕР»Рµ isredy
 			// dbHelper.updOrderIsRedy(ordersId);
 			dbHelper.updOrderIsView(ordersId);
 /*			cursor.requery();
 			dataAdapter.swapCursor(dbHelper.fetchModOrders());
 			dataAdapter.notifyDataSetChanged();*/
 			if (recType_forDetail.equals("0")) {
-				// Детали заказа
+				// Р”РµС‚Р°Р»Рё Р·Р°РєР°Р·Р°
 				Intent intent = new Intent(this, ActOrderDetail.class);
 			
 				intent.putExtra("tvDorder_num", orderDetail_aNO);
 				intent.putExtra("tvDorder_state_ordStatus", tvDorder_state_ordStatus);
-				// intent.putExtra("tvDorder_type_ordType", tvDorder_type_ordType); зачеркнуто в ТЗ
+				// intent.putExtra("tvDorder_type_ordType", tvDorder_type_ordType); Р·Р°С‡РµСЂРєРЅСѓС‚Рѕ РІ РўР—
 				intent.putExtra("tvDacash", tvDacash);
 				intent.putExtra("tvDaddr_aAddress", tvDaddr_aAddress);
 				intent.putExtra("tvDcomp_name_client", tvDcomp_name_client);
@@ -848,7 +848,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				intent.putExtra("tvDcomment", tvDcomment);
 				startActivity(intent);
 			} else if (recType_forDetail.equals("1")) {
-				// Детали накладной
+				// Р”РµС‚Р°Р»Рё РЅР°РєР»Р°РґРЅРѕР№
 				Intent intent = new Intent(this, ActDlvDetail.class);
 				
 				intent.putExtra("tvDorder_num", orderDetail_aNO);
@@ -872,7 +872,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			//dataAdapter.swapCursor(cursor);
 			dataAdapter.notifyDataSetChanged();
 			
-			// Передача данных на сервер				
+			// РџРµСЂРµРґР°С‡Р° РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ				
 			Log.d("THREAD", Thread.currentThread().getName());
 			Thread tDetailSender = new Thread(new Runnable() {
 				public void run() {
@@ -880,7 +880,7 @@ public class CourierMain extends Activity implements OnClickListener {
 					int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
 							login_URL, getdata_URL, snddata);
 					if (sendResult == -1) {
-						// Нет сети - сохраняем данные snddata в оффлайн хранилище
+						// РќРµС‚ СЃРµС‚Рё - СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ snddata РІ РѕС„С„Р»Р°Р№РЅ С…СЂР°РЅРёР»РёС‰Рµ
 						dbHelper.saveSnddata("courLog", snddata);
 					}
 					
@@ -893,7 +893,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 			
 		case R.id.btnNumItems:
-				// Кол-во отправлений
+				// РљРѕР»-РІРѕ РѕС‚РїСЂР°РІР»РµРЅРёР№
 			if (ordersId != 0) {
 				Intent intent = new Intent(this, ActNumItems.class);
 				
@@ -904,18 +904,18 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;
 		
 		case R.id.btnAll:
-			// Отметить все записи как просмотренные
+			// РћС‚РјРµС‚РёС‚СЊ РІСЃРµ Р·Р°РїРёСЃРё РєР°Рє РїСЂРѕСЃРјРѕС‚СЂРµРЅРЅС‹Рµ
 			dbHelper.updAllView();
 			cursor.requery();
 			dataAdapter.swapCursor(dbHelper.fetchModOrders());
 			dataAdapter.notifyDataSetChanged();
 			tvNewRecs.setText(Integer.toString(dbHelper.getNewCountOrd()));
-			Toast.makeText(getApplicationContext(), "Все записи отмечены как просмотренные",
+			Toast.makeText(getApplicationContext(), "Р’СЃРµ Р·Р°РїРёСЃРё РѕС‚РјРµС‡РµРЅС‹ РєР°Рє РїСЂРѕСЃРјРѕС‚СЂРµРЅРЅС‹Рµ",
 					Toast.LENGTH_LONG).show();
 			break;
 			
 		case R.id.btnExit:
-				finish(); // Выходим из приложения
+				finish(); // Р’С‹С…РѕРґРёРј РёР· РїСЂРёР»РѕР¶РµРЅРёСЏ
 			break;
 		default:
 			break;
@@ -923,14 +923,14 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 	} // End onClick
 	
-	// Автообновление данных с сервера
+	// РђРІС‚РѕРѕР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… СЃ СЃРµСЂРІРµСЂР°
 	TimerTask mTimerTask;
 	final Handler handler = new Handler();
 	Timer t = new Timer();
-	final int TIMER_START = 3000; // задержка перед запуском мсек
-	final int TIMER_PERIOD = 180000; // период повтора мсек
+	final int TIMER_START = 3000; // Р·Р°РґРµСЂР¶РєР° РїРµСЂРµРґ Р·Р°РїСѓСЃРєРѕРј РјСЃРµРє
+	final int TIMER_PERIOD = 180000; // РїРµСЂРёРѕРґ РїРѕРІС‚РѕСЂР° РјСЃРµРє
 	
-	// Используем отдельный поток
+	// РСЃРїРѕР»СЊР·СѓРµРј РѕС‚РґРµР»СЊРЅС‹Р№ РїРѕС‚РѕРє
 	public void doTimerTask() {
 		
 		mTimerTask = new TimerTask() {
@@ -941,13 +941,13 @@ public class CourierMain extends Activity implements OnClickListener {
 
 					@Override
 					public void run() {
-						// Здесь код обновления по таймеру
+						// Р—РґРµСЃСЊ РєРѕРґ РѕР±РЅРѕРІР»РµРЅРёСЏ РїРѕ С‚Р°Р№РјРµСЂСѓ
 						Log.d("TIMER", "TimerTask run");
 						
-						// dbHelper.deleteAllOrders(); теперь не удаляю поскольку идет проверка перед созданием записи в NetWorker
+						// dbHelper.deleteAllOrders(); С‚РµРїРµСЂСЊ РЅРµ СѓРґР°Р»СЏСЋ РїРѕСЃРєРѕР»СЊРєСѓ РёРґРµС‚ РїСЂРѕРІРµСЂРєР° РїРµСЂРµРґ СЃРѕР·РґР°РЅРёРµРј Р·Р°РїРёСЃРё РІ NetWorker
 						int cntnewrecs = nwork.getData(dbHelper, user, pwd, login_URL, getdata_URL);
 						
-						if (cntnewrecs >= 0) { // Связь с сервером ОК
+						if (cntnewrecs >= 0) { // РЎРІСЏР·СЊ СЃ СЃРµСЂРІРµСЂРѕРј РћРљ
 							imgvSrvOff.setVisibility(View.INVISIBLE);
 							imgvSrvOn.setVisibility(View.VISIBLE);
 							
@@ -962,8 +962,8 @@ public class CourierMain extends Activity implements OnClickListener {
 							dataAdapter.swapCursor(dbHelper.fetchModOrders());
 							dataAdapter.notifyDataSetChanged();
 							
-							sendOfflineData(); // отправляем оффлайн данные
-						} else { // Проблемы связи с сервером
+							sendOfflineData(); // РѕС‚РїСЂР°РІР»СЏРµРј РѕС„С„Р»Р°Р№РЅ РґР°РЅРЅС‹Рµ
+						} else { // РџСЂРѕР±Р»РµРјС‹ СЃРІСЏР·Рё СЃ СЃРµСЂРІРµСЂРѕРј
 							imgvSrvOff.setVisibility(View.VISIBLE);
 							imgvSrvOn.setVisibility(View.INVISIBLE);
 							//tvNewAllRecs.setText("");
@@ -990,7 +990,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	}
 	
 	String getDateTimeEvent (int retFormat) {
-		// Возвращает дату и время в формате
+		// Р’РѕР·РІСЂР°С‰Р°РµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ РІ С„РѕСЂРјР°С‚Рµ
 		final String DTFORMAT; // = "yyyyMMdd HH:mm";
 		switch (retFormat) {
 		case 0:
@@ -1013,7 +1013,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		return dateFormat.format(c);
 	}
 	
-	// Отправка оффлайн данных 
+	// РћС‚РїСЂР°РІРєР° РѕС„С„Р»Р°Р№РЅ РґР°РЅРЅС‹С… 
 	void sendOfflineData() {
 		final List<String[]> dataList = dbHelper.getSnddata();
 		if ( dataList != null) {
@@ -1025,14 +1025,14 @@ public class CourierMain extends Activity implements OnClickListener {
 					// String[] snddata = { orderDetail_aNO, event, tdd, "" }
 					int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
 							login_URL, getdata_URL, rowData);
-					if (sendResult >= 0) { // отправка на сервер успешно, удалить оффлайн запись
+					if (sendResult >= 0) { // РѕС‚РїСЂР°РІРєР° РЅР° СЃРµСЂРІРµСЂ СѓСЃРїРµС€РЅРѕ, СѓРґР°Р»РёС‚СЊ РѕС„С„Р»Р°Р№РЅ Р·Р°РїРёСЃСЊ
 						dbHelper.deleteOfflineData(rowData[4]);
 					}
 				} else if ((rowData[5]).equals("SetPOD")) {
 					// String[] snddata = { wb_no, p_d_in, tdd, rcpn };
 					int sendResult = nwork.sendData(this.dbHelper, this.user, this.pwd,
 							this.login_URL, this.getdata_URL, rowData);
-					if (sendResult >= 0) {// отправка на сервер успешно, удалить оффлайн запись
+					if (sendResult >= 0) {// РѕС‚РїСЂР°РІРєР° РЅР° СЃРµСЂРІРµСЂ СѓСЃРїРµС€РЅРѕ, СѓРґР°Р»РёС‚СЊ РѕС„С„Р»Р°Р№РЅ Р·Р°РїРёСЃСЊ
 						dbHelper.deleteOfflineData(rowData[4]);
 					}
 				} else {

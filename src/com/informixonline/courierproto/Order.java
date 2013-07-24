@@ -1,6 +1,6 @@
 package com.informixonline.courierproto;
 
-//Я: На клиента вытягиваются только заказы имеющие статус isperformed = false & order_state = не готов
+//РЇ: РќР° РєР»РёРµРЅС‚Р° РІС‹С‚СЏРіРёРІР°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ Р·Р°РєР°Р·С‹ РёРјРµСЋС‰РёРµ СЃС‚Р°С‚СѓСЃ isperformed = false & order_state = РЅРµ РіРѕС‚РѕРІ
 
 public class Order {
 

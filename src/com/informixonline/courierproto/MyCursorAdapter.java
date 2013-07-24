@@ -14,7 +14,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 /*
- * Адаптер для вывода элементов списка
+ * РђРґР°РїС‚РµСЂ РґР»СЏ РІС‹РІРѕРґР° СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°
  */
 
 //@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) 
@@ -54,26 +54,26 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		}
 		
 		TextView inWay = (TextView)view.findViewById(R.id.tvInWay);		
-		if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)).equals("Еду")) {
+		if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)).equals("Р•РґСѓ")) {
 			// llvMain.setBackgroundColor(Color.rgb(255,228,181));
 			inWay.setTextColor(Color.BLUE);
 			inWay.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)));
 		} else {
 			// llvMain.setBackgroundColor(Color.WHITE);
 			inWay.setTextColor(Color.GRAY);
-			inWay.setText("Еду");			
+			inWay.setText("Р•РґСѓ");			
 		}
 		//inWay.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_inway)));
 		
-		// Подсветка выбранной записи и остальных
+		// РџРѕРґСЃРІРµС‚РєР° РІС‹Р±СЂР°РЅРЅРѕР№ Р·Р°РїРёСЃРё Рё РѕСЃС‚Р°Р»СЊРЅС‹С…
 		if (CourierMain.ordersId == cursor.getLong(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_ROWID))) {
-			// выбранная запись - зеленым
-			// llvMain.setBackgroundColor(Color.rgb(0,255,127)); теперь за подсветку выбранного отвечает селектор
+			// РІС‹Р±СЂР°РЅРЅР°СЏ Р·Р°РїРёСЃСЊ - Р·РµР»РµРЅС‹Рј
+			// llvMain.setBackgroundColor(Color.rgb(0,255,127)); С‚РµРїРµСЂСЊ Р·Р° РїРѕРґСЃРІРµС‚РєСѓ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕС‚РІРµС‡Р°РµС‚ СЃРµР»РµРєС‚РѕСЂ
 		} else if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isview)).equals("1")) {
-			// просмотренные записи - белым
+			// РїСЂРѕСЃРјРѕС‚СЂРµРЅРЅС‹Рµ Р·Р°РїРёСЃРё - Р±РµР»С‹Рј
 			llvMain.setBackgroundColor(Color.WHITE);
 		} else {
-			// остальные голубым
+			// РѕСЃС‚Р°Р»СЊРЅС‹Рµ РіРѕР»СѓР±С‹Рј
 			llvMain.setBackgroundColor(Color.rgb(135,206,250));
 		}
 		
@@ -101,33 +101,33 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		TextView tvNumt = (TextView)view.findViewById(R.id.tvNumt);
 		TextView tvNum = (TextView)view.findViewById(R.id.tvNum);
 		
-		// Тип 0 - заказ, 1 - накладная, 2 - счет
+		// РўРёРї 0 - Р·Р°РєР°Р·, 1 - РЅР°РєР»Р°РґРЅР°СЏ, 2 - СЃС‡РµС‚
 		TextView tvIsredy = (TextView)view.findViewById(R.id.tvIsredy);
 		String recType_forDetail = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail));
 		tvNumt.setText("");
 		tvNum.setText("");
 		if (recType_forDetail.equals("0")) {
-			// Только для заказов
-			// Установка цвета ОК 
+			// РўРѕР»СЊРєРѕ РґР»СЏ Р·Р°РєР°Р·РѕРІ
+			// РЈСЃС‚Р°РЅРѕРІРєР° С†РІРµС‚Р° РћРљ 
 			//cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail))
 			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)).equals("1")) {
 				tvIsredy.setTextColor(Color.BLUE);
 				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
-				tvIsredy.setText("Ок");
+				tvIsredy.setText("РћРє");
 			} else {
 				tvIsredy.setTextColor(Color.GRAY);
-				tvIsredy.setText("Ок");
+				tvIsredy.setText("РћРє");
 			}
 			//tvIsredy.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)));
 			
-			tvNumt.setText(" Кол-во:");
+			tvNumt.setText(" РљРѕР»-РІРѕ:");
 			tvNum.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
-			//Log.d("ADAPTER", "Кол-во" + cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
+			//Log.d("ADAPTER", "РљРѕР»-РІРѕ" + cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_locnumitems)));
 			
 		} else if (recType_forDetail.equals("1")) {
-			// накладные
+			// РЅР°РєР»Р°РґРЅС‹Рµ
 			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_tdd)).equalsIgnoreCase("null")) {
-				tvIsredy.setText("ПОД");
+				tvIsredy.setText("РџРћР”");
 				tvIsredy.setTextColor(Color.BLUE);
 				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
 			} else {
@@ -136,16 +136,16 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 			}
 			
 		} else if (recType_forDetail.equals("2")) {
-			// счет
-			// Установка цвета ОК 
+			// СЃС‡РµС‚
+			// РЈСЃС‚Р°РЅРѕРІРєР° С†РІРµС‚Р° РћРљ 
 			//cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_recType_forDetail))
 			if (cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_isready)).equals("1")) {
 				tvIsredy.setTextColor(Color.BLUE);
 				//tvIsredy.setText(cursor.getColumnIndex(OrderDbAdapter.KEY_isready));
-				tvIsredy.setText("Ок");
+				tvIsredy.setText("РћРє");
 			} else {
 				tvIsredy.setTextColor(Color.GRAY);
-				tvIsredy.setText("Ок");
+				tvIsredy.setText("РћРє");
 			}
 		}
 		
