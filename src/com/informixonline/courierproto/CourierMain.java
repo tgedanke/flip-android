@@ -435,7 +435,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				SharedPreferences sharedAppConfig;
 				sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
 				etNetAddr.setVisibility(EditText.VISIBLE);
-				etNetAddr.setText(sharedAppConfig.getString(APPCFG_ADDR_URL, ""));
+				etNetAddr.setText(sharedAppConfig.getString(APPCFG_ADDR_URL, "http://192.168.1.100/fp/cr"));
 			}
 		});
 		
