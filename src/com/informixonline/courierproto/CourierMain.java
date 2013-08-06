@@ -213,7 +213,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				dbHelper.updLocNumItems(rowid, numItems);
 				// обновляем курсор
 				cursor.requery();
-				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.swapCursor(dbHelper.fetchOrders(0));
 				dataAdapter.notifyDataSetChanged();
 			} else {
 				Log.d("CourierMain.onActivityResult", "Numitems Result cancel");
@@ -245,7 +245,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				// обновление времени tdd
 				dbHelper.updPodTime(rowid, tdd);
 				cursor.requery();
-				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.swapCursor(dbHelper.fetchOrders(0));
 				dataAdapter.notifyDataSetChanged();
 			} else {
 				Log.d("CourierMain.onActivityResult", "POD Result cancel");
@@ -519,7 +519,7 @@ public class CourierMain extends Activity implements OnClickListener {
 
 	private void displayListView() {
 
-		cursor = dbHelper.fetchModOrders();
+		cursor = dbHelper.fetchOrders(0);
 		
 		// The desired columns to be bound
 		String[] columns = new String[] {
@@ -678,32 +678,11 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 		switch (v.getId()) {
 		case R.id.btnAddr:
-			Log.d("CourierMain", "--- In SORT кнопка Адрес ---");
-			//dataAdapter.swapCursor(cursor).close();
-			//cursor = dbHelper.fetchSortOrders(1);
-			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
-			dataAdapter.swapCursor(dbHelper.fetchSortOrders(SQLSORTORDER));
-			dataAdapter.notifyDataSetChanged();
-			break;
-			
 		case R.id.btnClient:
-			Log.d("CourierMain", "--- In SORT кнопка Клиент ---");
-			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
-			dataAdapter.swapCursor(dbHelper.fetchSortClients(SQLSORTORDER));
-			dataAdapter.notifyDataSetChanged();
-			break;
-			
 		case R.id.btnTime:
-			Log.d("CourierMain", "--- In SORT кнопка Время ---");
-			if (SQLSORTORDER == 0) {SQLSORTORDER = 1;} else SQLSORTORDER = 0;
-			dataAdapter.swapCursor(dbHelper.fetchSortTimeB(SQLSORTORDER));
-			dataAdapter.notifyDataSetChanged();
-			break;
-			
 		case R.id.btnType:
-			Log.d("CourierMain", "--- In SORT кнопка Тип ---");
-			cursor.requery();
-			dataAdapter.swapCursor(dbHelper.fetchSortType());
+			Log.d("CourierMain", "--- In SORT ---");
+			dataAdapter.swapCursor(dbHelper.fetchOrders(v.getId()));
 			dataAdapter.notifyDataSetChanged();
 			break;
 			
@@ -730,7 +709,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				}
 				// обновляем курсор
 				cursor.requery();
-				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.swapCursor(dbHelper.fetchOrders(0));
 				dataAdapter.notifyDataSetChanged();
 				
 				// Передача данных на сервер
@@ -782,7 +761,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	
 				// обновляем курсор
 				cursor.requery();
-				dataAdapter.swapCursor(dbHelper.fetchModOrders());
+				dataAdapter.swapCursor(dbHelper.fetchOrders(0));
 				dataAdapter.notifyDataSetChanged();
 				
 				// Передача данных на сервер				
@@ -907,7 +886,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			// Отметить все записи как просмотренные
 			dbHelper.updAllView();
 			cursor.requery();
-			dataAdapter.swapCursor(dbHelper.fetchModOrders());
+			dataAdapter.swapCursor(dbHelper.fetchOrders(0));
 			dataAdapter.notifyDataSetChanged();
 			tvNewRecs.setText(Integer.toString(dbHelper.getNewCountOrd()));
 			Toast.makeText(getApplicationContext(), "Все записи отмечены как просмотренные",
@@ -959,7 +938,7 @@ public class CourierMain extends Activity implements OnClickListener {
 							tvNewRecs.setText(Integer.toString(cntnewnotviewrecs));
 							tvRefrTime.setText(getDateTimeEvent(1));
 							Log.d("TIMER", "Count records from cursor new/all " + cntnewnotviewrecs + "/" + cntallrecs);
-							dataAdapter.swapCursor(dbHelper.fetchModOrders());
+							dataAdapter.swapCursor(dbHelper.fetchOrders(0));
 							dataAdapter.notifyDataSetChanged();
 							
 							sendOfflineData(); // отправляем оффлайн данные
