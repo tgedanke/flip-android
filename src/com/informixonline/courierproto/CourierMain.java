@@ -693,6 +693,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			break;*/
 			
 		case R.id.btnInWay:
+			//dbHelper.vibroSignal();
 			// При нажатии запись помечается но список перематывается (т.е. запись снова надо искать)
 			Log.d("CourierMain", "--- In switch кнопка Еду ---");
 			if (! tvDIsredy.equals("1")) { // Можно делать статус Еду только у неготового заказа и только у одного

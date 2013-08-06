@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Vibrator;
 import android.util.Log;
 
 public class OrderDbAdapter {
@@ -127,6 +128,14 @@ public class OrderDbAdapter {
 		}
 	}
 
+	public void vibroSignal(){
+		Log.d(TAG, "vibroSignal");
+		Vibrator v = (Vibrator) mCtx.getSystemService(Context.VIBRATOR_SERVICE);
+		
+		long[] pattern = {0, 200, 100, 200, 100, 200};
+		v.vibrate(pattern, -1);		
+	}
+	
 	// Создание записи в таблице
 	public long createOrder(String aNo, String displayNo, String aCash,
 			String aAddress, String client, String timeB, String timeE,
@@ -158,6 +167,8 @@ public class OrderDbAdapter {
 		initialValues.put(KEY_isview, isview);
 		initialValues.put(KEY_rcpn, rcpn);
 
+		vibroSignal();
+		
 		return mDb.insert(SQLITE_TABLE, null, initialValues);
 	}
 
