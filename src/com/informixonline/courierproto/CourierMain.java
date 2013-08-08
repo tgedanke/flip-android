@@ -114,7 +114,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courier_main);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		
 		// Получаем сохраненные сетевые настройки
     	SharedPreferences sharedAppConfig;
@@ -140,9 +140,18 @@ public class CourierMain extends Activity implements OnClickListener {
 		imgvSrvOff.setVisibility(View.INVISIBLE);
 		
 
+		dbHelper = new OrderDbAdapter(this);
+		dbHelper.open();
+		
 		// Показываем диалог логина и ждем ввода
 		//boolean res = false;
-		showLogin();
+		// условие ниже - для поворота экрана
+		if (savedInstanceState == null) {
+			showLogin();
+		} else {
+			displayListView();
+			doTimerTask();
+		}
 		
         // Выключаем проверку работы с сетью в текущем UI потоке
         StrictMode.ThreadPolicy policy = new StrictMode.
@@ -150,8 +159,6 @@ public class CourierMain extends Activity implements OnClickListener {
         		StrictMode.setThreadPolicy(policy);
         
         Log.d("CourierMain", "--- After showLogin()");
-		dbHelper = new OrderDbAdapter(this);
-		dbHelper.open();
 
 		// Clean all data
 		//dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
@@ -1020,6 +1027,21 @@ public class CourierMain extends Activity implements OnClickListener {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		user = savedInstanceState.getString("user");
+		pwd = savedInstanceState.getString("pwd");
+
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString("user", user);
+		outState.putString("pwd", pwd);
 	}
 	
 }
