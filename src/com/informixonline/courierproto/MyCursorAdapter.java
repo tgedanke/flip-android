@@ -96,7 +96,9 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 		}
 		
 		TextView tvTimeBE = (TextView)view.findViewById(R.id.tvTimeBE);
-		tvTimeBE.setText(cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_timeBE)));
+		String timeBE = cursor.getString(cursor.getColumnIndex(OrderDbAdapter.KEY_timeBE));
+		if(timeBE.indexOf("null")>=0) timeBE = "";
+		tvTimeBE.setText(timeBE);
 		
 		TextView tvNumt = (TextView)view.findViewById(R.id.tvNumt);
 		TextView tvNum = (TextView)view.findViewById(R.id.tvNum);

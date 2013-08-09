@@ -61,7 +61,7 @@ public class ActOrderDetail extends Activity {
 		tvDcontact_num.setText(strtvDcontact_num_ContPhone);
 		
 		String strtvDtimeBE = intent.getStringExtra("tvDtimeBE");
-		if (strtvDtimeBE.equalsIgnoreCase("null")) {strtvDtimeBE = "";};
+		if (strtvDtimeBE.indexOf("null")>=0) {strtvDtimeBE = "";};
 		tvDtimeBE.setText(strtvDtimeBE);
 		
 		String strtvDpos_num_Packs = intent.getStringExtra("tvDpos_num_Packs");
