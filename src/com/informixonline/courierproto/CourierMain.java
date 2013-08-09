@@ -864,21 +864,24 @@ public class CourierMain extends Activity implements OnClickListener {
 			dataAdapter.notifyDataSetChanged();
 			
 			// Передача данных на сервер				
-			Log.d("THREAD", Thread.currentThread().getName());
-			Thread tDetailSender = new Thread(new Runnable() {
-				public void run() {
-					String[] snddata = { orderDetail_aNO, "vieword", getDateTimeEvent (0), "" };
-					int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
-							login_URL, getdata_URL, snddata);
-					if (sendResult == -1) {
-						// Нет сети - сохраняем данные snddata в оффлайн хранилище
-						dbHelper.saveSnddata("courLog", snddata);
+			if (recType_forDetail.equals("0")) {
+				Log.d("THREAD", Thread.currentThread().getName());
+				Thread tDetailSender = new Thread(new Runnable() {
+					public void run() {
+						String[] snddata = { orderDetail_aNO, "vieword", getDateTimeEvent (0), "" };
+						int sendResult = nwork.sendDataGRV(dbHelper, user, pwd,
+								login_URL, getdata_URL, snddata);
+						if (sendResult == -1) {
+							// Нет сети - сохраняем данные snddata в оффлайн хранилище
+							dbHelper.saveSnddata("courLog", snddata);
+						}
+						
+						Log.d("THREAD", Thread.currentThread().getName());
 					}
-					
-					Log.d("THREAD", Thread.currentThread().getName());
-				}
-			});
-			tDetailSender.start();
+				});
+				tDetailSender.start();
+			};
+
 			tvNewRecs.setText(Integer.toString(dbHelper.getNewCountOrd()));
 			Log.d("DETAIL_KEY", "--- tvDorder_num = " + orderDetail_aNO);
 			break;
