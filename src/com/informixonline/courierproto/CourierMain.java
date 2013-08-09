@@ -146,7 +146,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Показываем диалог логина и ждем ввода
 		//boolean res = false;
 		// условие ниже - для поворота экрана
-		if (savedInstanceState == null) {
+		if (savedInstanceState == null || savedInstanceState.getString("pwd") == null ) {
 			showLogin();
 		} else {
 			displayListView();
