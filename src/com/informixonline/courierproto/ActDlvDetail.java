@@ -25,7 +25,8 @@ public class ActDlvDetail  extends Activity {
 		tvDweight = (TextView)findViewById(R.id.tvDweightDlv);
 		tvDvol_weight = (TextView)findViewById(R.id.tvDvol_weightDlv);
 		tvDcomment = (TextView)findViewById(R.id.tvDcommentDlv);		
-		
+		tvDacash = (TextView)findViewById(R.id.tvDacash);
+
 		Intent intent = getIntent();
 		
 		String Dorder_num = intent.getStringExtra("tvDorder_num");
@@ -67,6 +68,10 @@ public class ActDlvDetail  extends Activity {
 		String strtvDcomment = intent.getStringExtra("tvDcomment");
 		if (strtvDcomment.equalsIgnoreCase("null")) {strtvDcomment = "";};
 		tvDcomment.setText(strtvDcomment);
+
+		String strtvDacash = intent.getStringExtra("tvDacash");
+		if (strtvDacash.equalsIgnoreCase("null")) {strtvDacash = "";};
+		tvDacash.setText(strtvDacash);
 	}
 
 }
