@@ -139,37 +139,6 @@ public class CourierMain extends Activity implements OnClickListener {
 		imgvSrvOff = (ImageView)findViewById(R.id.imgvSrvOff);
 		imgvSrvOff.setVisibility(View.INVISIBLE);
 		
-
-		dbHelper = new OrderDbAdapter(this);
-		dbHelper.open();
-		
-		// Показываем диалог логина и ждем ввода
-		//boolean res = false;
-		// условие ниже - для поворота экрана
-		if (savedInstanceState == null || savedInstanceState.getString("pwd") == null ) {
-			showLogin();
-		} else {
-			displayListView();
-			doTimerTask();
-		}
-		
-        // Выключаем проверку работы с сетью в текущем UI потоке
-        StrictMode.ThreadPolicy policy = new StrictMode.
-        		ThreadPolicy.Builder().permitAll().build();
-        		StrictMode.setThreadPolicy(policy);
-        
-        Log.d("CourierMain", "--- After showLogin()");
-
-		// Clean all data
-		//dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
-		// Add some data
-		//dbHelper.insertTestEntries();
-		//Log.d("POST", "--- DELETE ALL orders before connect ---");
-
-		
-		// Отправляем данные накопившиеся в оффлайн если они есть только после успешного логина
-		// sendOfflineData();
-		
 		// Кнопки на главной активити
 		btnAddr = (Button)findViewById(R.id.btnAddr);
 		btnAddr.setOnClickListener(this);
@@ -201,9 +170,41 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnNumItems.setOnClickListener(this);
 		btnAll = (Button)findViewById(R.id.btnAll);
 		btnAll.setOnClickListener(this);	
+
+		setGroupButtons(false);
+		setSingleButtons(null);
+
+		dbHelper = new OrderDbAdapter(this);
+		dbHelper.open();
+		
+		// Показываем диалог логина и ждем ввода
+		//boolean res = false;
+		// условие ниже - для поворота экрана
+		if (savedInstanceState == null || savedInstanceState.getString("pwd") == null ) {
+			showLogin();
+		} else {
+			displayListView();
+			doTimerTask();
+		}
+		
+        // Выключаем проверку работы с сетью в текущем UI потоке
+        StrictMode.ThreadPolicy policy = new StrictMode.
+        		ThreadPolicy.Builder().permitAll().build();
+        		StrictMode.setThreadPolicy(policy);
+        
+        Log.d("CourierMain", "--- After showLogin()");
+
+		// Clean all data
+		//dbHelper.deleteAllOrders(); // удаляем старые данные перед работой
+		// Add some data
+		//dbHelper.insertTestEntries();
+		//Log.d("POST", "--- DELETE ALL orders before connect ---");
+		
+		// Отправляем данные накопившиеся в оффлайн если они есть только после успешного логина
+		// sendOfflineData();
+		
 		// Generate ListView from SQLite Database
 		// displayListView(); moved to dialog
-
 	}
 	
 	// Получение результатов от опр.активити в главной активити (опр.по коду requestCode)
@@ -292,6 +293,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		    this.tvAllRecs.setText(Integer.toString(cntrecsall));
 		    this.tvNewRecs.setText(Integer.toString(cntnewrecs));
 			//dbHelper.insertTestEntries(); // DEBUG
+		    
+		    setGroupButtons(dbHelper.getCountOrd() > 0);
 		} else {
 			// display error
 			Log.d("CourierMain.getNetworkData", "--- Network Failed ---");
@@ -597,6 +600,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				tvDIsredy = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_isready));
 				tvDInway = cursor.getString(cursor.getColumnIndexOrThrow(OrderDbAdapter.KEY_inway));
 				
+				setSingleButtons(recType_forDetail);
 				//Toast.makeText(getApplicationContext(), ordersClient + " " + ordersId,
 				//		Toast.LENGTH_SHORT).show();
 				// Обновляем
@@ -1044,5 +1048,44 @@ public class CourierMain extends Activity implements OnClickListener {
 		outState.putString("pwd", pwd);
 	}
 	
+	public void setGroupButtons(Boolean state){
+		btnAll.setEnabled(state);
+		btnAddr.setEnabled(state);
+		btnClient.setEnabled(state);
+		btnTime.setEnabled(state);
+		btnType.setEnabled(state);
+	}
+	
+	public void setSingleButtons(String recType) {
+		// 0 - заказ, 1 - накладная, 2 - счет
+		if (recType == null) recType = "";
+		if (recType.equals("0")) {
+			btnInWay.setEnabled(true);
+			btnOk.setEnabled(true);
+			btnPod.setEnabled(false);
+			btnDetail.setEnabled(true);
+			btnNumItems.setEnabled(true);
+		} else if (recType.equals("1")) {
+			btnInWay.setEnabled(true);
+			btnOk.setEnabled(false);
+			btnPod.setEnabled(true);
+			btnDetail.setEnabled(true);
+			btnNumItems.setEnabled(false);
+		} else if (recType.equals("2")) {
+			btnInWay.setEnabled(true);
+			btnOk.setEnabled(true);
+			btnPod.setEnabled(false);
+			btnDetail.setEnabled(true);
+			btnNumItems.setEnabled(false);
+		} else {
+			btnInWay.setEnabled(false);
+			btnOk.setEnabled(false);
+			btnPod.setEnabled(false);
+			btnDetail.setEnabled(false);
+			btnNumItems.setEnabled(false);
+		}
+		
+	}
+		
 }
 
