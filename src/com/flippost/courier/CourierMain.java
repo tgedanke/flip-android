@@ -433,7 +433,7 @@ public class CourierMain extends Activity implements OnClickListener {
 				SharedPreferences sharedAppConfig;
 				sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
 				etNetAddr.setVisibility(EditText.VISIBLE);
-				etNetAddr.setText(sharedAppConfig.getString(APPCFG_ADDR_URL, "http://192.168.1.100/fp/cr"));
+				etNetAddr.setText(sharedAppConfig.getString(APPCFG_ADDR_URL, "http://web.flippost.com/courier"));
 			}
 		});
 		
@@ -910,7 +910,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	final Handler handler = new Handler();
 	Timer t = new Timer();
 	final int TIMER_START = 3000; // задержка перед запуском мсек
-	final int TIMER_PERIOD = 180000; // период повтора мсек
+	final int TIMER_PERIOD = 60000; // период повтора мсек
 	
 	// Используем отдельный поток
 	public void doTimerTask() {
