@@ -13,29 +13,21 @@ import com.flippost.courier.R;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,12 +36,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -59,8 +49,6 @@ import android.widget.AdapterView.OnItemClickListener;
 public class CourierMain extends Activity implements OnClickListener {
 	
 	static long ordersId; // ID заказа выбранного в списке для подсветки через CustomAdapter
-	private byte SQLSORTORDER = 0; // флаг признака сортировки: 0 desc 1 asc для запоминания (после каждого нажатия кнопки меняется) 
-
 	// Ключи сетевых настроек (используется в ActSettings и NetWorker) для доступа к хранению настроек
 	final static String SHAREDPREF = "sharedstore";
 	final static String APPCFG_LOGIN = "LOGIN"; // предыдущий логин в программе, чтобы определить, удалять старые локальные данные или нет

@@ -22,8 +22,6 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.content.SharedPreferences;
-import android.os.StrictMode;
 import android.util.Log;
 
 public class NetWorker {
