@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /*
- * Сохранение и чтение настроек приложения
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 public class ActSettings extends Activity implements OnClickListener {
 	

@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 //Я: На клиента вытягиваются только заказы имеющие статус isperformed = false & order_state = не готов
 

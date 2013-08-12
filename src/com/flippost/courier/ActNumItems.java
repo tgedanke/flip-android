@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 import android.app.Activity;
 import android.content.Intent;

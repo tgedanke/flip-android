@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,8 +8,8 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.informixonline.courierproto.OrderDbAdapter;
-import com.informixonline.courierproto.R;
+import com.flippost.courier.OrderDbAdapter;
+import com.flippost.courier.R;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

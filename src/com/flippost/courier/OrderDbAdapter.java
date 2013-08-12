@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 import android.annotation.TargetApi;
 import android.content.Context;

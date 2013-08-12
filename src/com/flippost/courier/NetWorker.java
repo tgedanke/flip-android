@@ -1,4 +1,4 @@
-package com.informixonline.courierproto;
+package com.flippost.courier;
 
 import java.io.BufferedReader;
 import java.io.IOException;
