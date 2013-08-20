@@ -159,12 +159,12 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnAll = (Button)findViewById(R.id.btnAll);
 		btnAll.setOnClickListener(this);	
 
-		setGroupButtons(false);
-		setSingleButtons(null);
-
 		dbHelper = new OrderDbAdapter(this);
 		dbHelper.open();
 		
+		setGroupButtons(dbHelper.getCountOrd() > 0);
+		setSingleButtons(recType_forDetail);
+
 		// Показываем диалог логина и ждем ввода
 		//boolean res = false;
 		// условие ниже - для поворота экрана
@@ -1029,7 +1029,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		super.onRestoreInstanceState(savedInstanceState);
 		user = savedInstanceState.getString("user");
 		pwd = savedInstanceState.getString("pwd");
-
+		recType_forDetail = savedInstanceState.getString("recType_forDetail");
 	}
 
 	@Override
@@ -1037,6 +1037,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		super.onSaveInstanceState(outState);
 		outState.putString("user", user);
 		outState.putString("pwd", pwd);
+		outState.putString("recType_forDetail", recType_forDetail);
 	}
 	
 	public void setGroupButtons(Boolean state){
