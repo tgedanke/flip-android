@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="orders_head">Курьер: </string>
     <string name="find_hint">Начинайте набирать для поиска</string>
+    <string name="default_url">http://web.flippost.com/courier</string>
+    <integer name="timer_interval">60000</integer>
 
 </resources>
