@@ -334,7 +334,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		final EditText etPwd = new EditText(this);
 		final EditText etNetAddr = new EditText(this);
 		etPwd.setHint("Password");
+		etPwd.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
 		etUser.setHint("User");
+		etUser.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 		etNetAddr.setHint("Сетевой адрес");
 		etPwd.setLayoutParams(paramsEditTxt);
 		etUser.setLayoutParams(paramsEditTxt);
