@@ -5,12 +5,18 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.app.Notification;
+import android.app.Notification.Builder;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 
 public class OrderDbAdapter {
 
@@ -135,7 +141,32 @@ public class OrderDbAdapter {
 		long[] pattern = {0, 200, 100, 200, 100, 200};
 		v.vibrate(pattern, -1);		
 	}
+
+	void doNotify() {
+		Log.w(TAG, "--start notify");
+		NotificationManager nm;
+		nm = (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
 	
+		// 3-я часть
+		/*Intent intent = new Intent(mCtx, CourierMain.class);
+		intent.putExtra("name", "somefile");
+		PendingIntent pIntent = PendingIntent.getActivity(mCtx, 0, intent, 0);*/
+
+		// 1-я часть
+		android.support.v4.app.NotificationCompat.Builder nb = new NotificationCompat.Builder(mCtx)
+			.setContentTitle("ФЛИППОСТ")
+			.setContentText("Новый заказ")
+			.setSmallIcon(R.drawable.ic_launcher_fp)
+			.setNumber(getNewCountOrd()+1)//+1???
+			.setDefaults(Notification.DEFAULT_ALL);
+
+		Notification notif = nb.build();
+		notif.flags |= Notification.FLAG_INSISTENT;
+
+		// отправляем
+		nm.notify(1, notif);
+	}
+	  
 	// Создание записи в таблице
 	public long createOrder(String aNo, String displayNo, String aCash,
 			String aAddress, String client, String timeB, String timeE,
@@ -167,7 +198,8 @@ public class OrderDbAdapter {
 		initialValues.put(KEY_isview, isview);
 		initialValues.put(KEY_rcpn, rcpn);
 
-		vibroSignal();
+		//vibroSignal();
+		doNotify();
 		
 		return mDb.insert(SQLITE_TABLE, null, initialValues);
 	}
