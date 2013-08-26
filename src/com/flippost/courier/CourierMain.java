@@ -334,18 +334,24 @@ public class CourierMain extends Activity implements OnClickListener {
 		final EditText etPwd = new EditText(this);
 		final EditText etNetAddr = new EditText(this);
 		etPwd.setHint("Password");
-		etPwd.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+		etPwd.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD );
 		etUser.setHint("User");
-		etUser.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+		etUser.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
 		etNetAddr.setHint("Сетевой адрес");
+		etNetAddr.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
 		etPwd.setLayoutParams(paramsEditTxt);
 		etUser.setLayoutParams(paramsEditTxt);
 		etNetAddr.setLayoutParams(paramsEditTxt);
 		
+		/*Log.d("INPUT", "user:" + etUser.getInputType());
+		Log.d("INPUT", "pws:" + etPwd.getInputType());
+		Log.d("INPUT", "net:" + etNetAddr.getInputType());*/
+		
+		
 		lnf.addView(etNetAddr);
 		etNetAddr.setVisibility(EditText.INVISIBLE);
 		
-		etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ввод пароля скрыт
+		//etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ввод пароля скрыт
 		
 		Button btnOk = new Button(this);
 
