@@ -1,5 +1,13 @@
 package com.flippost.courier;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
@@ -13,6 +21,7 @@ import com.flippost.courier.R;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -20,9 +29,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.text.InputType;
 import android.util.Log;
@@ -93,11 +106,13 @@ public class CourierMain extends Activity implements OnClickListener {
 	private MyCursorAdapter dataAdapter;
 	
 	// Кнопки главной активити
-	Button btnAddr, btnClient, btnTime, btnType, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll; //btnSettings
+	Button btnAddr, btnClient, btnTime, btnType, btnExit, btnInWay, btnOk, btnPod, btnDetail, btnNumItems, btnAll, btnUpdate; //btnSettings
 	
 	TextView tvCourName, tvRefrTime, tvNewRecs, tvAllRecs; // tvNewAllRecs статусная строка
 	ImageView imgvSrvOff, imgvSrvOn;
 
+	UpdateChecker uc;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,10 +122,14 @@ public class CourierMain extends Activity implements OnClickListener {
 		// Получаем сохраненные сетевые настройки
     	SharedPreferences sharedAppConfig;
     	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+    	
+    	this.app_URL = sharedAppConfig.getString(APPCFG_ADDR_URL, "");
     	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
     	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
     	this.prev_user = sharedAppConfig.getString(APPCFG_LOGIN, "nologin");
 		Log.d("CourierMain.getNetworkData", "Login URL = " + login_URL + " GetData URL = " + getdata_URL);
+		
+		uc = new UpdateChecker();
 		
 		// Строка статуса
 		tvCourName = (TextView)findViewById(R.id.tvCourName);
@@ -158,6 +177,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		btnNumItems.setOnClickListener(this);
 		btnAll = (Button)findViewById(R.id.btnAll);
 		btnAll.setOnClickListener(this);	
+		btnUpdate = (Button)findViewById(R.id.btnUpdate);
+		btnUpdate.setOnClickListener(this);	
 
 		dbHelper = new OrderDbAdapter(this);
 		dbHelper.open();
@@ -173,6 +194,8 @@ public class CourierMain extends Activity implements OnClickListener {
 		} else {
 			displayListView();
 			doTimerTask();
+			//checkVersionCode();
+			uc.execute();
 		}
 		
         // Выключаем проверку работы с сетью в текущем UI потоке
@@ -291,7 +314,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	}
 	
 	String user, pwd, username, prev_user;
-	String login_URL, getdata_URL;
+	String app_URL, login_URL, getdata_URL;
 
 	boolean checkSameUserLogin (String userLogin, String prev_login) {
 		// Проверка на совпадение введенного имени пользователя и предыдущего,
@@ -395,7 +418,9 @@ public class CourierMain extends Activity implements OnClickListener {
 						ed.putString(APPCFG_GETDATA_URL, netAddr + "/data/data.php");
 						ed.commit();
 						
-				    	login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
+						app_URL = sharedAppConfig.getString(APPCFG_ADDR_URL, "");;
+						Log.d("UPDATE", "app_URL "+app_URL);
+						login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
 				    	getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
 						Log.d("CourierMain", "SAVE NETWORK addr = " + netAddr + " login_URL = " + login_URL + " getdata_URL = " + getdata_URL);
 					}
@@ -418,6 +443,8 @@ public class CourierMain extends Activity implements OnClickListener {
 					
 					displayListView();
 					doTimerTask();
+					
+					uc.execute();
 					
 					alertDialog.cancel(); // или dismiss() ?
 				} else if (netRes == -1) {
@@ -907,6 +934,9 @@ public class CourierMain extends Activity implements OnClickListener {
 		case R.id.btnExit:
 				finish(); // Выходим из приложения
 			break;
+		case R.id.btnUpdate:
+			showUpdateDialog();
+		break;
 		default:
 			break;
 		}
@@ -1031,6 +1061,33 @@ public class CourierMain extends Activity implements OnClickListener {
 		}
 	}
 
+	private void showUpdateDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Доступно обновление")
+			.setMessage("Обновить сейчас?");
+
+		builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+
+		builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+	
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
@@ -1086,5 +1143,90 @@ public class CourierMain extends Activity implements OnClickListener {
 		
 	}
 		
+	private Boolean checkForUpdate() throws IOException, MalformedURLException{
+		Log.d("UPDATE", "checkForUpdate");
+		int newVersionCode=  0, currentVersionCode = 0; 
+		
+		PackageInfo pinfo = null;
+		//Log.d("zzz", getPackageName());
+		try {
+			pinfo = getPackageManager().getPackageInfo(getPackageName(),
+					PackageManager.GET_META_DATA);
+			currentVersionCode = pinfo.versionCode;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			Log.d("UPDATE", "NameNotFoundException");
+			e.printStackTrace();
+		}
+
+		Log.d("UPDATE", app_URL + "/android/versioncode.txt");
+		URL url = new URL(app_URL + "/android/versioncode.txt");
+		Log.d("UPDATE", url.toString());
+		HttpURLConnection urlConnection = (HttpURLConnection) url
+				.openConnection();
+
+		//Log.d("zzz", "" + urlConnection.getResponseCode());
+		//Log.d("zzz", "" + urlConnection.getResponseMessage());
+		InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+		try {
+			BufferedReader r = new BufferedReader(new InputStreamReader(in));
+			String vc = r.readLine();
+			Log.d("zzz", vc);
+
+			newVersionCode = Integer.parseInt(vc);
+			Log.d("UPDATE", "currentVersionCode " + currentVersionCode);
+			Log.d("UPDATE", "newVersionCode " + newVersionCode);
+
+			//if(newVersionCode > currentVersionCode)	showUpdateDialog();
+			
+			//btnCheck.setText(vc);
+			//showDialog();
+		} finally {
+			in.close();
+			urlConnection.disconnect();
+		}
+		return newVersionCode > currentVersionCode;
+		
+	}
+
+
+	private class UpdateChecker extends AsyncTask<Void, Void, Boolean>
+	{
+
+		@Override
+		protected Boolean doInBackground(Void... arg0) {
+			Boolean result = false;
+			try {
+				result = checkForUpdate();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			if(result) needUpdate(result);
+		}
+
+	}
+
+
+	public void needUpdate(Boolean updateAvailable) {
+		if(updateAvailable) {
+			showUpdateDialog();
+			btnUpdate.setVisibility(View.VISIBLE);
+		}
+		else {
+			btnUpdate.setVisibility(View.INVISIBLE);
+		}
+	}
+	
 }
 

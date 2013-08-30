@@ -115,6 +115,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Выход" />
+
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Обновить"
+            android:visibility="invisible" />
+
     </LinearLayout>
 
     <ListView
