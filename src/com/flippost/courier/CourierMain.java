@@ -2,6 +2,8 @@ package com.flippost.courier;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,8 +23,10 @@ import com.flippost.courier.R;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.annotation.TargetApi;
@@ -112,6 +116,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	ImageView imgvSrvOff, imgvSrvOn;
 
 	UpdateChecker uc;
+	UpdateApp updater;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +128,7 @@ public class CourierMain extends Activity implements OnClickListener {
     	SharedPreferences sharedAppConfig;
     	sharedAppConfig = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
     	
-    	this.app_URL = sharedAppConfig.getString(APPCFG_ADDR_URL, "");
+    	this.app_URL = sharedAppConfig.getString(APPCFG_ADDR_URL, getResources().getString(R.string.default_url));
     	this.login_URL = sharedAppConfig.getString(APPCFG_LOGIN_URL, "");
     	this.getdata_URL = sharedAppConfig.getString(APPCFG_GETDATA_URL, "");
     	this.prev_user = sharedAppConfig.getString(APPCFG_LOGIN, "nologin");
@@ -1070,8 +1075,9 @@ public class CourierMain extends Activity implements OnClickListener {
 			
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
-				// TODO Auto-generated method stub
-				
+				updater = new UpdateApp();
+				updater.setContext(getApplicationContext());
+				updater.execute(app_URL + "/android/flipCourier.apk");
 			}
 		});
 
@@ -1190,7 +1196,7 @@ public class CourierMain extends Activity implements OnClickListener {
 	}
 
 
-	private class UpdateChecker extends AsyncTask<Void, Void, Boolean>
+	public class UpdateChecker extends AsyncTask<Void, Void, Boolean>
 	{
 
 		@Override
@@ -1227,6 +1233,55 @@ public class CourierMain extends Activity implements OnClickListener {
 			btnUpdate.setVisibility(View.INVISIBLE);
 		}
 	}
-	
+
+	public class UpdateApp extends AsyncTask<String,Void,Void>{
+		private Context context;
+		public void setContext(Context contextf){
+		    context = contextf;
+		}
+
+		@Override
+		protected Void doInBackground(String... arg0) {
+		      try {
+		            URL url = new URL(arg0[0]);
+		            Log.d("UPDATE", url.toString());
+		            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+		            c.setRequestMethod("GET");
+		            c.setDoOutput(true);
+		            c.connect();
+
+		            Log.d("UPDATE", "" + c.getContentLength());
+		            String PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();//getCacheDir().toString();//"/mnt/sdcard/Download/";
+		            File file = new File(PATH);
+		            file.mkdirs();
+		            File outputFile = new File(file, "update.apk");
+		            Log.d("UPDATE", outputFile.toString());
+		            if(outputFile.exists()){
+		                outputFile.delete();
+		            }
+		            FileOutputStream fos = new FileOutputStream(outputFile);
+
+		            InputStream is = c.getInputStream();
+
+		            byte[] buffer = new byte[1024];
+		            int len1 = 0;
+		            while ((len1 = is.read(buffer)) > 0) {
+		                fos.write(buffer, 0, len1);
+		            }
+		            fos.close();
+		            is.close();
+
+		            Log.d("UPDATE", "" + outputFile.length());
+		            Intent intent = new Intent(Intent.ACTION_VIEW);
+		            intent.setDataAndType(Uri.fromFile(new File(PATH + "/update.apk")), "application/vnd.android.package-archive");
+		            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+		            context.startActivity(intent);
+
+
+		        } catch (Exception e) {
+		            Log.e("UpdateAPP", "Update error! " + e.getMessage());
+		        }
+		    return null;
+		}}  	
 }
 
