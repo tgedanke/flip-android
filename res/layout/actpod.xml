@@ -48,7 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/btnPodOk"
-        android:layout_alignBottom="@+id/btnPodOk"
         android:layout_alignRight="@+id/edtPodDest"
         android:text="Отмена" />
 
@@ -57,14 +56,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvPodOrdNum"
-        android:layout_below="@+id/tvPodOrdNum" />
+        android:layout_below="@+id/tvPodOrdNum"
+        android:layout_marginTop="30dp" />
 
     <EditText
         android:id="@+id/edtPodDest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/timePicker1"
+        android:layout_below="@+id/timePicker1"
         android:layout_centerVertical="true"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Фамилия" >
 

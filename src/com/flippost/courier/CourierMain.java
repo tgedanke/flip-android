@@ -200,7 +200,7 @@ public class CourierMain extends Activity implements OnClickListener {
 			displayListView();
 			doTimerTask();
 			//checkVersionCode();
-			uc.execute();
+			//uc.execute();
 		}
 		
         // Выключаем проверку работы с сетью в текущем UI потоке
@@ -1102,6 +1102,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		user = savedInstanceState.getString("user");
 		pwd = savedInstanceState.getString("pwd");
 		recType_forDetail = savedInstanceState.getString("recType_forDetail");
+		btnUpdate.setVisibility(savedInstanceState.getInt("btnUpdateVisible"));
 	}
 
 	@Override
@@ -1110,6 +1111,7 @@ public class CourierMain extends Activity implements OnClickListener {
 		outState.putString("user", user);
 		outState.putString("pwd", pwd);
 		outState.putString("recType_forDetail", recType_forDetail);
+		outState.putInt("btnUpdateVisible", btnUpdate.getVisibility());
 	}
 	
 	public void setGroupButtons(Boolean state){
